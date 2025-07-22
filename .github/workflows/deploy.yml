@@ -38,11 +38,12 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Add your environment variables here
+          # Auth0 Environment Variables
           VITE_AUTH0_DOMAIN: ${{ secrets.VITE_AUTH0_DOMAIN }}
           VITE_AUTH0_CLIENT_ID: ${{ secrets.VITE_AUTH0_CLIENT_ID }}
           VITE_AUTH0_AUDIENCE: ${{ secrets.VITE_AUTH0_AUDIENCE }}
           VITE_AUTH0_REDIRECT_URI: ${{ secrets.VITE_AUTH0_REDIRECT_URI }}
+          # App Configuration
           VITE_APP_NAME: "OpenPecha EvalAI"
 
       - name: Setup Pages
