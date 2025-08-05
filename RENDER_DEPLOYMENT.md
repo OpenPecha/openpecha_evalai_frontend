@@ -41,16 +41,29 @@ preview: {
    - **Plan**: Free (or your preferred plan)
 6. Click "Create Web Service"
 
-## 🔧 Environment Variables (Optional)
+## 🔧 Environment Variables
 
-If you need to add Auth0 or API configurations:
+**Required for API to work:**
 
 ```
+VITE_SERVER_URL=https://eval-api.pecha.tools
 NODE_ENV=production
+```
+
+**Optional Auth0 variables (if using authentication):**
+
+```
 VITE_AUTH0_DOMAIN=your-auth0-domain
 VITE_AUTH0_CLIENT_ID=your-client-id
-VITE_API_BASE_URL=https://eval-api.pecha.tools
+VITE_AUTH0_AUDIENCE=your-auth0-audience
 ```
+
+### Adding Environment Variables in Render:
+
+1. In your Render service dashboard
+2. Go to "Environment" tab
+3. Add the variables above
+4. Deploy the changes
 
 ## 🌐 Custom Domain (Optional)
 
