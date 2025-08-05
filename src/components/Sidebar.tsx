@@ -1,0 +1,399 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  Trophy,
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  LogOut,
+  Settings,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  Sun,
+  Moon,
+  Monitor,
+  MessageCircle,
+} from "lucide-react";
+import { useAuth0 } from "../hooks/useAuth0";
+import { useTheme } from "../hooks/useTheme";
+
+interface SidebarProps {
+  isOpen?: boolean;
+  onToggle?: () => void;
+}
+
+const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
+  const location = useLocation();
+  const { user, loginWithRedirect, logout, isAuthenticated, isLoading } =
+    useAuth0();
+  const { theme, setTheme } = useTheme();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  const isActivePath = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const isLeaderboardPath = () => {
+    return location.pathname.startsWith("/leaderboard");
+  };
+
+  const handleLogin = () => {
+    loginWithRedirect();
+  };
+
+  const handleLogout = () => {
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
+  };
+
+  const getThemeIcon = (themeOption: string) => {
+    switch (themeOption) {
+      case "light":
+        return <Sun className="w-3 h-3" />;
+      case "dark":
+        return <Moon className="w-3 h-3" />;
+      case "system":
+        return <Monitor className="w-3 h-3" />;
+      default:
+        return <Sun className="w-3 h-3" />;
+    }
+  };
+
+  const getThemeLabel = (themeOption: string) => {
+    switch (themeOption) {
+      case "light":
+        return "Light";
+      case "dark":
+        return "Dark";
+      case "system":
+        return "System";
+      default:
+        return "Light";
+    }
+  };
+
+  return (
+    <div
+      className={`${
+        isOpen ? "w-64" : "w-16"
+      } bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col`}
+    >
+      {/* Header with Logo and Toggle Button */}
+      <div
+        className={`flex items-center ${
+          isOpen ? "justify-between" : "justify-center"
+        } p-4 border-b border-gray-200 dark:border-gray-700`}
+      >
+        {isOpen ? (
+          <>
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Trophy className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">
+                {import.meta.env.VITE_APP_NAME || "Evaluate"}
+              </span>
+            </Link>
+            {/* Toggle button */}
+            {onToggle && (
+              <button
+                onClick={onToggle}
+                className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md transition-colors duration-200"
+                title="Collapse sidebar"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+          </>
+        ) : (
+          /* Collapsed state - just logo and toggle */
+          <div className="flex flex-col items-center space-y-2">
+            <Link
+              to="/"
+              className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"
+            >
+              <Trophy className="w-5 h-5 text-white" />
+            </Link>
+            {onToggle && (
+              <button
+                onClick={onToggle}
+                className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md transition-colors duration-200"
+                title="Expand sidebar"
+              >
+                <ChevronRight className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <div className="p-4">
+        {isOpen && (
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+            Navigation
+          </h2>
+        )}
+
+        <div
+          className={`${
+            isOpen ? "space-y-2" : "space-y-3 flex flex-col items-center"
+          }`}
+        >
+          <Link
+            to="/chat"
+            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+              isOpen ? "px-3 py-2" : "p-2 justify-center"
+            } ${
+              isActivePath("/chat")
+                ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-400"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+            }`}
+            title={isOpen ? "" : "Chat"}
+          >
+            <MessageCircle className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+            {isOpen && "Chat"}
+          </Link>
+
+          {/* Challenges Link */}
+          <Link
+            to="/"
+            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+              isOpen ? "px-3 py-2" : "p-2 justify-center"
+            } ${
+              isActivePath("/")
+                ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+            }`}
+            title={isOpen ? "" : "Challenges"}
+          >
+            <Trophy className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+            {isOpen && "Challenges"}
+          </Link>
+
+          {/* Leaderboards Link */}
+          <Link
+            to="/leaderboards"
+            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+              isOpen ? "px-3 py-2" : "p-2 justify-center"
+            } ${
+              isLeaderboardPath()
+                ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+            }`}
+            title={isOpen ? "" : "Leaderboards"}
+          >
+            <BarChart3 className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+            {isOpen && "Leaderboards"}
+          </Link>
+        </div>
+      </div>
+
+      {/* User Section at Bottom */}
+      <div
+        className={`mt-auto border-t border-gray-200 dark:border-gray-700 ${
+          isOpen ? "p-4" : "p-2"
+        }`}
+      >
+        {isLoading && (
+          /* Loading State */
+          <div
+            className={`flex items-center ${
+              isOpen ? "space-x-3" : "justify-center"
+            }`}
+          >
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            {isOpen && (
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Loading...
+              </span>
+            )}
+          </div>
+        )}
+        {!isLoading && isAuthenticated && (
+          /* Authenticated User */
+          <div className="space-y-2">
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className={`w-full flex items-center ${
+                isOpen ? "justify-between" : "justify-center"
+              } p-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200`}
+            >
+              <div className={`flex items-center ${isOpen ? "space-x-3" : ""}`}>
+                {user?.picture ? (
+                  <img
+                    className="w-6 h-6 rounded-full object-cover"
+                    src={user.picture}
+                    alt={user.name || "User avatar"}
+                  />
+                ) : (
+                  <div className="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                  </div>
+                )}
+                {isOpen && (
+                  <span className="font-medium truncate text-gray-900 dark:text-white">
+                    {user?.name || user?.email || "User"}
+                  </span>
+                )}
+              </div>
+              {isOpen &&
+                (isUserMenuOpen ? (
+                  <ChevronUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                ))}
+            </button>
+
+            {/* User Menu Dropdown */}
+            {isUserMenuOpen && isOpen && (
+              <div className="space-y-1 pl-2">
+                <Link
+                  to="/profile"
+                  className="flex items-center px-3 py-2 text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
+                  <User className="w-3 h-3 mr-2" />
+                  Profile
+                </Link>
+
+                <Link
+                  to="/my-submissions"
+                  className="flex items-center px-3 py-2 text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
+                  <FileText className="w-3 h-3 mr-2" />
+                  My Submissions
+                </Link>
+
+                {/* Theme Selector */}
+                <div className="px-3 py-1">
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    Theme
+                  </div>
+                  <div className="space-y-1">
+                    {["light", "dark", "system"].map((themeOption) => (
+                      <button
+                        key={themeOption}
+                        onClick={() =>
+                          setTheme(themeOption as "light" | "dark" | "system")
+                        }
+                        className={`flex items-center w-full px-2 py-1 text-xs rounded transition-colors duration-200 ${
+                          theme === themeOption
+                            ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                            : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        <span className="mr-2">
+                          {getThemeIcon(themeOption)}
+                        </span>
+                        {getThemeLabel(themeOption)}
+                        {theme === themeOption && (
+                          <span className="ml-auto text-blue-600 dark:text-blue-400">
+                            ✓
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="h-px bg-gray-200 dark:bg-gray-600 mx-3 my-1" />
+
+                <Link
+                  to="/settings"
+                  className="flex items-center px-3 py-2 text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
+                  <Settings className="w-3 h-3 mr-2" />
+                  Settings
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-3 py-2 text-xs text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                >
+                  <LogOut className="w-3 h-3 mr-2" />
+                  Sign out
+                </button>
+              </div>
+            )}
+
+            {/* Collapsed state - show tooltip menu items */}
+            {!isOpen && (
+              <div className="space-y-1 flex flex-col items-center">
+                <Link
+                  to="/profile"
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  title="Profile"
+                >
+                  <User className="w-4 h-4" />
+                </Link>
+                <Link
+                  to="/my-submissions"
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  title="My Submissions"
+                >
+                  <FileText className="w-4 h-4" />
+                </Link>
+                <button
+                  onClick={() => {
+                    const themes: Array<"light" | "dark" | "system"> = [
+                      "light",
+                      "dark",
+                      "system",
+                    ];
+                    const currentIndex = themes.indexOf(theme);
+                    const nextIndex = (currentIndex + 1) % themes.length;
+                    setTheme(themes[nextIndex]);
+                  }}
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  title={`Current theme: ${getThemeLabel(
+                    theme
+                  )} (click to cycle)`}
+                >
+                  {getThemeIcon(theme)}
+                </button>
+                <Link
+                  to="/settings"
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  title="Settings"
+                >
+                  <Settings className="w-4 h-4" />
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                  title="Sign out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        {!isLoading && !isAuthenticated && (
+          /* Sign In Button */
+          <button
+            onClick={handleLogin}
+            className={`w-full ${
+              isOpen
+                ? "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                : "p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"
+            } transition-colors duration-200 font-medium`}
+            title={isOpen ? "" : "Sign In"}
+          >
+            {isOpen ? "Sign In" : <User className="w-4 h-4" />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;

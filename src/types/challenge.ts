@@ -1,14 +1,31 @@
-export interface Challenge {
+export interface Category {
   id: string;
   name: string;
+  created_by: string;
+  updated_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Challenge {
+  id: string;
+  title: string;
   description: string;
-  category: string;
+  image_uri: string;
+  category_id: string;
+  created_by: string;
+  ground_truth: string;
   status: "active" | "completed" | "upcoming";
-  startDate: string;
-  endDate: string;
-  totalSubmissions: number;
-  maxSubmissionsPerTeam: number;
-  evaluationMetric: string;
+  created_at: string;
+  updated_at: string;
+  category: Category;
+  // Keep some legacy fields for backward compatibility
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+  totalSubmissions?: number;
+  maxSubmissionsPerTeam?: number;
+  evaluationMetric?: string;
 }
 
 export interface Submission {

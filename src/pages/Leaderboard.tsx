@@ -12,7 +12,7 @@ const getRankIcon = (rank: number) => {
       return <Medal className="w-6 h-6 text-amber-600" />;
     default:
       return (
-        <span className="w-6 h-6 flex items-center justify-center text-gray-600 font-semibold">
+        <span className="w-6 h-6 flex items-center justify-center text-gray-600 dark:text-gray-400 font-semibold">
           {rank}
         </span>
       );
@@ -72,11 +72,13 @@ const Leaderboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-700 py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading leaderboard...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">
+              Loading leaderboard...
+            </p>
           </div>
         </div>
       </div>
@@ -85,7 +87,7 @@ const Leaderboard = () => {
 
   if (error || !challenge) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-700 py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="mb-6">
             <Link
@@ -114,7 +116,7 @@ const Leaderboard = () => {
   }
 
   return (
-    <div className="py-8">
+    <div className="py-0">
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-6">
           <Link
@@ -126,27 +128,32 @@ const Leaderboard = () => {
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
           <div className="bg-blue-600 text-white px-6 py-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-2xl font-bold mb-2">
-                  {challenge.name} - Leaderboard
+                  {challenge.title || challenge.name} - Leaderboard
                 </h1>
                 <p className="text-blue-100">
-                  Ranked by {challenge.evaluationMetric} - Lower is better for
-                  error rates
+                  Ranked by {challenge.evaluationMetric || "Performance"} -
+                  Lower is better for error rates
                 </p>
               </div>
               <div className="mt-4 md:mt-0 flex flex-col md:items-end text-sm text-blue-100">
                 <div className="flex items-center mb-1">
                   <Users className="w-4 h-4 mr-1" />
-                  <span>{challenge.totalSubmissions} total submissions</span>
+                  <span>
+                    {challenge.totalSubmissions || 0} total submissions
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 mr-1" />
                   <span>
-                    Ends: {new Date(challenge.endDate).toLocaleDateString()}
+                    Created:{" "}
+                    {new Date(
+                      challenge.created_at || challenge.endDate || ""
+                    ).toLocaleDateString()}
                   </span>
                 </div>
               </div>
@@ -156,70 +163,73 @@ const Leaderboard = () => {
           {submissions.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Rank
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Model Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Team
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Score
                     </th>
                     {submissions.some((s) => s.accuracy !== undefined) && (
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Accuracy
                       </th>
                     )}
                     {submissions.some((s) => s.f1Score !== undefined) && (
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         F1 Score
                       </th>
                     )}
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Submission Date
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {submissions.map((submission) => (
-                    <tr key={submission.id} className="hover:bg-gray-50">
+                    <tr
+                      key={submission.id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {getRankIcon(submission.rank)}
-                          <span className="ml-2 text-sm font-medium text-gray-900">
+                          <span className="ml-2 text-sm font-medium text-gray-900 dark:text-white">
                             #{submission.rank}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {submission.modelName}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           {submission.fileName}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-gray-900 dark:text-white">
                           {submission.teamName}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-semibold text-gray-900">
+                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
                           {(submission.cer * 100).toFixed(2)}%
                         </div>
                       </td>
                       {submissions.some((s) => s.accuracy !== undefined) && (
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-900 dark:text-white">
                             {submission.accuracy
                               ? `${(submission.accuracy * 100).toFixed(2)}%`
                               : "N/A"}
@@ -228,7 +238,7 @@ const Leaderboard = () => {
                       )}
                       {submissions.some((s) => s.f1Score !== undefined) && (
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-900 dark:text-white">
                             {submission.f1Score
                               ? `${(submission.f1Score * 100).toFixed(2)}%`
                               : "N/A"}
@@ -238,7 +248,7 @@ const Leaderboard = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(submission.status)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {new Date(
                           submission.submissionDate
                         ).toLocaleDateString()}
@@ -251,7 +261,7 @@ const Leaderboard = () => {
           ) : (
             <div className="px-6 py-12 text-center">
               <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg mb-2">
+              <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">
                 No submissions yet for this challenge.
               </p>
               <p className="text-gray-400 text-sm mb-6">

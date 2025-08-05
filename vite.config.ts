@@ -5,10 +5,14 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/", // Custom domain uses root path
+  base:
+    process.env.NODE_ENV === "production" ? "/openpecha_evalai_frontend/" : "/",
   build: {
     outDir: "dist",
     assetsDir: "assets",
     sourcemap: true,
+  },
+  server: {
+    port: 3000,
   },
 });

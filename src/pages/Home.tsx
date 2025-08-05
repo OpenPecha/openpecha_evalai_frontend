@@ -61,11 +61,13 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading challenges...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">
+              Loading challenges...
+            </p>
           </div>
         </div>
       </div>
@@ -74,14 +76,14 @@ const Home = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-red-800 mb-2">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-2">
                 Error Loading Challenges
               </h2>
-              <p className="text-red-600">
+              <p className="text-red-600 dark:text-red-400">
                 Failed to load challenges. Please try again later.
               </p>
             </div>
@@ -92,22 +94,21 @@ const Home = () => {
   }
 
   return (
-    <div className="py-8">
+    <div className="py-0">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            OpenPecha EvalAI Challenges
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            OpenPecha AI Challenges
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Participate in various AI challenges and test your models against
-            our benchmarks. View leaderboards and submit your results to compete
-            with others.
+            our benchmarks.
           </p>
         </div>
 
         {challenges.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
               No challenges available at the moment.
             </p>
           </div>
@@ -116,8 +117,15 @@ const Home = () => {
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="bg-white flex flex-col rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="bg-white dark:bg-gray-800 flex flex-col rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                 onMouseEnter={() => handleMouseEnter(challenge.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleMouseEnter(challenge.id);
+                  }
+                }}
               >
                 <div className="p-6  flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-4">
@@ -134,20 +142,20 @@ const Home = () => {
                       </div>
                     </span>
                     <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full">
-                      {challenge.category}
+                      {challenge.category?.name || "Unknown"}
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {challenge.name}
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                    {challenge.title || challenge.name}
                   </h3>
 
-                  <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 flex-1">
                     {challenge.description}
                   </p>
 
                   {/* Challenge Stats */}
-                  <div className="flex items-center text-sm text-gray-500 mb-4 space-x-4">
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4 space-x-4">
                     <div className="flex items-center">
                       <Users className="w-4 h-4 mr-1" />
                       <span>{challenge.totalSubmissions} </span>

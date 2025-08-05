@@ -79,7 +79,7 @@ export const useSubmitToChallenge = () => {
   return useMutation({
     mutationFn: (submission: SubmissionRequest) =>
       challengeApi.submitToChallenge(submission),
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       // Invalidate and refetch leaderboard
       queryClient.invalidateQueries({
         queryKey: challengeKeys.leaderboard(variables.challengeId),
@@ -115,6 +115,50 @@ export const usePrefetchChallenge = () => {
       staleTime: 5 * 60 * 1000,
     });
   };
+};
+
+// Hook to fetch leaderboard data for all challenges
+export const useAllLeaderboards = (challenges: any[] = []) => {
+  return useQuery({
+    queryKey: [...challengeKeys.leaderboards(), "all"],
+    queryFn: async () => {
+      const leaderboardPromises = challenges.map(async (challenge) => {
+        try {
+          const response = await challengeApi.getLeaderboard(
+            challenge.id,
+            1,
+            5
+          ); // Get top 5 for each
+          return {
+            challengeId: challenge.id,
+            challengeTitle: challenge.title || challenge.name,
+            challengeCategory: challenge.category?.name || "Unknown",
+            challengeStatus: challenge.status,
+            submissions: response.data,
+            totalSubmissions: response.pagination?.total || 0,
+          };
+        } catch (error) {
+          console.error(
+            `Failed to fetch leaderboard for ${challenge.id}:`,
+            error
+          );
+          return {
+            challengeId: challenge.id,
+            challengeTitle: challenge.title || challenge.name,
+            challengeCategory: challenge.category?.name || "Unknown",
+            challengeStatus: challenge.status,
+            submissions: [],
+            totalSubmissions: 0,
+          };
+        }
+      });
+
+      return Promise.all(leaderboardPromises);
+    },
+    enabled: challenges.length > 0,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+  });
 };
 
 // Helper hook to prefetch leaderboard
