@@ -12,5 +12,10 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    host: true, // Listen on all network interfaces
+  },
+  preview: {
+    port: parseInt(process.env.PORT || "10000"),
+    host: "0.0.0.0", // Bind to all network interfaces for deployment
   },
 });
