@@ -9,10 +9,12 @@ import {
   Info,
 } from "lucide-react";
 import { useChallenge, useSubmitToChallenge } from "../hooks/useChallenges";
+import { useAuth } from "../auth/use-auth-hook";
 
 const Submission = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
   const navigate = useNavigate();
+  const { isAuthenticated, login } = useAuth();
 
   const {
     data: challengeResponse,
@@ -39,8 +41,9 @@ const Submission = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFileSelect(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
     }
   };
 
@@ -59,13 +62,25 @@ const Submission = () => {
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileSelect(e.dataTransfer.files[0]);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleFileSelect(file);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      const shouldLogin = window.confirm(
+        "You need to be logged in to submit to challenges. Would you like to login now?"
+      );
+      if (shouldLogin) {
+        login(false); // Redirect to login
+      }
+      return;
+    }
 
     if (
       !selectedFile ||
@@ -123,7 +138,7 @@ const Submission = () => {
           <div className="mb-6">
             <Link
               to="/"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Challenges
@@ -153,7 +168,7 @@ const Submission = () => {
           <div className="mb-6">
             <Link
               to="/"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Challenges
@@ -196,7 +211,7 @@ const Submission = () => {
         <div className="mb-6">
           <Link
             to="/"
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Challenges
@@ -309,7 +324,10 @@ const Submission = () => {
 
             {/* File Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="fileInput"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Upload Results File (JSON) *
               </label>
 
@@ -327,6 +345,7 @@ const Submission = () => {
                 onDrop={handleDrop}
               >
                 <input
+                  id="fileInput"
                   type="file"
                   accept=".json"
                   onChange={handleFileChange}
@@ -378,6 +397,26 @@ const Submission = () => {
             </div>
 
             {/* Submit Button */}
+            {/* Authentication Notice */}
+            {!isAuthenticated && (
+              <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="flex items-center">
+                  <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 mr-2" />
+                  <p className="text-sm text-blue-800 dark:text-blue-400">
+                    Please{" "}
+                    <button
+                      type="button"
+                      onClick={() => login(false)}
+                      className="underline hover:text-blue-900 dark:hover:text-blue-300 font-medium"
+                    >
+                      login
+                    </button>{" "}
+                    to submit your results to this challenge.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="flex justify-end space-x-4">
               <Link
                 to={`/leaderboard/${challengeId}`}
@@ -392,9 +431,11 @@ const Submission = () => {
                   submitMutation.isPending ||
                   !selectedFile ||
                   !modelName.trim() ||
-                  !teamName.trim()
+                  !teamName.trim() ||
+                  !isAuthenticated
                 }
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200 flex items-center"
+                title={!isAuthenticated ? "Please login to submit" : ""}
               >
                 {submitMutation.isPending ? (
                   <>
@@ -404,7 +445,7 @@ const Submission = () => {
                 ) : (
                   <>
                     <Upload className="w-4 h-4 mr-2" />
-                    Submit Results
+                    {!isAuthenticated ? "Login to Submit" : "Submit Results"}
                   </>
                 )}
               </button>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
@@ -11,9 +11,25 @@ import Profile from "./pages/Profile";
 import MySubmissions from "./pages/MySubmissions";
 import Settings from "./pages/Settings";
 import "./app.css";
+import { useAuth } from "./auth/use-auth-hook";
+const Login = lazy(() => import("./pages/Login"));
+const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
+  const { isAuthenticated, login, isLoading, getToken } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getToken().then((token) => {
+        localStorage.setItem("access_token", token!);
+      });
+      return;
+    }
+    // if (!isAuthenticated && !isLoading) {
+    //   login(true);
+    // }
+  }, [isAuthenticated, isLoading]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -51,6 +67,26 @@ const App = () => {
         {/* Main Content */}
         <main className="flex-1 flex flex-col overflow-hidden">
           <Routes>
+            <Route
+              path="/login"
+              element={
+                <Suspense
+                  fallback={<FullScreenLoading message="Loading Login..." />}
+                >
+                  <Login />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/callback"
+              element={
+                <Suspense
+                  fallback={<FullScreenLoading message="Authenticating..." />}
+                >
+                  <Callback />
+                </Suspense>
+              }
+            />
             <Route
               path="/"
               element={
@@ -116,3 +152,45 @@ const App = () => {
 };
 
 export default App;
+
+export const FullScreenLoading: React.FC<{ message?: string }> = ({
+  message = "Loading Dashboard...",
+}) => (
+  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pt-16 flex items-center justify-center">
+    <Loading size="lg" message={message} />
+  </div>
+);
+interface LoadingProps {
+  size?: "sm" | "md" | "lg";
+  message?: string;
+  className?: string;
+}
+
+export const Loading: React.FC<LoadingProps> = ({
+  size = "md",
+  message = "Loading...",
+  className = "",
+}) => {
+  const sizeClasses = {
+    sm: "w-4 h-4",
+    md: "w-8 h-8",
+    lg: "w-12 h-12",
+  };
+
+  const textSizeClasses = {
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
+  };
+
+  return (
+    <div className={`flex items-center justify-center py-8 ${className}`}>
+      <div className="text-center">
+        <div
+          className={`inline-block animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] ${sizeClasses[size]} text-blue-600 mb-2`}
+        />
+        <p className={`text-blue-600 ${textSizeClasses[size]}`}>{message}</p>
+      </div>
+    </div>
+  );
+};

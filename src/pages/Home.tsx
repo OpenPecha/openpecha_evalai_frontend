@@ -119,13 +119,6 @@ const Home = () => {
                 key={challenge.id}
                 className="bg-white dark:bg-gray-800 flex flex-col rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                 onMouseEnter={() => handleMouseEnter(challenge.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleMouseEnter(challenge.id);
-                  }
-                }}
               >
                 <div className="p-6  flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-4">

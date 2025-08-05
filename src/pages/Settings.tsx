@@ -57,10 +57,14 @@ const Settings = () => {
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="displayName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Display Name
                     </label>
                     <input
+                      id="displayName"
                       type="text"
                       defaultValue={user?.name || ""}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -69,10 +73,14 @@ const Settings = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="emailAddress"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Email Address
                     </label>
                     <input
+                      id="emailAddress"
                       type="email"
                       defaultValue={user?.email || ""}
                       disabled
@@ -119,7 +127,10 @@ const Settings = () => {
               <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    <label
+                      htmlFor="emailNotifications"
+                      className="text-sm font-medium text-gray-900 dark:text-white"
+                    >
                       Email Notifications
                     </label>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -127,6 +138,7 @@ const Settings = () => {
                     </p>
                   </div>
                   <input
+                    id="emailNotifications"
                     type="checkbox"
                     checked={emailNotifications}
                     onChange={(e) => setEmailNotifications(e.target.checked)}
@@ -136,7 +148,10 @@ const Settings = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    <label
+                      htmlFor="weeklyDigest"
+                      className="text-sm font-medium text-gray-900 dark:text-white"
+                    >
                       Weekly Digest
                     </label>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -145,6 +160,7 @@ const Settings = () => {
                     </p>
                   </div>
                   <input
+                    id="weeklyDigest"
                     type="checkbox"
                     checked={weeklyDigest}
                     onChange={(e) => setWeeklyDigest(e.target.checked)}
@@ -154,7 +170,10 @@ const Settings = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    <label
+                      htmlFor="newChallengeAlerts"
+                      className="text-sm font-medium text-gray-900 dark:text-white"
+                    >
                       New Challenge Alerts
                     </label>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -162,6 +181,7 @@ const Settings = () => {
                     </p>
                   </div>
                   <input
+                    id="newChallengeAlerts"
                     type="checkbox"
                     checked={newChallengeAlerts}
                     onChange={(e) => setNewChallengeAlerts(e.target.checked)}

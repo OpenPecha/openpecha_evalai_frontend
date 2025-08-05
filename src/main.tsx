@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Auth0Provider from "./auth/auth0-provider";
+import { AuthProvider } from "./auth/auth-context-provider";
 import "./index.css";
 import App from "./app.tsx";
 
@@ -22,10 +23,12 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <Auth0Provider>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </AuthProvider>
   </Auth0Provider>
 );
