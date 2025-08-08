@@ -51,19 +51,6 @@ const Home = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "text-green-600 bg-green-100";
-      case "upcoming":
-        return "text-orange-600 bg-orange-100";
-      case "completed":
-        return "text-gray-600 bg-gray-100";
-      default:
-        return "text-gray-600 bg-gray-100";
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -100,14 +87,15 @@ const Home = () => {
 
   return (
     <div className="py-0">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            OpenPecha AI Challenges
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Modern Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            ML Evaluation Challenges
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Participate in various AI challenges and test your models against
-            our benchmarks.
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Discover and participate in machine learning challenges. Test your
+            models and compete with others.
           </p>
         </div>
 
@@ -118,92 +106,110 @@ const Home = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="bg-white dark:bg-gray-800 flex flex-col rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
                 onMouseEnter={() => handleMouseEnter(challenge.id)}
               >
-                <div className="p-6  flex-1 flex flex-col">
-                  <div className="flex items-center justify-between mb-4">
+                {/* Header with image or gradient */}
+                <div className="h-32 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 relative overflow-hidden">
+                  {challenge.image_uri ? (
+                    <>
+                      <img
+                        src={challenge.image_uri}
+                        alt={challenge.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Dark overlay for better text contrast */}
+                      <div className="absolute inset-0 bg-black/30" />
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600" />
+                  )}
+
+                  {/* Status & Category badges */}
+                  <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10">
                     <span
-                      className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(
-                        challenge.status
-                      )}`}
+                      className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-md backdrop-blur-sm bg-black/60 text-white border border-white/20 shadow-lg text-shadow-strong`}
                     >
-                      <div className="flex items-center">
-                        {getStatusIcon(challenge.status)}
-                        <span className="ml-1">
-                          {getStatusText(challenge.status)}
-                        </span>
-                      </div>
+                      {getStatusIcon(challenge.status)}
+                      <span className="ml-1">
+                        {getStatusText(challenge.status)}
+                      </span>
                     </span>
-                    <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full">
-                      {challenge.category?.name || "Unknown"}
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md backdrop-blur-sm bg-black/60 text-white border border-white/20 shadow-lg text-shadow-strong">
+                      {challenge.category?.name || "General"}
                     </span>
                   </div>
+                </div>
 
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                {/* Content */}
+                <div className="p-4 flex-1 flex flex-col">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                     {challenge.title || challenge.name}
                   </h3>
 
-                  <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 flex-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 flex-1">
                     {challenge.description}
                   </p>
 
-                  {/* Challenge Stats */}
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4 space-x-4">
+                  {/* Stats */}
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">
                     <div className="flex items-center">
-                      <Users className="w-4 h-4 mr-1" />
-                      <span>{challenge.totalSubmissions} </span>
+                      <Users className="w-3 h-3 mr-1" />
+                      <span>{challenge.totalSubmissions || 0}</span>
                     </div>
                     <div className="flex items-center">
-                      <Trophy className="w-4 h-4 mr-1" />
-                      <span>{challenge.evaluationMetric}</span>
+                      <Trophy className="w-3 h-3 mr-1" />
+                      <span className="truncate max-w-20">
+                        {challenge.evaluationMetric || "Score"}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex space-x-3">
-                    <Link
-                      to={`/leaderboard/${challenge.id}`}
-                      className="flex-1 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                    >
-                      <Trophy className="w-4 h-4 mr-2" />
-                      Leaderboard
-                    </Link>
-
-                    {challenge.status === "active" ? (
+                  {/* Action Buttons */}
+                  <div className="space-y-2">
+                    <div className="flex space-x-2">
                       <Link
-                        to={`/submit/${challenge.id}`}
-                        className="flex-1 flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                        to={`/leaderboard/${challenge.id}`}
+                        className="flex-1 flex items-center justify-center px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200"
                       >
-                        <Upload className="w-4 h-4 mr-2" />
-                        Submit
+                        <Trophy className="w-3 h-3 mr-1" />
+                        Board
                       </Link>
-                    ) : (
-                      <button
-                        disabled
-                        className="flex-1 flex items-center justify-center px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        {challenge.status === "upcoming" ? "Soon" : "Closed"}
-                      </button>
-                    )}
-                  </div>
 
-                  {/* Admin Controls */}
-                  {isAdmin && (
-                    <div className="mt-3 flex space-x-2">
+                      {challenge.status === "active" ? (
+                        <Link
+                          to={`/submit/${challenge.id}`}
+                          className="flex-1 flex items-center justify-center px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200"
+                        >
+                          <Upload className="w-3 h-3 mr-1" />
+                          Submit
+                        </Link>
+                      ) : (
+                        <button
+                          disabled
+                          className="flex-1 flex items-center justify-center px-3 py-2 bg-gray-400 text-white text-sm rounded-lg cursor-not-allowed"
+                        >
+                          <Upload className="w-3 h-3 mr-1" />
+                          {challenge.status === "upcoming" ? "Soon" : "Closed"}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Admin Controls */}
+                    {isAdmin && (
                       <Link
                         to={`/admin/edit-challenge/${challenge.id}`}
-                        className="flex-1 flex items-center justify-center px-3 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
+                        className="w-full flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                       >
-                        <Edit className="w-4 h-4 mr-2" />
+                        <Edit className="w-3 h-3 mr-1" />
                         Edit
                       </Link>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

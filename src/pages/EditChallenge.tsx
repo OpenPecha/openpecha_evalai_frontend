@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Save, Trash2, AlertTriangle } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Trash2,
+  AlertTriangle,
+  Upload,
+  FileText,
+} from "lucide-react";
 import { useCurrentUser } from "../hooks/useUsers";
 import {
   useCategories,
@@ -30,6 +37,8 @@ const EditChallenge = () => {
     status: "upcoming",
   });
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -61,10 +70,47 @@ const EditChallenge = () => {
         formData.category_id !== challenge.category_id ||
         formData.image_uri !== (challenge.image_uri || "") ||
         formData.description !== challenge.description ||
-        formData.status !== challenge.status;
+        formData.status !== challenge.status ||
+        selectedFile !== null;
       setHasChanges(hasFormChanges);
     }
-  }, [formData, challenge]);
+  }, [formData, challenge, selectedFile]);
+
+  const handleFileSelect = (file: File) => {
+    if (file.type === "application/json") {
+      setSelectedFile(file);
+    } else {
+      alert("Please select a valid JSON file for ground truth data");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
 
   if (!challengeId) {
     return (
@@ -120,9 +166,14 @@ const EditChallenge = () => {
     }
 
     try {
+      const updateData = { ...formData };
+      if (selectedFile) {
+        updateData.ground_truth_file = selectedFile;
+      }
+
       await updateChallengeMutation.mutateAsync({
         challengeId,
-        updateData: formData,
+        updateData,
       });
       navigate(`/leaderboard/${challengeId}`); // Redirect to challenge leaderboard
     } catch (error) {
@@ -194,7 +245,8 @@ const EditChallenge = () => {
             Edit Challenge
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Update challenge information (excluding the ground truth file)
+            Update challenge information and optionally replace the ground truth
+            file
           </p>
         </div>
 
@@ -303,6 +355,78 @@ const EditChallenge = () => {
               <option value="active">Active</option>
               <option value="completed">Completed</option>
             </select>
+          </div>
+
+          {/* Ground Truth File Upload */}
+          <div>
+            <label
+              htmlFor="groundTruthFile"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Update Ground Truth File (Optional)
+            </label>
+
+            <div
+              className={`relative border-2 border-dashed rounded-lg p-6 transition-colors duration-200 ${
+                dragActive
+                  ? "border-blue-400 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                  : selectedFile
+                  ? "border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20"
+                  : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+              }`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
+              <input
+                id="groundTruthFile"
+                type="file"
+                accept=".json"
+                onChange={handleFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+
+              <div className="text-center">
+                {selectedFile ? (
+                  <div className="flex flex-col items-center">
+                    <FileText className="w-12 h-12 text-green-500 mb-2" />
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {selectedFile.name}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {(selectedFile.size / 1024).toFixed(1)} KB
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFile(null)}
+                      className="mt-2 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                    >
+                      Remove file
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <Upload className="w-12 h-12 text-gray-400 mb-2" />
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      Drop your ground truth JSON file here, or click to browse
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Only JSON files are accepted. This will replace the
+                      existing ground truth file.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <p>
+                <strong>Note:</strong> Uploading a new ground truth file will
+                replace the existing one and may affect existing submissions and
+                evaluations.
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}

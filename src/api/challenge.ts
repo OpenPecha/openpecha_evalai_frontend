@@ -25,10 +25,15 @@ export const setAuthTokenGetter = (tokenGetter: () => Promise<string>) => {
 };
 
 // Helper function to get auth headers
-const getAuthHeaders = async (): Promise<Record<string, string>> => {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+const getAuthHeaders = async (
+  contentType: "json" | "multipart" = "json"
+): Promise<Record<string, string>> => {
+  const headers: Record<string, string> = {};
+
+  // Only set Content-Type for JSON requests, FormData will set it automatically for multipart
+  if (contentType === "json") {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (getAccessTokenSilently) {
     try {
@@ -669,14 +674,37 @@ export const challengeApi = {
     updateData: ChallengeUpdateRequest
   ): Promise<ApiResponse<Challenge>> => {
     try {
-      const headers = await getAuthHeaders();
+      const headers = await getAuthHeaders("multipart");
+
+      // Create FormData for multipart upload
+      const formData = new FormData();
+
+      // Only append fields that are provided
+      if (updateData.title !== undefined) {
+        formData.append("title", updateData.title);
+      }
+      if (updateData.category_id !== undefined) {
+        formData.append("category_id", updateData.category_id);
+      }
+      if (updateData.image_uri !== undefined) {
+        formData.append("image_uri", updateData.image_uri);
+      }
+      if (updateData.description !== undefined) {
+        formData.append("description", updateData.description);
+      }
+      if (updateData.status !== undefined) {
+        formData.append("status", updateData.status);
+      }
+      if (updateData.ground_truth_file) {
+        formData.append("ground_truth_file", updateData.ground_truth_file);
+      }
 
       const response = await fetch(
-        `${API_BASE_URL}/challenges/${challengeId}`,
+        `${API_BASE_URL}/challenges/update/${challengeId}`,
         {
           method: "PATCH",
           headers,
-          body: JSON.stringify(updateData),
+          body: formData,
         }
       );
 

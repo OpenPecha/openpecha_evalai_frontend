@@ -92,7 +92,9 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
     <div
       className={`${
         isOpen ? "w-64" : "w-16"
-      } bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col`}
+      } bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col fixed top-0 left-0 z-30 lg:block ${
+        isOpen ? "block" : "hidden"
+      }`}
     >
       {/* Header with Logo and Toggle Button */}
       <div

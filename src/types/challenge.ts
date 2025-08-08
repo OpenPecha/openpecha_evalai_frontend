@@ -65,6 +65,7 @@ export interface ChallengeUpdateRequest {
   image_uri?: string;
   description?: string;
   status?: "active" | "completed" | "upcoming";
+  ground_truth_file?: File;
 }
 
 export interface CategoryCreateRequest {

@@ -19,22 +19,18 @@ const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
-  const { isAuthenticated, login, isLoading, getToken } = useAuth();
+  const { isAuthenticated, isLoading, getToken } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Initialize user API auth and get auth state
-  const { shouldFetchUser } = useAuthenticatedUser();
+  // Initialize user API auth
+  useAuthenticatedUser();
 
   useEffect(() => {
     if (isAuthenticated) {
       getToken().then((token) => {
         localStorage.setItem("access_token", token!);
       });
-      return;
     }
-    // if (!isAuthenticated && !isLoading) {
-    //   login(true);
-    // }
   }, [isAuthenticated, isLoading, getToken]);
 
   const toggleSidebar = () => {
@@ -42,36 +38,29 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
-      {/* Sidebar */}
-      <div className="relative">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:block">
-          <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
-        </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Sidebar - Always visible on desktop */}
+      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
 
-        {/* Mobile Sidebar */}
-        {isSidebarOpen && (
-          <div className="fixed inset-0 z-40 lg:hidden">
-            <button
-              className="fixed inset-0 bg-black bg-opacity-50 border-0 p-0"
-              onClick={() => setIsSidebarOpen(false)}
-              aria-label="Close sidebar"
-            />
-            <div className="fixed left-0 top-0 h-full z-50">
-              <Sidebar isOpen={true} onToggle={toggleSidebar} />
-            </div>
-          </div>
-        )}
-      </div>
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 z-20 lg:hidden">
+          <button
+            className="fixed inset-0 bg-black bg-opacity-50 border-0 p-0"
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label="Close sidebar"
+          />
+        </div>
+      )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Navbar */}
-        {/* <Navbar onToggleSidebar={toggleSidebar} /> */}
-
+      <div
+        className={`transition-all duration-300 ${
+          isSidebarOpen ? "lg:ml-64" : "lg:ml-16"
+        } ml-0`}
+      >
         {/* Main Content */}
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main className="min-h-screen overflow-auto">
           <Routes>
             <Route
               path="/login"
@@ -96,7 +85,7 @@ const App = () => {
             <Route
               path="/"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <Home />
                 </div>
               }
@@ -105,7 +94,7 @@ const App = () => {
             <Route
               path="/leaderboards"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <Leaderboards />
                 </div>
               }
@@ -113,7 +102,7 @@ const App = () => {
             <Route
               path="/leaderboard/:challengeId"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <Leaderboard />
                 </div>
               }
@@ -121,7 +110,7 @@ const App = () => {
             <Route
               path="/submit/:challengeId"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <Submission />
                 </div>
               }
@@ -129,7 +118,7 @@ const App = () => {
             <Route
               path="/profile"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <Profile />
                 </div>
               }
@@ -137,7 +126,7 @@ const App = () => {
             <Route
               path="/my-submissions"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <MySubmissions />
                 </div>
               }
@@ -145,7 +134,7 @@ const App = () => {
             <Route
               path="/settings"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <Settings />
                 </div>
               }
@@ -153,7 +142,7 @@ const App = () => {
             <Route
               path="/admin/create-challenge"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <CreateChallenge />
                 </div>
               }
@@ -161,7 +150,7 @@ const App = () => {
             <Route
               path="/admin/edit-challenge/:challengeId"
               element={
-                <div className="p-4 lg:p-6 overflow-auto">
+                <div className="p-4 lg:p-6">
                   <EditChallenge />
                 </div>
               }
