@@ -10,14 +10,20 @@ import Submission from "./pages/Submission";
 import Profile from "./pages/Profile";
 import MySubmissions from "./pages/MySubmissions";
 import Settings from "./pages/Settings";
+import CreateChallenge from "./pages/CreateChallenge";
+import EditChallenge from "./pages/EditChallenge";
 import "./app.css";
 import { useAuth } from "./auth/use-auth-hook";
+import { useAuthenticatedUser } from "./hooks/useUserApiAuth";
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
   const { isAuthenticated, login, isLoading, getToken } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Initialize user API auth and get auth state
+  const { shouldFetchUser } = useAuthenticatedUser();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,7 +35,7 @@ const App = () => {
     // if (!isAuthenticated && !isLoading) {
     //   login(true);
     // }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, isLoading, getToken]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -141,6 +147,22 @@ const App = () => {
               element={
                 <div className="p-4 lg:p-6 overflow-auto">
                   <Settings />
+                </div>
+              }
+            />
+            <Route
+              path="/admin/create-challenge"
+              element={
+                <div className="p-4 lg:p-6 overflow-auto">
+                  <CreateChallenge />
+                </div>
+              }
+            />
+            <Route
+              path="/admin/edit-challenge/:challengeId"
+              element={
+                <div className="p-4 lg:p-6 overflow-auto">
+                  <EditChallenge />
                 </div>
               }
             />

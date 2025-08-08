@@ -28,7 +28,6 @@ const Submission = () => {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [modelName, setModelName] = useState("");
-  const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [dragActive, setDragActive] = useState(false);
 
@@ -85,7 +84,7 @@ const Submission = () => {
     if (
       !selectedFile ||
       !modelName.trim() ||
-      !teamName.trim() ||
+      !description.trim() ||
       !challengeId
     ) {
       alert("Please fill in all required fields and select a file");
@@ -94,17 +93,15 @@ const Submission = () => {
 
     try {
       await submitMutation.mutateAsync({
-        challengeId,
-        modelName: modelName.trim(),
-        teamName: teamName.trim(),
-        description: description.trim(),
         file: selectedFile,
+        model_name: modelName.trim(),
+        challenge_id: challengeId,
+        description: description.trim(),
       });
 
       // Reset form
       setSelectedFile(null);
       setModelName("");
-      setTeamName("");
       setDescription("");
 
       // Navigate to leaderboard after successful submission
@@ -266,42 +263,26 @@ const Submission = () => {
             </div>
 
             {/* Model Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="modelName"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Model Name *
-                </label>
-                <input
-                  type="text"
-                  id="modelName"
-                  value={modelName}
-                  onChange={(e) => setModelName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="e.g., MyAwesomeModel-v1.0"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="teamName"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Team Name *
-                </label>
-                <input
-                  type="text"
-                  id="teamName"
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="e.g., AI Researchers"
-                  required
-                />
-              </div>
+            <div>
+              <label
+                htmlFor="modelName"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Model Name *
+              </label>
+              <input
+                type="text"
+                id="modelName"
+                value={modelName}
+                onChange={(e) => setModelName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                placeholder="e.g., MyAwesomeModel-v1.0"
+                required
+              />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                You can add new model names, and they will be created in our
+                model table if the submission passes validation.
+              </p>
             </div>
 
             {/* Description */}
@@ -310,16 +291,20 @@ const Submission = () => {
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Description (Optional)
+                Description *
               </label>
               <textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Brief description of your model or approach..."
+                required
               />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                This description will be displayed with your submission.
+              </p>
             </div>
 
             {/* File Upload */}
@@ -352,7 +337,16 @@ const Submission = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
 
-                <div className="text-center">
+                <div
+                  className="text-center"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      document.getElementById("fileInput")?.click();
+                    }
+                  }}
+                >
                   {selectedFile ? (
                     <div className="flex flex-col items-center">
                       <CheckCircle className="w-12 h-12 text-green-500 mb-2" />
@@ -384,14 +378,50 @@ const Submission = () => {
                 <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-2" />
                 <div>
                   <h3 className="text-sm font-medium text-blue-900 dark:text-blue-400">
-                    Expected JSON Format
+                    Required JSON Format
                   </h3>
                   <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-                    Your JSON file should contain the model's predictions in the
-                    format specified in the challenge documentation. Make sure
-                    to include all required fields for{" "}
-                    {challenge.evaluationMetric} calculation.
+                    Upload and validate a JSON file containing ML inference
+                    results.
                   </p>
+                  <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                    <p>
+                      <strong>Required fields:</strong>
+                    </p>
+                    <ul className="list-disc list-inside mt-1 space-y-1">
+                      <li>
+                        <code>filename</code> - Name of the input file
+                      </li>
+                      <li>
+                        <code>prediction</code> - Your model's prediction result
+                      </li>
+                    </ul>
+                    <div className="mt-2 p-2 bg-blue-100 dark:bg-blue-800 rounded text-xs">
+                      <p>
+                        <strong>Example:</strong>
+                      </p>
+                      <p>
+                        <code>file: inference_results.json</code>
+                      </p>
+                      <p>
+                        <code>
+                          user_id: (automatically extracted from authentication
+                          token)
+                        </code>
+                      </p>
+                      <p>
+                        <code>model_name: my-awesome-model</code>
+                      </p>
+                      <p>
+                        <code>challenge_id: {challengeId}</code>
+                      </p>
+                      <p>
+                        <code>
+                          description: This is a description of the submission
+                        </code>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -431,7 +461,7 @@ const Submission = () => {
                   submitMutation.isPending ||
                   !selectedFile ||
                   !modelName.trim() ||
-                  !teamName.trim() ||
+                  !description.trim() ||
                   !isAuthenticated
                 }
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200 flex items-center"

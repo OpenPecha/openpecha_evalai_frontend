@@ -15,9 +15,11 @@ import {
   Moon,
   Monitor,
   MessageCircle,
+  Plus,
 } from "lucide-react";
 import { useAuth0 } from "../hooks/useAuth0";
 import { useTheme } from "../hooks/useTheme";
+import { useCurrentUser } from "../hooks/useUsers";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -26,10 +28,19 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   const location = useLocation();
-  const { user, loginWithRedirect, logout, isAuthenticated, isLoading } =
-    useAuth0();
+  const {
+    user: auth0User,
+    loginWithRedirect,
+    logout,
+    isAuthenticated,
+    isLoading,
+  } = useAuth0();
   const { theme, setTheme } = useTheme();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  // Fetch additional user data from our API
+  const { data: currentUserData } = useCurrentUser();
+  const user = currentUserData?.data || auth0User; // Fallback to Auth0 user if API user not available
 
   const isActivePath = (path: string) => {
     return location.pathname === path;
@@ -194,6 +205,38 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
         </div>
       </div>
 
+      {/* Admin Section */}
+      {isAuthenticated && user?.role === "admin" && (
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          {isOpen && (
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+              Admin
+            </h2>
+          )}
+
+          <div
+            className={`${
+              isOpen ? "space-y-2" : "space-y-3 flex flex-col items-center"
+            }`}
+          >
+            <Link
+              to="/admin/create-challenge"
+              className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+                isOpen ? "px-3 py-2" : "p-2 justify-center"
+              } ${
+                isActivePath("/admin/create-challenge")
+                  ? "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-600 dark:border-green-400"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+              }`}
+              title={isOpen ? "" : "Create Challenge"}
+            >
+              <Plus className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+              {isOpen && "Create Challenge"}
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* User Section at Bottom */}
       <div
         className={`mt-auto border-t border-gray-200 dark:border-gray-700 ${
@@ -225,10 +268,10 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               } p-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200`}
             >
               <div className={`flex items-center ${isOpen ? "space-x-3" : ""}`}>
-                {user?.picture ? (
+                {user?.avatar ? (
                   <img
                     className="w-6 h-6 rounded-full object-cover"
-                    src={user.picture}
+                    src={user.avatar}
                     alt={user.name || "User avatar"}
                   />
                 ) : (

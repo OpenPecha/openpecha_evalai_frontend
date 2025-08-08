@@ -1,6 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { challengeApi } from "../api/challengeApi";
-import type { SubmissionRequest } from "../types/challenge";
+import { challengeApi } from "../api/challenge";
+import type {
+  SubmissionRequest,
+  ChallengeCreateRequest,
+  ChallengeUpdateRequest,
+  CategoryCreateRequest,
+  Category,
+  Challenge,
+} from "../types/challenge";
 
 // Query keys
 export const challengeKeys = {
@@ -17,6 +24,11 @@ export const challengeKeys = {
     [...challengeKeys.submissions(), challengeId, teamName] as const,
   submission: (id: string) =>
     [...challengeKeys.submissions(), "detail", id] as const,
+};
+
+export const categoryKeys = {
+  all: ["categories"] as const,
+  lists: () => [...categoryKeys.all, "list"] as const,
 };
 
 // Hooks for challenges
@@ -172,4 +184,157 @@ export const usePrefetchLeaderboard = () => {
       staleTime: 2 * 60 * 1000,
     });
   };
+};
+
+// Category hooks
+export const useCategories = () => {
+  return useQuery({
+    queryKey: categoryKeys.lists(),
+    queryFn: challengeApi.getCategories,
+    staleTime: 10 * 60 * 1000, // 10 minutes - categories don't change often
+    gcTime: 30 * 60 * 1000, // 30 minutes
+  });
+};
+
+// Admin challenge creation hooks
+export const useCreateChallenge = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (challengeData: ChallengeCreateRequest) =>
+      challengeApi.createChallenge(challengeData),
+    onSuccess: () => {
+      // Invalidate challenges list to show new challenge
+      queryClient.invalidateQueries({
+        queryKey: challengeKeys.lists(),
+      });
+    },
+    onError: (error) => {
+      console.error("Challenge creation failed:", error);
+    },
+  });
+};
+
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (categoryData: CategoryCreateRequest) =>
+      challengeApi.createCategory(categoryData),
+    onSuccess: () => {
+      // Invalidate categories list to show new category
+      queryClient.invalidateQueries({
+        queryKey: categoryKeys.lists(),
+      });
+    },
+    onError: (error) => {
+      console.error("Category creation failed:", error);
+    },
+  });
+};
+
+// Submission hooks
+export const useAllSubmissions = () => {
+  return useQuery({
+    queryKey: ["submissions", "all"],
+    queryFn: challengeApi.getAllSubmissions,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useMySubmissions = () => {
+  return useQuery({
+    queryKey: ["submissions", "my"],
+    queryFn: challengeApi.getMySubmissions,
+    staleTime: 1 * 60 * 1000, // 1 minute
+    gcTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useSubmissionById = (submissionId: string) => {
+  return useQuery({
+    queryKey: ["submissions", "detail", submissionId],
+    queryFn: () => challengeApi.getSubmissionById(submissionId),
+    enabled: !!submissionId,
+    staleTime: 1 * 60 * 1000, // 1 minute
+    gcTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useDeleteSubmission = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (submissionId: string) =>
+      challengeApi.deleteSubmission(submissionId),
+    onSuccess: () => {
+      // Invalidate submissions lists
+      queryClient.invalidateQueries({
+        queryKey: ["submissions"],
+      });
+    },
+    onError: (error) => {
+      console.error("Submission deletion failed:", error);
+    },
+  });
+};
+
+export const useLeaderboardResults = () => {
+  return useQuery({
+    queryKey: ["results", "leaderboard"],
+    queryFn: challengeApi.getLeaderboardResults,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Admin challenge management hooks
+export const useUpdateChallenge = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      challengeId,
+      updateData,
+    }: {
+      challengeId: string;
+      updateData: ChallengeUpdateRequest;
+    }) => challengeApi.updateChallenge(challengeId, updateData),
+    onSuccess: () => {
+      // Invalidate challenges list to show updated challenge
+      queryClient.invalidateQueries({
+        queryKey: challengeKeys.lists(),
+      });
+      // Also invalidate individual challenge queries
+      queryClient.invalidateQueries({
+        queryKey: challengeKeys.details(),
+      });
+    },
+    onError: (error) => {
+      console.error("Challenge update failed:", error);
+    },
+  });
+};
+
+export const useDeleteChallenge = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (challengeId: string) =>
+      challengeApi.deleteChallenge(challengeId),
+    onSuccess: () => {
+      // Invalidate challenges list to remove deleted challenge
+      queryClient.invalidateQueries({
+        queryKey: challengeKeys.lists(),
+      });
+      // Also invalidate leaderboards
+      queryClient.invalidateQueries({
+        queryKey: challengeKeys.leaderboards(),
+      });
+    },
+    onError: (error) => {
+      console.error("Challenge deletion failed:", error);
+    },
+  });
 };

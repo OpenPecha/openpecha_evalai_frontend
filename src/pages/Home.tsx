@@ -6,14 +6,19 @@ import {
   CheckCircle,
   Calendar,
   Users,
+  Edit,
 } from "lucide-react";
 import { useChallenges, usePrefetchLeaderboard } from "../hooks/useChallenges";
+import { useCurrentUser } from "../hooks/useUsers";
 
 const Home = () => {
   const { data: challengesResponse, isLoading, error } = useChallenges();
+  const { data: currentUserData } = useCurrentUser();
   const prefetchLeaderboard = usePrefetchLeaderboard();
 
   const challenges = challengesResponse?.data || [];
+  const user = currentUserData?.data;
+  const isAdmin = user?.role === "admin";
 
   const handleMouseEnter = (challengeId: string) => {
     // Prefetch leaderboard data on hover for better UX
@@ -186,6 +191,19 @@ const Home = () => {
                       </button>
                     )}
                   </div>
+
+                  {/* Admin Controls */}
+                  {isAdmin && (
+                    <div className="mt-3 flex space-x-2">
+                      <Link
+                        to={`/admin/edit-challenge/${challenge.id}`}
+                        className="flex-1 flex items-center justify-center px-3 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
