@@ -27,14 +27,10 @@ const ShareButton = ({
     onShare?.();
   };
 
-  const copyToClipboard = async (
-    text: string,
-    type: "url" | "iframe" = "url"
-  ) => {
+  const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      // Show different feedback based on what was copied
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
@@ -70,129 +66,124 @@ const ShareButton = ({
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Overlay */}
-            <button
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity border-0 p-0"
-              onClick={() => setIsModalOpen(false)}
-              aria-label="Close modal"
-            ></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Overlay */}
+          <button
+            className="fixed inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-50 border-0 p-0"
+            onClick={() => setIsModalOpen(false)}
+            aria-label="Close modal"
+          ></button>
 
-            {/* Modal */}
-            <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 sm:mx-0 sm:h-10 sm:w-10">
-                    <Share2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                      Share Leaderboard
-                    </h3>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Embed this leaderboard on your website or share the
-                        direct link.
-                      </p>
-                    </div>
-
-                    {/* Direct Link */}
-                    <div className="mt-4">
-                      <label
-                        htmlFor="directLink"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                      >
-                        Direct Link
-                      </label>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          id="directLink"
-                          type="text"
-                          value={embedUrl}
-                          readOnly
-                          onClick={() => copyToClipboard(embedUrl, "url")}
-                          className="flex-1 min-w-0 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
-                        />
-                        <button
-                          onClick={() => copyToClipboard(embedUrl, "url")}
-                          className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
-                        >
-                          {copied ? (
-                            <Check className="h-4 w-4" />
-                          ) : (
-                            <Copy className="h-4 w-4" />
-                          )}
-                        </button>
-                        <button
-                          onClick={openInNewTab}
-                          className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
-                          title="Open in new tab"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Embed Code - Main Feature */}
-                    <div className="mt-4">
-                      <label
-                        htmlFor="embedCode"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                      >
-                        Embed Code (Click to Copy)
-                      </label>
-                      <div className="relative">
-                        <textarea
-                          id="embedCode"
-                          value={iframeCode}
-                          readOnly
-                          rows={3}
-                          onClick={() => copyToClipboard(iframeCode, "iframe")}
-                          className="w-full px-3 py-2 text-sm border border-blue-300 dark:border-blue-600 rounded-md bg-blue-50 dark:bg-blue-900/20 text-gray-900 dark:text-white resize-none cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200"
-                        />
-                        <div className="absolute top-2 right-2 inline-flex items-center px-2 py-1 bg-blue-100 dark:bg-blue-800 border border-blue-300 dark:border-blue-600 shadow-sm text-xs leading-4 font-medium rounded text-blue-700 dark:text-blue-300">
-                          {copied ? (
-                            <>
-                              <Check className="h-3 w-3 mr-1" />
-                              Copied!
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-3 w-3 mr-1" />
-                              Click to Copy
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Usage Instructions */}
-                    <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                      <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">
-                        How to use:
-                      </h4>
-                      <ul className="text-xs text-blue-700 dark:text-blue-400 space-y-1">
-                        <li>
-                          • Copy the iframe code and paste it into your HTML
-                        </li>
-                        <li>• Adjust width and height as needed</li>
-                        <li>• The leaderboard will update automatically</li>
-                        <li>• Use the direct link to share with others</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200"
-                  onClick={() => setIsModalOpen(false)}
+          {/* YouTube-Style Modal */}
+          <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-96 max-w-[90vw] mx-4">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                Share
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Close
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-4">
+              {/* Share Options */}
+              <div className="flex justify-center space-x-6 mb-6">
+                <button
+                  onClick={() => copyToClipboard(iframeCode)}
+                  className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                >
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-2 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                    <svg
+                      className="w-6 h-6 text-blue-600 dark:text-blue-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Embed
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => copyToClipboard(embedUrl)}
+                  className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                >
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-2 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
+                    <Copy className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Copy link
+                  </span>
+                </button>
+
+                <button
+                  onClick={openInNewTab}
+                  className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                >
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-2 group-hover:bg-purple-200 dark:group-hover:bg-purple-800 transition-colors">
+                    <ExternalLink className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Open
+                  </span>
                 </button>
               </div>
+
+              {/* Link Input */}
+              <div className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                <input
+                  type="text"
+                  value={embedUrl}
+                  readOnly
+                  className="flex-1 bg-transparent text-sm text-gray-900 dark:text-white outline-none"
+                />
+                <button
+                  onClick={() => copyToClipboard(embedUrl)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200 flex items-center space-x-1"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Additional Info */}
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+                Click "Embed" to copy iframe code for websites
+              </p>
             </div>
           </div>
         </div>
