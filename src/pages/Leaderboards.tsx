@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Trophy, Users, ExternalLink, Crown, Medal, Award } from "lucide-react";
 import { useChallenges, useAllLeaderboards } from "../hooks/useChallenges";
+import ShareButton from "../components/ShareButton";
 
 const Leaderboards = () => {
   const {
@@ -236,6 +237,10 @@ const Leaderboards = () => {
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         {leaderboard.submissions.length} submissions
                       </span>
+                      <ShareButton
+                        challengeId={leaderboard.challengeId}
+                        challengeTitle={leaderboard.challengeTitle}
+                      />
                       <Link
                         to={`/leaderboard/${leaderboard.challengeId}`}
                         className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"

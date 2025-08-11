@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Chat from "./pages/Chat";
 import Leaderboard from "./pages/Leaderboard";
 import Leaderboards from "./pages/Leaderboards";
+import LeaderboardEmbed from "./pages/LeaderboardEmbed";
 import Submission from "./pages/Submission";
 import Profile from "./pages/Profile";
 import MySubmissions from "./pages/MySubmissions";
@@ -39,125 +40,146 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar - Always visible on desktop */}
-      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+      <Routes>
+        {/* Embed routes - no sidebar */}
+        <Route
+          path="/embed/leaderboard/:challengeId"
+          element={<LeaderboardEmbed />}
+        />
 
-      {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div className="fixed inset-0 z-20 lg:hidden">
-          <button
-            className="fixed inset-0 bg-black bg-opacity-50 border-0 p-0"
-            onClick={() => setIsSidebarOpen(false)}
-            aria-label="Close sidebar"
-          />
-        </div>
-      )}
+        {/* Regular app routes - with sidebar */}
+        <Route
+          path="/*"
+          element={
+            <>
+              {/* Sidebar - Always visible on desktop */}
+              <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
 
-      {/* Main Content Area */}
-      <div
-        className={`transition-all duration-300 ${
-          isSidebarOpen ? "lg:ml-64" : "lg:ml-16"
-        } ml-0`}
-      >
-        {/* Main Content */}
-        <main className="min-h-screen overflow-auto">
-          <Routes>
-            <Route
-              path="/login"
-              element={
-                <Suspense
-                  fallback={<FullScreenLoading message="Loading Login..." />}
-                >
-                  <Login />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/callback"
-              element={
-                <Suspense
-                  fallback={<FullScreenLoading message="Authenticating..." />}
-                >
-                  <Callback />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/"
-              element={
-                <div className="p-4 lg:p-6">
-                  <Home />
+              {/* Mobile Sidebar Overlay */}
+              {isSidebarOpen && (
+                <div className="fixed inset-0 z-20 lg:hidden">
+                  <button
+                    className="fixed inset-0 bg-black bg-opacity-50 border-0 p-0"
+                    onClick={() => setIsSidebarOpen(false)}
+                    aria-label="Close sidebar"
+                  />
                 </div>
-              }
-            />
-            <Route path="/chat" element={<Chat />} />
-            <Route
-              path="/leaderboards"
-              element={
-                <div className="p-4 lg:p-6">
-                  <Leaderboards />
-                </div>
-              }
-            />
-            <Route
-              path="/leaderboard/:challengeId"
-              element={
-                <div className="p-4 lg:p-6">
-                  <Leaderboard />
-                </div>
-              }
-            />
-            <Route
-              path="/submit/:challengeId"
-              element={
-                <div className="p-4 lg:p-6">
-                  <Submission />
-                </div>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <div className="p-4 lg:p-6">
-                  <Profile />
-                </div>
-              }
-            />
-            <Route
-              path="/my-submissions"
-              element={
-                <div className="p-4 lg:p-6">
-                  <MySubmissions />
-                </div>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <div className="p-4 lg:p-6">
-                  <Settings />
-                </div>
-              }
-            />
-            <Route
-              path="/admin/create-challenge"
-              element={
-                <div className="p-4 lg:p-6">
-                  <CreateChallenge />
-                </div>
-              }
-            />
-            <Route
-              path="/admin/edit-challenge/:challengeId"
-              element={
-                <div className="p-4 lg:p-6">
-                  <EditChallenge />
-                </div>
-              }
-            />
-          </Routes>
-        </main>
-      </div>
+              )}
+
+              {/* Main Content Area */}
+              <div
+                className={`transition-all duration-300 ${
+                  isSidebarOpen ? "lg:ml-64" : "lg:ml-16"
+                } ml-0`}
+              >
+                {/* Main Content */}
+                <main className="min-h-screen overflow-auto">
+                  <Routes>
+                    <Route
+                      path="/login"
+                      element={
+                        <Suspense
+                          fallback={
+                            <FullScreenLoading message="Loading Login..." />
+                          }
+                        >
+                          <Login />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="/callback"
+                      element={
+                        <Suspense
+                          fallback={
+                            <FullScreenLoading message="Authenticating..." />
+                          }
+                        >
+                          <Callback />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="/"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <Home />
+                        </div>
+                      }
+                    />
+                    <Route path="/chat" element={<Chat />} />
+                    <Route
+                      path="/leaderboards"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <Leaderboards />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/leaderboard/:challengeId"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <Leaderboard />
+                        </div>
+                      }
+                    />
+
+                    <Route
+                      path="/submit/:challengeId"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <Submission />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <Profile />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/my-submissions"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <MySubmissions />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/settings"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <Settings />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/admin/create-challenge"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <CreateChallenge />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/admin/edit-challenge/:challengeId"
+                      element={
+                        <div className="p-4 lg:p-6">
+                          <EditChallenge />
+                        </div>
+                      }
+                    />
+                  </Routes>
+                </main>
+              </div>
+            </>
+          }
+        />
+      </Routes>
     </div>
   );
 };

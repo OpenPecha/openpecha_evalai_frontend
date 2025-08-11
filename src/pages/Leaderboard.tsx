@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Medal, Trophy, Users, Calendar, Edit } from "lucide-react";
 import { useLeaderboard, useChallenge } from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
+import ShareButton from "../components/ShareButton";
 
 const getRankIcon = (rank: number) => {
   switch (rank) {
@@ -140,9 +141,15 @@ const Leaderboard = () => {
                 </h1>
                 <p className="text-blue-100 mb-4">{challenge.description}</p>
               </div>
-              {/* Admin Controls */}
-              {isAdmin && (
-                <div className="flex space-x-2">
+              {/* Admin Controls & Share Button */}
+              <div className="flex space-x-2">
+                <ShareButton
+                  challengeId={challengeId || ""}
+                  challengeTitle={
+                    challenge.title || challenge.name || "Leaderboard"
+                  }
+                />
+                {isAdmin && (
                   <Link
                     to={`/admin/edit-challenge/${challengeId}`}
                     className="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors duration-200"
@@ -150,8 +157,8 @@ const Leaderboard = () => {
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Challenge
                   </Link>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             <div className="flex flex-wrap items-center space-x-6 text-sm">
               <div className="flex items-center">
