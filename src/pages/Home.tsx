@@ -155,18 +155,13 @@ const Home = () => {
                     {challenge.description}
                   </p>
 
-                  {/* Stats */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">
-                    <div className="flex items-center">
-                      <Users className="w-3 h-3 mr-1" />
-                      <span>{challenge.totalSubmissions || 0}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Trophy className="w-3 h-3 mr-1" />
-                      <span className="truncate max-w-20">
-                        {challenge.evaluationMetric || "Score"}
-                      </span>
-                    </div>
+                  {/* Created Date */}
+                  <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+                    <Calendar className="w-3 h-3 mr-1" />
+                    <span>
+                      Created{" "}
+                      {new Date(challenge.created_at).toLocaleDateString()}
+                    </span>
                   </div>
 
                   {/* Action Buttons */}

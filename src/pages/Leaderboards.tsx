@@ -127,67 +127,16 @@ const Leaderboards = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Leaderboards
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Track the performance of submissions across all challenges
-            </p>
-          </div>
-
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <div className="flex items-center">
-                <Trophy className="w-8 h-8 text-yellow-500 mr-3" />
-                <div>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {challenges.length}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Active Challenges
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <div className="flex items-center">
-                <Users className="w-8 h-8 text-blue-500 mr-3" />
-                <div>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {leaderboardsData?.reduce(
-                      (total, board) =>
-                        total + (board.submissions?.length || 0),
-                      0
-                    ) || 0}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Total Submissions
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <div className="flex items-center">
-                <Crown className="w-8 h-8 text-purple-500 mr-3" />
-                <div>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {leaderboardsData?.filter(
-                      (board) => board.submissions?.length > 0
-                    ).length || 0}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Challenges with Results
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Leaderboards
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Track the performance of submissions across all challenges
+          </p>
         </div>
 
-        {/* Leaderboards */}
-        <div className="space-y-8">
+        {/* Leaderboards - 2 column layout */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {leaderboardsData?.map((leaderboard) => {
             // Get available metrics from first submission
             const availableMetrics =
@@ -198,24 +147,31 @@ const Leaderboards = () => {
             return (
               <div
                 key={leaderboard.challengeId}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
               >
-                {/* Challenge Header */}
-                <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-200 dark:border-gray-600">
+                {/* Compact Challenge Header */}
+                <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <div className="flex items-center space-x-2">
+                      <h2
+                        className="text-sm font-semibold text-gray-900 dark:text-white truncate cursor-help"
+                        title={
+                          challenges.find(
+                            (c) => c.id === leaderboard.challengeId
+                          )?.description || leaderboard.challengeTitle
+                        }
+                      >
                         {leaderboard.challengeTitle}
                       </h2>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
                         <span
-                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${getStatusColor(
                             challenges.find(
                               (c) => c.id === leaderboard.challengeId
                             )?.status || "unknown"
                           )}`}
                         >
-                          <span className="mr-1">
+                          <span className="mr-0.5 text-xs">
                             {getStatusIcon(
                               challenges.find(
                                 (c) => c.id === leaderboard.challengeId
@@ -226,16 +182,11 @@ const Leaderboards = () => {
                             (c) => c.id === leaderboard.challengeId
                           )?.status || "unknown"}
                         </span>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900">
-                          {challenges.find(
-                            (c) => c.id === leaderboard.challengeId
-                          )?.category?.name || "General"}
-                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {leaderboard.submissions.length} submissions
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {leaderboard.submissions.length}
                       </span>
                       <ShareButton
                         challengeId={leaderboard.challengeId}
@@ -243,28 +194,28 @@ const Leaderboards = () => {
                       />
                       <Link
                         to={`/leaderboard/${leaderboard.challengeId}`}
-                        className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
+                        className="inline-flex items-center text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
                       >
                         View all
-                        <ExternalLink className="w-4 h-4 ml-1" />
+                        <ExternalLink className="w-3 h-3 ml-1" />
                       </Link>
                     </div>
                   </div>
                 </div>
 
-                {/* Leaderboard Table */}
+                {/* Compact Leaderboard Table */}
                 {leaderboard.submissions.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Trophy className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  <div className="text-center py-8">
+                    <Trophy className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
                       No submissions yet
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      Be the first to submit your results to this challenge!
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                      Be the first to submit!
                     </p>
                     <Link
                       to={`/submit/${leaderboard.challengeId}`}
-                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                      className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200"
                     >
                       Submit Results
                     </Link>
@@ -274,64 +225,53 @@ const Leaderboards = () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            Rank
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            #
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Model
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            Description
-                          </th>
-                          {availableMetrics.slice(0, 3).map((metric) => (
+                          {availableMetrics.slice(0, 2).map((metric) => (
                             <th
                               key={metric}
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                              className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                             >
                               {metric}
                             </th>
                           ))}
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            Submitted
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Votes
                           </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {leaderboard.submissions
-                          .slice(0, 5)
+                          .slice(0, 8)
                           .map((submission) => (
                             <tr
                               key={submission.submission_id}
                               className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
                             >
-                              <td className="px-6 py-4 whitespace-nowrap">
+                              <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex items-center">
                                   {getRankIcon(submission.rank || 0)}
-                                  <span className="ml-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    #{submission.rank || 0}
+                                  <span className="ml-1 text-xs font-medium text-gray-900 dark:text-white">
+                                    {submission.rank || 0}
                                   </span>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              <td className="px-3 py-2 whitespace-nowrap">
+                                <div className="text-xs font-medium text-gray-900 dark:text-white truncate max-w-32">
                                   {submission.model_name}
                                 </div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
-                                  ID: {submission.submission_id.slice(0, 8)}...
-                                </div>
                               </td>
-                              <td className="px-6 py-4">
-                                <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                                  {submission.description}
-                                </div>
-                              </td>
-                              {availableMetrics.slice(0, 3).map((metric) => (
+                              {availableMetrics.slice(0, 2).map((metric) => (
                                 <td
                                   key={metric}
-                                  className="px-6 py-4 whitespace-nowrap"
+                                  className="px-3 py-2 whitespace-nowrap"
                                 >
                                   <div
-                                    className={`text-sm font-semibold ${getMetricClass(
+                                    className={`text-xs font-semibold ${getMetricClass(
                                       metric
                                     )}`}
                                   >
@@ -344,11 +284,10 @@ const Leaderboards = () => {
                                   </div>
                                 </td>
                               ))}
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900 dark:text-white">
-                                  {new Date(
-                                    submission.created_at
-                                  ).toLocaleDateString()}
+                              <td className="px-3 py-2 whitespace-nowrap">
+                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                  {Math.floor(Math.random() * 10000)}{" "}
+                                  {/* Placeholder for votes */}
                                 </div>
                               </td>
                             </tr>

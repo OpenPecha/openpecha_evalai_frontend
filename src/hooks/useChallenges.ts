@@ -5,8 +5,6 @@ import type {
   ChallengeCreateRequest,
   ChallengeUpdateRequest,
   CategoryCreateRequest,
-  Category,
-  Challenge,
 } from "../types/challenge";
 
 // Query keys
@@ -94,20 +92,17 @@ export const useSubmitToChallenge = () => {
     onSuccess: (_, variables) => {
       // Invalidate and refetch leaderboard
       queryClient.invalidateQueries({
-        queryKey: challengeKeys.leaderboard(variables.challengeId),
+        queryKey: challengeKeys.leaderboard(variables.challenge_id),
       });
 
-      // Invalidate user submissions
+      // Invalidate user submissions (Note: teamName doesn't exist in SubmissionRequest)
       queryClient.invalidateQueries({
-        queryKey: challengeKeys.userSubmissions(
-          variables.challengeId,
-          variables.teamName
-        ),
+        queryKey: challengeKeys.userSubmissions(variables.challenge_id),
       });
 
       // Update challenge data (increment submission count)
       queryClient.invalidateQueries({
-        queryKey: challengeKeys.detail(variables.challengeId),
+        queryKey: challengeKeys.detail(variables.challenge_id),
       });
     },
     onError: (error) => {
@@ -130,7 +125,15 @@ export const usePrefetchChallenge = () => {
 };
 
 // Hook to fetch leaderboard data for all challenges
-export const useAllLeaderboards = (challenges: any[] = []) => {
+export const useAllLeaderboards = (
+  challenges: Array<{
+    id: string;
+    title?: string;
+    name?: string;
+    category?: { name?: string };
+    status?: string;
+  }> = []
+) => {
   return useQuery({
     queryKey: [...challengeKeys.leaderboards(), "all"],
     queryFn: async () => {
@@ -280,12 +283,16 @@ export const useDeleteSubmission = () => {
   });
 };
 
+// Deprecated: Use individual challenge leaderboard hooks instead
 export const useLeaderboardResults = () => {
+  console.warn(
+    "useLeaderboardResults is deprecated. Use useLeaderboard(challengeId) instead."
+  );
   return useQuery({
-    queryKey: ["results", "leaderboard"],
-    queryFn: challengeApi.getLeaderboardResults,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    queryKey: ["results", "leaderboard", "deprecated"],
+    queryFn: () =>
+      Promise.resolve({ data: [], message: "Deprecated", success: false }),
+    enabled: false, // Disable this query
   });
 };
 

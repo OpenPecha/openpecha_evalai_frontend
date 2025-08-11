@@ -124,7 +124,10 @@ const LeaderboardEmbed = () => {
                   className="px-6 py-4 text-left"
                 >
                   <div className="text-white">
-                    <h1 className="text-lg font-bold mb-1">
+                    <h1
+                      className="text-lg font-bold mb-1 cursor-help"
+                      title={challenge.description}
+                    >
                       {challenge.title || challenge.name}
                     </h1>
                     <div className="flex flex-wrap items-center gap-4 text-sm">

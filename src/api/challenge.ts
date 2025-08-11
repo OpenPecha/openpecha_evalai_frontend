@@ -132,21 +132,27 @@ export const challengeApi = {
     }
   },
 
-  // Get leaderboard for a challenge
+  // Get leaderboard for a challenge using the new endpoint
   getLeaderboard: async (
     challengeId: string,
     page: number = 1,
     limit: number = 10
   ): Promise<PaginatedResponse<LeaderboardEntry>> => {
     try {
-      // Get all results first
-      const resultsResponse = await challengeApi.getLeaderboardResults();
-      const allResults = resultsResponse.data;
-
-      // Filter results for this challenge and group by submission
-      const challengeResults = allResults.filter(
-        (result) => result.submission && result.submission.id
+      const response = await fetch(
+        `${API_BASE_URL}/results/challenge/${challengeId}`,
+        {
+          headers: {
+            accept: "application/json",
+          },
+        }
       );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const challengeResults: LeaderboardResult[] = await response.json();
 
       // Group results by submission_id
       const submissionGroups: { [key: string]: LeaderboardResult[] } = {};
@@ -182,16 +188,18 @@ export const challengeApi = {
       });
 
       // Sort by primary metric (CER if available, otherwise first metric)
-      const sortedEntries = leaderboardEntries.sort((a, b) => {
-        const aScore =
-          a.metrics.CER ?? a.metrics[Object.keys(a.metrics)[0]] ?? Infinity;
-        const bScore =
-          b.metrics.CER ?? b.metrics[Object.keys(b.metrics)[0]] ?? Infinity;
-        return aScore - bScore; // Lower is better for CER
-      });
+      const sortedEntries = [...leaderboardEntries].sort(
+        (a: LeaderboardEntry, b: LeaderboardEntry) => {
+          const aScore =
+            a.metrics.CER ?? a.metrics[Object.keys(a.metrics)[0]] ?? Infinity;
+          const bScore =
+            b.metrics.CER ?? b.metrics[Object.keys(b.metrics)[0]] ?? Infinity;
+          return aScore - bScore; // Lower is better for CER
+        }
+      );
 
       // Add rank
-      sortedEntries.forEach((entry, index) => {
+      sortedEntries.forEach((entry: LeaderboardEntry, index: number) => {
         entry.rank = index + 1;
       });
 
@@ -542,7 +550,7 @@ export const challengeApi = {
     }
   },
 
-  // Get leaderboard results
+  // Get leaderboard results (deprecated - use individual challenge endpoints)
   getLeaderboardResults: async (): Promise<
     ApiResponse<LeaderboardResult[]>
   > => {
@@ -575,97 +583,20 @@ export const challengeApi = {
     }
   },
 
-  // Get all leaderboard data and process it for display
+  // Get all leaderboard data and process it for display (deprecated - use individual challenge endpoints)
   getAllLeaderboards: async (): Promise<
     ApiResponse<{ [challengeId: string]: LeaderboardEntry[] }>
   > => {
-    try {
-      const resultsResponse = await challengeApi.getLeaderboardResults();
-      const allResults = resultsResponse.data;
+    console.warn(
+      "getAllLeaderboards is deprecated. Use individual challenge endpoints via useAllLeaderboards hook instead."
+    );
 
-      // Group results by challenge (need to identify challenge from submission data)
-      const challengeGroups: {
-        [challengeId: string]: { [submissionId: string]: LeaderboardResult[] };
-      } = {};
-
-      allResults.forEach((result) => {
-        if (result.submission) {
-          // For now, we'll group all results together since challenge_id isn't directly available
-          // In a real scenario, you might need to fetch challenge info from submissions
-          const challengeId = "all"; // Placeholder - you might need to get this from submission data
-
-          if (!challengeGroups[challengeId]) {
-            challengeGroups[challengeId] = {};
-          }
-
-          const submissionId = result.submission_id;
-          if (!challengeGroups[challengeId][submissionId]) {
-            challengeGroups[challengeId][submissionId] = [];
-          }
-          challengeGroups[challengeId][submissionId].push(result);
-        }
-      });
-
-      // Convert to leaderboard entries for each challenge
-      const processedLeaderboards: {
-        [challengeId: string]: LeaderboardEntry[];
-      } = {};
-
-      Object.entries(challengeGroups).forEach(
-        ([challengeId, submissionGroups]) => {
-          const leaderboardEntries: LeaderboardEntry[] = Object.values(
-            submissionGroups
-          ).map((results) => {
-            const firstResult = results[0];
-            const submission = firstResult.submission;
-
-            // Aggregate metrics for this submission
-            const metrics: { [key: string]: number } = {};
-            results.forEach((result) => {
-              metrics[result.type] = result.score;
-            });
-
-            return {
-              submission_id: submission.id,
-              model_name: submission.model.name,
-              user_id: submission.user_id,
-              description: submission.description,
-              created_at: submission.created_at,
-              metrics,
-            };
-          });
-
-          // Sort by primary metric (CER if available, otherwise first metric)
-          const sortedEntries = leaderboardEntries.sort((a, b) => {
-            const aScore =
-              a.metrics.CER ?? a.metrics[Object.keys(a.metrics)[0]] ?? Infinity;
-            const bScore =
-              b.metrics.CER ?? b.metrics[Object.keys(b.metrics)[0]] ?? Infinity;
-            return aScore - bScore; // Lower is better for CER
-          });
-
-          // Add rank
-          sortedEntries.forEach((entry, index) => {
-            entry.rank = index + 1;
-          });
-
-          processedLeaderboards[challengeId] = sortedEntries;
-        }
-      );
-
-      return {
-        data: processedLeaderboards,
-        message: "All leaderboards fetched successfully",
-        success: true,
-      };
-    } catch (error) {
-      console.error("Error fetching all leaderboards:", error);
-      throw new Error(
-        error instanceof Error
-          ? error.message
-          : "Failed to fetch all leaderboards"
-      );
-    }
+    // Return empty data to avoid breaking existing code
+    return {
+      data: {},
+      message: "Function deprecated - use individual challenge endpoints",
+      success: false,
+    };
   },
 
   // Update challenge

@@ -89,11 +89,11 @@ const Leaderboard = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-6">
             <Link
-              to="/"
+              to="/leaderboards"
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Challenges
+              Back to Leaderboards
             </Link>
           </div>
           <div className="text-center">
@@ -123,11 +123,11 @@ const Leaderboard = () => {
         {/* Header */}
         <div className="mb-6">
           <Link
-            to="/"
+            to="/leaderboards"
             className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Challenges
+            Back to Leaderboards
           </Link>
         </div>
 
