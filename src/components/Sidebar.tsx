@@ -16,6 +16,7 @@ import {
   Monitor,
   MessageCircle,
   Plus,
+  BookOpen,
 } from "lucide-react";
 import { useAuth0 } from "../hooks/useAuth0";
 import { useTheme } from "../hooks/useTheme";
@@ -204,6 +205,22 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             <BarChart3 className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
             {isOpen && "Leaderboards"}
           </Link>
+
+          {/* Documentation Link */}
+          <a
+            href={`${
+              import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"
+            }/documentation`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+              isOpen ? "px-3 py-2" : "p-2 justify-center"
+            } text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700`}
+            title={isOpen ? "" : "API Documentation"}
+          >
+            <BookOpen className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+            {isOpen && "Documentation"}
+          </a>
         </div>
       </div>
 
