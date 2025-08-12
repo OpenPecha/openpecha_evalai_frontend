@@ -172,10 +172,17 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                 ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-400"
                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
             }`}
-            title={isOpen ? "" : "Chat"}
+            title={isOpen ? "" : "Chat (Coming Soon)"}
           >
             <MessageCircle className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
-            {isOpen && "Chat"}
+            {isOpen && (
+              <div className="flex items-center justify-between w-full">
+                <span>Chat</span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+                  Soon
+                </span>
+              </div>
+            )}
           </Link>
 
           {/* Challenges Link */}
