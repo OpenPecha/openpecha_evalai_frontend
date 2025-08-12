@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useToast } from "../components/ToastContainer";
 import {
   ArrowLeft,
   Upload,
@@ -15,6 +16,7 @@ const Submission = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
+  const { success } = useToast();
 
   const {
     data: challengeResponse,
@@ -99,15 +101,17 @@ const Submission = () => {
         description: description.trim(),
       });
 
+      // Show success toast
+      success(
+        "Submission successful! 🎉",
+        "Your results are being processed and may take up to 15 minutes to reflect on the leaderboard.",
+        7000 // Show for 7 seconds
+      );
+
       // Reset form
       setSelectedFile(null);
       setModelName("");
       setDescription("");
-
-      // Navigate to leaderboard after successful submission
-      setTimeout(() => {
-        navigate(`/leaderboard/${challengeId}`);
-      }, 2000);
     } catch (error) {
       console.error("Submission failed:", error);
     }
@@ -134,7 +138,7 @@ const Submission = () => {
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-6">
             <Link
-              to="/"
+              to="/challenges"
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -164,7 +168,7 @@ const Submission = () => {
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-6">
             <Link
-              to="/"
+              to="/challenges"
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -482,16 +486,6 @@ const Submission = () => {
             </div>
 
             {/* Status Messages */}
-            {submitMutation.isSuccess && (
-              <div className="flex items-center p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
-                <p className="text-green-800 dark:text-green-400">
-                  Submission successful! Your results are being processed and
-                  will appear on the leaderboard soon. Redirecting to
-                  leaderboard...
-                </p>
-              </div>
-            )}
 
             {submitMutation.isError && (
               <div className="flex items-center p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">

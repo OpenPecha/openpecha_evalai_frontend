@@ -1,8 +1,21 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Medal, Trophy, Users, Calendar, Edit } from "lucide-react";
-import { useLeaderboard, useChallenge } from "../hooks/useChallenges";
+import {
+  ArrowLeft,
+  Medal,
+  Trophy,
+  Users,
+  Calendar,
+  Edit,
+  Trash2,
+} from "lucide-react";
+import {
+  useLeaderboard,
+  useChallenge,
+  useDeleteSubmission,
+} from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
+import { useToast } from "../components/ToastContainer";
 
 const getRankIcon = (rank: number) => {
   switch (rank) {
@@ -49,6 +62,8 @@ const getMetricClass = (metric: string) => {
 const Leaderboard = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
   const { data: currentUserData } = useCurrentUser();
+  const deleteSubmissionMutation = useDeleteSubmission();
+  const { success } = useToast();
 
   const {
     data: leaderboardResponse,
@@ -67,6 +82,30 @@ const Leaderboard = () => {
   const pagination = leaderboardResponse?.pagination;
   const user = currentUserData?.data;
   const isAdmin = user?.role === "admin";
+
+  const handleDeleteSubmission = async (submissionId: string) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this submission? This action cannot be undone."
+      )
+    ) {
+      try {
+        await deleteSubmissionMutation.mutateAsync({
+          submissionId,
+          challengeId: challengeId || "",
+        });
+        // Show success toast
+        success(
+          "Submission deleted successfully! ✅",
+          "The submission has been removed from the leaderboard.",
+          4000
+        );
+      } catch (error) {
+        console.error("Failed to delete submission:", error);
+        alert("Failed to delete submission. Please try again.");
+      }
+    }
+  };
 
   if (challengeLoading || leaderboardLoading) {
     return (
@@ -232,6 +271,11 @@ const Leaderboard = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Submitted
                     </th>
+                    {isAdmin && (
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -285,6 +329,23 @@ const Leaderboard = () => {
                           {new Date(submission.created_at).toLocaleTimeString()}
                         </div>
                       </td>
+                      {isAdmin && (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={() =>
+                              handleDeleteSubmission(submission.submission_id)
+                            }
+                            disabled={deleteSubmissionMutation.isPending}
+                            className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Delete submission"
+                          >
+                            <Trash2 className="w-3 h-3 mr-1" />
+                            {deleteSubmissionMutation.isPending
+                              ? "Deleting..."
+                              : "Delete"}
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

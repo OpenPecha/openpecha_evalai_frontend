@@ -48,7 +48,11 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   };
 
   const isLeaderboardPath = () => {
-    return location.pathname.startsWith("/leaderboard");
+    return (
+      location.pathname.startsWith("/leaderboard") ||
+      location.pathname === "/" ||
+      location.pathname === "/leaderboards"
+    );
   };
 
   const handleLogin = () => {
@@ -176,11 +180,11 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
 
           {/* Challenges Link */}
           <Link
-            to="/"
+            to="/challenges"
             className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
               isOpen ? "px-3 py-2" : "p-2 justify-center"
             } ${
-              isActivePath("/")
+              isActivePath("/challenges")
                 ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600"
                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
             }`}

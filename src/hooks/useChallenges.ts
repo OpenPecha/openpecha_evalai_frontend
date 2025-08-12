@@ -269,12 +269,37 @@ export const useDeleteSubmission = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (submissionId: string) =>
-      challengeApi.deleteSubmission(submissionId),
-    onSuccess: () => {
+    mutationFn: ({
+      submissionId,
+    }: {
+      submissionId: string;
+      challengeId?: string;
+    }) => challengeApi.deleteSubmission(submissionId),
+    onSuccess: (_, variables) => {
       // Invalidate submissions lists
       queryClient.invalidateQueries({
         queryKey: ["submissions"],
+      });
+
+      // If we have a specific challenge ID, invalidate and refetch its leaderboard immediately
+      if (variables.challengeId) {
+        queryClient.invalidateQueries({
+          queryKey: challengeKeys.leaderboard(variables.challengeId),
+        });
+        // Force immediate refetch for better UX
+        queryClient.refetchQueries({
+          queryKey: challengeKeys.leaderboard(variables.challengeId),
+        });
+      }
+
+      // Invalidate all leaderboard queries to ensure UI updates everywhere
+      queryClient.invalidateQueries({
+        queryKey: challengeKeys.leaderboards(),
+      });
+
+      // Force refetch of combined leaderboards
+      queryClient.refetchQueries({
+        queryKey: [...challengeKeys.leaderboards(), "all"],
       });
     },
     onError: (error) => {
