@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRoute";
 import {
@@ -9,61 +9,18 @@ import {
   CheckCircle,
   XCircle,
   Filter,
+  AlertCircle,
 } from "lucide-react";
-
-// Mock data - in a real app this would come from an API
-const mockUserSubmissions = [
-  {
-    id: "1",
-    challengeId: "ocr-tibetan",
-    challengeName: "Tibetan OCR Challenge",
-    modelName: "MyTibetanOCR-v1.0",
-    cer: 0.067,
-    accuracy: 0.933,
-    f1Score: 0.941,
-    rank: 3,
-    submissionDate: "2024-01-15T10:30:00Z",
-    status: "evaluated",
-    fileName: "my_ocr_results.json",
-    fileSize: 2048,
-  },
-  {
-    id: "2",
-    challengeId: "nlp-sentiment",
-    challengeName: "Sentiment Analysis Challenge",
-    modelName: "SentimentAnalyzer-v2.1",
-    cer: 0.092,
-    accuracy: 0.908,
-    f1Score: 0.915,
-    rank: 4,
-    submissionDate: "2024-01-18T14:22:00Z",
-    status: "evaluated",
-    fileName: "sentiment_results.json",
-    fileSize: 1567,
-  },
-  {
-    id: "3",
-    challengeId: "ocr-tibetan",
-    challengeName: "Tibetan OCR Challenge",
-    modelName: "MyTibetanOCR-v2.0",
-    cer: 0.0,
-    accuracy: 0.0,
-    f1Score: 0.0,
-    rank: 0,
-    submissionDate: "2024-01-20T09:15:00Z",
-    status: "processing",
-    fileName: "ocr_v2_results.json",
-    fileSize: 2234,
-  },
-];
+import { useUserSubmissions, useChallenges } from "../hooks/useChallenges";
+import type { UserSubmission } from "../types/challenge";
 
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case "evaluated":
+    case "completed":
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400">
           <CheckCircle className="w-3 h-3 mr-1" />
-          Evaluated
+          Completed
         </span>
       );
     case "processing":
@@ -71,6 +28,13 @@ const getStatusBadge = (status: string) => {
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400">
           <Clock className="w-3 h-3 mr-1" />
           Processing
+        </span>
+      );
+    case "pending":
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400">
+          <Clock className="w-3 h-3 mr-1" />
+          Pending
         </span>
       );
     case "failed":
@@ -93,7 +57,31 @@ const MySubmissions = () => {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("date");
 
-  const filteredSubmissions = mockUserSubmissions
+  // Fetch user submissions from API
+  const {
+    data: submissionsResponse,
+    isLoading: submissionsLoading,
+    error: submissionsError,
+  } = useUserSubmissions();
+
+  // Fetch challenges to get challenge names
+  const { data: challengesResponse, isLoading: challengesLoading } =
+    useChallenges();
+
+  const submissions = (submissionsResponse?.data || []) as UserSubmission[];
+
+  // Create a map of challenge IDs to challenge names for quick lookup
+  const challengeMap = useMemo(() => {
+    const challenges = challengesResponse?.data || [];
+    const map: Record<string, string> = {};
+    challenges.forEach((challenge) => {
+      map[challenge.id] =
+        challenge.title || challenge.name || "Unknown Challenge";
+    });
+    return map;
+  }, [challengesResponse?.data]);
+
+  const filteredSubmissions = submissions
     .filter((submission) => {
       if (filterStatus === "all") return true;
       return submission.status === filterStatus;
@@ -102,13 +90,8 @@ const MySubmissions = () => {
       switch (sortBy) {
         case "date":
           return (
-            new Date(b.submissionDate).getTime() -
-            new Date(a.submissionDate).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           );
-        case "rank":
-          return (a.rank || 999) - (b.rank || 999);
-        case "score":
-          return a.cer - b.cer;
         default:
           return 0;
       }
@@ -147,8 +130,9 @@ const MySubmissions = () => {
                     className="ml-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All</option>
-                    <option value="evaluated">Evaluated</option>
+                    <option value="pending">Pending</option>
                     <option value="processing">Processing</option>
+                    <option value="completed">Completed</option>
                     <option value="failed">Failed</option>
                   </select>
                 </div>
@@ -167,8 +151,6 @@ const MySubmissions = () => {
                     className="ml-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="date">Date</option>
-                    <option value="rank">Rank</option>
-                    <option value="score">Score</option>
                   </select>
                 </div>
               </div>
@@ -180,8 +162,38 @@ const MySubmissions = () => {
             </div>
           </div>
 
+          {/* Loading State */}
+          {(submissionsLoading || challengesLoading) && (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">
+                Loading your submissions...
+              </p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {submissionsError && !submissionsLoading && (
+            <div className="text-center py-12">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md mx-auto">
+                <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-2">
+                  Error Loading Submissions
+                </h3>
+                <p className="text-red-600 dark:text-red-400 text-sm">
+                  {submissionsError instanceof Error
+                    ? submissionsError.message
+                    : "Failed to load your submissions. Please try again later."}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Submissions List */}
-          {filteredSubmissions.length > 0 ? (
+          {!submissionsLoading &&
+          !challengesLoading &&
+          !submissionsError &&
+          filteredSubmissions.length > 0 ? (
             <div className="space-y-4">
               {filteredSubmissions.map((submission) => (
                 <div
@@ -193,86 +205,75 @@ const MySubmissions = () => {
                       <div className="flex items-center space-x-3 mb-3">
                         <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                          {submission.modelName}
+                          {submission.description ||
+                            `Submission ${submission.id.slice(0, 8)}`}
                         </h3>
                         {getStatusBadge(submission.status)}
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         <div>
                           <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
                             Challenge
                           </p>
                           <Link
-                            to={`/leaderboard/${submission.challengeId}`}
+                            to={`/leaderboard/${submission.challenge_id}`}
                             className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                           >
-                            {submission.challengeName}
+                            {challengeMap[submission.challenge_id] ||
+                              "Unknown Challenge"}
                           </Link>
                         </div>
 
-                        {submission.status === "evaluated" && (
-                          <>
-                            <div>
+                        <div>
+                          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                            Dataset URL
+                          </p>
+                          <p className="font-medium text-gray-900 dark:text-white text-xs break-all">
+                            {submission.dataset_url ? (
+                              <a
+                                href={submission.dataset_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                {submission.dataset_url.length > 30
+                                  ? `${submission.dataset_url.slice(0, 30)}...`
+                                  : submission.dataset_url}
+                              </a>
+                            ) : (
+                              "N/A"
+                            )}
+                          </p>
+                        </div>
+
+                        {(submission.status === "processing" ||
+                          submission.status === "pending") &&
+                          submission.status_message && (
+                            <div className="md:col-span-2">
                               <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
-                                Rank
+                                Status Message
                               </p>
-                              <p className="font-medium text-gray-900 dark:text-white">
-                                {submission.rank
-                                  ? `#${submission.rank}`
-                                  : "N/A"}
+                              <p className="font-medium text-yellow-600 dark:text-yellow-400">
+                                {submission.status_message ||
+                                  "Your submission is being processed..."}
                               </p>
                             </div>
-
-                            <div>
-                              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
-                                Score
-                              </p>
-                              <p className="font-medium text-gray-900 dark:text-white">
-                                {(submission.cer * 100).toFixed(2)}%
-                              </p>
-                            </div>
-
-                            <div>
-                              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
-                                Accuracy
-                              </p>
-                              <p className="font-medium text-gray-900 dark:text-white">
-                                {submission.accuracy
-                                  ? `${(submission.accuracy * 100).toFixed(2)}%`
-                                  : "N/A"}
-                              </p>
-                            </div>
-                          </>
-                        )}
-
-                        {submission.status === "processing" && (
-                          <div className="md:col-span-3">
-                            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
-                              Processing
-                            </p>
-                            <p className="font-medium text-yellow-600 dark:text-yellow-400">
-                              Your submission is being evaluated...
-                            </p>
-                          </div>
-                        )}
+                          )}
                       </div>
                     </div>
 
                     <div className="mt-4 lg:mt-0 lg:ml-6 flex flex-col lg:items-end text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                       <div className="flex items-center mb-2">
                         <Calendar className="w-4 h-4 mr-1" />
-                        {new Date(
-                          submission.submissionDate
-                        ).toLocaleDateString()}
+                        {new Date(submission.created_at).toLocaleDateString()}
                       </div>
                       <div className="text-xs">
-                        {submission.fileName} (
-                        {(submission.fileSize / 1024).toFixed(1)} KB)
+                        Submission ID: {submission.id.slice(0, 8)}...
                       </div>
                       <div className="mt-2">
                         <Link
-                          to={`/leaderboard/${submission.challengeId}`}
+                          to={`/leaderboard/${submission.challenge_id}`}
                           className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                         >
                           <Trophy className="w-4 h-4 mr-1" />
@@ -284,7 +285,7 @@ const MySubmissions = () => {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : !submissionsLoading && !challengesLoading && !submissionsError ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -302,7 +303,7 @@ const MySubmissions = () => {
                 Browse Challenges
               </Link>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </ProtectedRoute>

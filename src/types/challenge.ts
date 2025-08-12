@@ -28,6 +28,21 @@ export interface Challenge {
   evaluationMetric?: string;
 }
 
+// API response structure for user submissions
+export interface UserSubmission {
+  user_id: string;
+  model_id: string;
+  challenge_id: string;
+  description: string;
+  dataset_url: string;
+  status: "pending" | "processing" | "completed" | "failed";
+  status_message: string;
+  id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Legacy submission interface (keeping for compatibility)
 export interface Submission {
   id: string;
   challengeId: string;

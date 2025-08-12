@@ -1,38 +1,6 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
-import Toast, { ToastType } from "./Toast";
-
-export interface ToastData {
-  id: string;
-  type: ToastType;
-  title: string;
-  message?: string;
-  duration?: number;
-}
-
-interface ToastContextType {
-  addToast: (toast: Omit<ToastData, "id">) => void;
-  removeToast: (id: string) => void;
-  success: (title: string, message?: string, duration?: number) => void;
-  error: (title: string, message?: string, duration?: number) => void;
-  info: (title: string, message?: string, duration?: number) => void;
-  warning: (title: string, message?: string, duration?: number) => void;
-}
-
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
-
-export const useToast = () => {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error("useToast must be used within a ToastProvider");
-  }
-  return context;
-};
+import React, { useState, useCallback, useMemo } from "react";
+import Toast from "./Toast";
+import { ToastContext, type ToastData } from "./toast-context";
 
 interface ToastProviderProps {
   children: React.ReactNode;

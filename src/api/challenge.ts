@@ -2,6 +2,7 @@ import type {
   Challenge,
   Category,
   Submission,
+  UserSubmission,
   SubmissionRequest,
   SubmissionResponse,
   LeaderboardResult,
@@ -48,6 +49,7 @@ const getAuthHeaders = async (
 };
 
 // Mock submissions data (keeping for now until submission endpoints are available)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockSubmissions: { [key: string]: Submission[] } = {
   "8caa7bc5-b688-4f0d-9721-9ad2d994e213": [
     {
@@ -129,6 +131,37 @@ export const challengeApi = {
         message: "Failed to fetch challenge",
         success: false,
       };
+    }
+  },
+
+  // Get current user's submissions
+  getUserSubmissions: async (): Promise<ApiResponse<UserSubmission[]>> => {
+    try {
+      const headers = await getAuthHeaders();
+
+      const response = await fetch(`${API_BASE_URL}/submissions/my`, {
+        method: "GET",
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const submissions: UserSubmission[] = await response.json();
+
+      return {
+        data: submissions,
+        message: "User submissions fetched successfully",
+        success: true,
+      };
+    } catch (error) {
+      console.error("Error fetching user submissions:", error);
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch user submissions"
+      );
     }
   },
 
@@ -287,24 +320,6 @@ export const challengeApi = {
         error instanceof Error ? error.message : "Failed to submit to challenge"
       );
     }
-  },
-
-  // Get user's submissions for a challenge
-  getUserSubmissions: async (
-    challengeId: string,
-    teamName?: string
-  ): Promise<ApiResponse<Submission[]>> => {
-    const submissions = mockSubmissions[challengeId] || [];
-
-    const filteredSubmissions = teamName
-      ? submissions.filter((s) => s.teamName === teamName)
-      : submissions;
-
-    return {
-      data: filteredSubmissions,
-      message: "User submissions fetched successfully",
-      success: true,
-    };
   },
 
   // Get all categories

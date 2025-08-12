@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, XCircle, Info, AlertTriangle, X } from "lucide-react";
-
-export type ToastType = "success" | "error" | "info" | "warning";
+import type { ToastType } from "./toast-context";
 
 export interface ToastProps {
   id: string;

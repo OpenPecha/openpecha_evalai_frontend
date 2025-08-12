@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { useToast } from "../components/ToastContainer";
+import { useParams, Link } from "react-router-dom";
+import { useToast } from "../components/use-toast";
 import {
   ArrowLeft,
   Upload,
@@ -14,7 +14,6 @@ import { useAuth } from "../auth/use-auth-hook";
 
 const Submission = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
-  const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
   const { success } = useToast();
 
@@ -150,7 +149,7 @@ const Submission = () => {
               <h2 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-2">
                 Error Loading Challenge
               </h2>
-              <p className="text-red-600 dark:text-red-400">
+              <p className="text-red-600 dark:text-red-400 mb-4">
                 {!challenge
                   ? "Challenge not found."
                   : "Failed to load challenge details. Please try again later."}

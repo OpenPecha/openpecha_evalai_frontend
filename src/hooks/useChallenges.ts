@@ -63,22 +63,22 @@ export const useLeaderboard = (
   });
 };
 
-// Hooks for submissions
-export const useUserSubmissions = (challengeId: string, teamName?: string) => {
-  return useQuery({
-    queryKey: challengeKeys.userSubmissions(challengeId, teamName),
-    queryFn: () => challengeApi.getUserSubmissions(challengeId, teamName),
-    enabled: !!challengeId,
-    staleTime: 1 * 60 * 1000, // 1 minute
-  });
-};
-
 export const useSubmission = (id: string) => {
   return useQuery({
     queryKey: challengeKeys.submission(id),
     queryFn: () => challengeApi.getSubmissionById(id),
     enabled: !!id,
     staleTime: 30 * 1000, // 30 seconds - submission status might change
+  });
+};
+
+// Hook for fetching current user's submissions
+export const useUserSubmissions = () => {
+  return useQuery({
+    queryKey: ["userSubmissions"],
+    queryFn: challengeApi.getUserSubmissions,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 

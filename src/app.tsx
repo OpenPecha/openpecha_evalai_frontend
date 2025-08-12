@@ -72,10 +72,10 @@ const App = () => {
                 <div
                   className={`transition-all duration-300 ${
                     isSidebarOpen ? "lg:ml-64" : "lg:ml-16"
-                  } ml-0`}
+                  } ml-0 h-screen flex flex-col`}
                 >
                   {/* Main Content */}
-                  <main className="min-h-screen overflow-auto">
+                  <main className="flex-1 overflow-auto">
                     <Routes>
                       <Route
                         path="/login"

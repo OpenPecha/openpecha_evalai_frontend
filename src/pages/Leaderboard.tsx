@@ -15,7 +15,7 @@ import {
 } from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
-import { useToast } from "../components/ToastContainer";
+import { useToast } from "../components/use-toast";
 
 const getRankIcon = (rank: number) => {
   switch (rank) {
