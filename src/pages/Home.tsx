@@ -5,8 +5,9 @@ import {
   Clock,
   CheckCircle,
   Calendar,
-  Users,
   Edit,
+  Github,
+  ExternalLink,
 } from "lucide-react";
 import { useChallenges, usePrefetchLeaderboard } from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
@@ -15,11 +16,10 @@ const Home = () => {
   const { data: challengesResponse, isLoading, error } = useChallenges();
   const { data: currentUserData } = useCurrentUser();
   const prefetchLeaderboard = usePrefetchLeaderboard();
-console.log(challengesResponse)
   const challenges = challengesResponse?.data || [];
   const user = currentUserData?.data;
   const isAdmin = user?.role === "admin";
-
+  const repoUrl = "https://github.com/OpenPecha/EvalAI_dataset/blob/main/";
   const handleMouseEnter = (challengeId: string) => {
     // Prefetch leaderboard data on hover for better UX
     prefetchLeaderboard(challengeId);
@@ -204,8 +204,21 @@ console.log(challengesResponse)
                         Edit
                       </Link>
                     )}
+                    
+                    {/* Dataset Download Button */}
+                    <a
+                      href={repoUrl + challenge.title}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full flex items-center justify-center px-3 py-2 mt-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 group"
+                    >
+                      <Github className="w-3 h-3 mr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                      <span className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        View on GitHub
+                      </span>
+                      <ExternalLink className="w-3 h-3 ml-2 opacity-60 group-hover:opacity-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all" />
+                    </a>
                   </div>
-                  <a href={challenge.ground_truth} className="text-sm text-gray-500 dark:text-gray-400 mb-4">download</a>
                 </div>
               </div>
             ))}
