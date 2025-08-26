@@ -15,7 +15,7 @@ const Home = () => {
   const { data: challengesResponse, isLoading, error } = useChallenges();
   const { data: currentUserData } = useCurrentUser();
   const prefetchLeaderboard = usePrefetchLeaderboard();
-
+console.log(challengesResponse)
   const challenges = challengesResponse?.data || [];
   const user = currentUserData?.data;
   const isAdmin = user?.role === "admin";
@@ -205,6 +205,7 @@ const Home = () => {
                       </Link>
                     )}
                   </div>
+                  <a href={challenge.ground_truth} className="text-sm text-gray-500 dark:text-gray-400 mb-4">download</a>
                 </div>
               </div>
             ))}
