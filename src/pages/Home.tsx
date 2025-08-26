@@ -214,7 +214,7 @@ const Home = () => {
                     >
                       <Github className="w-3 h-3 mr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                       <span className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        View on GitHub
+                        View dataset
                       </span>
                       <ExternalLink className="w-3 h-3 ml-2 opacity-60 group-hover:opacity-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all" />
                     </a>
