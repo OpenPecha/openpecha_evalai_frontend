@@ -207,7 +207,7 @@ const Home = () => {
                     
                     {/* Dataset Download Button */}
                     <a
-                      href={repoUrl + challenge.title}
+                      href={repoUrl + challenge.title.toLowerCase() + "_dataset"}//lower the title and add dataset to the url 
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-center px-3 py-2 mt-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 group"
