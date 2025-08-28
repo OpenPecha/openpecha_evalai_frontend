@@ -12,9 +12,9 @@ import {
 
 const Settings = () => {
   const { user, logout } = useAuth0();
-  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(false);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
-  const [newChallengeAlerts, setNewChallengeAlerts] = useState(true);
+  const [newChallengeAlerts, setNewChallengeAlerts] = useState(false);
   const [publicProfile, setPublicProfile] = useState(false);
 
   const handleSaveSettings = () => {
@@ -121,7 +121,7 @@ const Settings = () => {
               <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                   <Bell className="w-5 h-5 mr-2" />
-                  Notification Preferences
+                  Notification Preferences (future functionality)
                 </h2>
               </div>
               <div className="p-6 space-y-4">
@@ -129,9 +129,9 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="emailNotifications"
-                      className="text-sm font-medium text-gray-900 dark:text-white"
+                      className="text-sm font-medium text-gray-900 dark:text-white "
                     >
-                      Email Notifications
+                      Email Notifications 
                     </label>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       Receive notifications about your submissions and rankings
@@ -140,6 +140,7 @@ const Settings = () => {
                   <input
                     id="emailNotifications"
                     type="checkbox"
+                    disabled
                     checked={emailNotifications}
                     onChange={(e) => setEmailNotifications(e.target.checked)}
                     className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded"
@@ -161,6 +162,7 @@ const Settings = () => {
                   </div>
                   <input
                     id="weeklyDigest"
+                    disabled
                     type="checkbox"
                     checked={weeklyDigest}
                     onChange={(e) => setWeeklyDigest(e.target.checked)}
@@ -183,6 +185,7 @@ const Settings = () => {
                   <input
                     id="newChallengeAlerts"
                     type="checkbox"
+                    disabled
                     checked={newChallengeAlerts}
                     onChange={(e) => setNewChallengeAlerts(e.target.checked)}
                     className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded"
@@ -200,29 +203,9 @@ const Settings = () => {
                 </h2>
               </div>
               <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      Account Management
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Password, two-factor authentication, and other security
-                      settings
-                    </p>
-                  </div>
-                  <a
-                    href={`https://${
-                      import.meta.env.VITE_AUTH0_DOMAIN
-                    }/u/profile`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 text-sm text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
-                  >
-                    Manage in Auth0
-                  </a>
-                </div>
+               
 
-                <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                <div className="flex items-center justify-between p-4  rounded-lg " >
                   <div>
                     <p className="text-sm font-medium text-red-900 dark:text-red-400">
                       Sign Out
