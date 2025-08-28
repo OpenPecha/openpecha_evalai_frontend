@@ -1,17 +1,24 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { Medal, Trophy, BarChart3, Table } from "lucide-react";
-import { useLeaderboard, useChallenge } from "../hooks/useChallenges";
+import {
+  Trophy,
+  Crown,
+  Medal,
+  Award,
+  BarChart3,
+  Table,
+} from "lucide-react";
+import { useAllLeaderboards, useChallenges } from "../hooks/useChallenges";
 import LeaderboardChart from "../components/LeaderboardChart";
 
 const getRankIcon = (rank: number) => {
   switch (rank) {
     case 1:
-      return <Medal className="w-5 h-5 text-yellow-500" />;
+      return <Crown className="w-5 h-5 text-yellow-500" />;
     case 2:
       return <Medal className="w-5 h-5 text-gray-400" />;
     case 3:
-      return <Medal className="w-5 h-5 text-amber-600" />;
+      return <Award className="w-5 h-5 text-amber-600" />;
     default:
       return (
         <span className="w-5 h-5 flex items-center justify-center text-gray-600 dark:text-gray-400 font-semibold text-sm">
@@ -46,29 +53,59 @@ const getMetricClass = (metric: string) => {
   }
 };
 
+const getStatusColor = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
+    case "completed":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400";
+    case "draft":
+      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+  }
+};
+
+const getStatusIcon = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "🟢";
+    case "completed":
+      return "🔵";
+    case "draft":
+      return "⚪";
+    default:
+      return "⚪";
+  }
+};
+
 const LeaderboardEmbed = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
   const [viewMode, setViewMode] = useState<"table" | "chart">("table");
 
   const {
-    data: leaderboardResponse,
-    isLoading: leaderboardLoading,
-    error: leaderboardError,
-  } = useLeaderboard(challengeId || "", 1, 50); // Get top 50 for embed
+    data: challengesResponse,
+    isLoading: challengesLoading,
+    error: challengesError,
+  } = useChallenges();
+  const challenges = challengesResponse?.data || [];
 
   const {
-    data: challengeResponse,
-    isLoading: challengeLoading,
-    error: challengeError,
-  } = useChallenge(challengeId || "");
+    data: leaderboardsData,
+    isLoading: leaderboardsLoading,
+    error: leaderboardsError,
+  } = useAllLeaderboards(challenges);
 
-  const challenge = challengeResponse?.data;
-  const submissions = leaderboardResponse?.data || [];
-  const pagination = leaderboardResponse?.pagination;
+  const isLoading = challengesLoading || leaderboardsLoading;
+  const error = challengesError || leaderboardsError;
 
-  if (challengeLoading || leaderboardLoading) {
+  // Find the specific leaderboard for this challenge
+  const leaderboard = leaderboardsData?.find(lb => lb.challengeId === challengeId);
+  const challenge = challenges.find(c => c.id === challengeId);
+
+  if (isLoading) {
     return (
-      <div className="p-4 bg-white dark:bg-gray-900">
+      <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
@@ -79,9 +116,9 @@ const LeaderboardEmbed = () => {
     );
   }
 
-  if (challengeError || leaderboardError || !challenge) {
+  if (error || !challenge || !leaderboard) {
     return (
-      <div className="p-4 bg-white dark:bg-gray-900">
+      <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div className="text-center">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <h2 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-2">
@@ -98,256 +135,168 @@ const LeaderboardEmbed = () => {
     );
   }
 
-  // Get available metrics from submissions
+  // Get available metrics from first submission
   const availableMetrics =
-    submissions.length > 0 ? Object.keys(submissions[0].metrics || {}) : [];
+    leaderboard.submissions.length > 0
+      ? Object.keys(leaderboard.submissions[0].metrics || {})
+      : [];
 
   return (
-    <div className="p-2 bg-white dark:bg-gray-900 min-h-screen">
-      {/* Pure Table with integrated header */}
-      <div className="overflow-x-auto">
-        {submissions.length === 0 && (
-          <div className="text-center py-12">
-            <Trophy className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              No submissions yet
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Be the first to submit results to{" "}
-              {challenge.title || challenge.name}!
-            </p>
-          </div>
-        )}
-        
-        {submissions.length > 0 && viewMode === "table" && (
-          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
-            {/* Table Header with Challenge Info */}
-            <thead>
-              <tr className="bg-gradient-to-r from-blue-600 to-purple-600">
-                <th
-                  colSpan={4 + availableMetrics.length}
-                  className="px-6 py-4 text-left"
+    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      {/* Single Leaderboard Card */}
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          {/* Compact Challenge Header */}
+          <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <h2
+                  className="text-sm font-semibold text-gray-900 dark:text-white truncate cursor-help"
+                  title={challenge.description || leaderboard.challengeTitle}
                 >
-                  <div className="text-white flex items-center justify-between">
-                    <div>
-                      <h1
-                        className="text-lg font-bold mb-1 cursor-help"
-                        title={challenge.description}
-                      >
-                        {challenge.title || challenge.name}
-                      </h1>
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
-                        <span>📊 {pagination?.total || 0} Submissions</span>
-                        <span>
-                          📅 {new Date(challenge.created_at).toLocaleDateString()}
-                        </span>
-                        <span>🏆 Status: {challenge.status}</span>
-                      </div>
-                    </div>
-                    
-                    {/* View Toggle Buttons */}
-                    {submissions.length > 0 && (
-                      <div className="flex items-center bg-white/20 rounded-lg p-0.5">
-                        <button
-                          onClick={() => setViewMode("table")}
-                          className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
-                            viewMode === "table"
-                              ? "bg-white/30 text-white shadow-sm"
-                              : "text-white/70 hover:text-white"
-                          }`}
-                          title="Table view"
-                        >
-                          <Table className="w-4 h-4 mr-1 inline-block" />
-                          Table
-                        </button>
-                        <button
-                          onClick={() => setViewMode("chart")}
-                          className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
-                            viewMode === "chart"
-                              ? "bg-white/30 text-white shadow-sm"
-                              : "text-white/70 hover:text-white"
-                          }`}
-                          title="Chart view"
-                        >
-                          <BarChart3 className="w-4 h-4 mr-1 inline-block" />
-                          Chart
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </th>
-              </tr>
-              <tr className="bg-gray-50 dark:bg-gray-700">
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600">
-                  Rank
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600">
-                  Model
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-600">
-                  Description
-                </th>
-                {availableMetrics.map((metric, index) => (
-                  <th
-                    key={metric}
-                    className={`px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${
-                      index < availableMetrics.length - 1
-                        ? "border-r border-gray-200 dark:border-gray-600"
-                        : ""
-                    }`}
+                  {leaderboard.challengeTitle}
+                </h2>
+                <div className="flex items-center space-x-1">
+                  <span
+                    className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${getStatusColor(
+                      challenge.status || "unknown"
+                    )}`}
                   >
-                    {metric}
-                  </th>
-                ))}
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Submitted
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {submissions.map((submission, index) => (
-                <tr
-                  key={submission.submission_id}
-                  className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                    index % 2 === 0 ? "bg-gray-50/30 dark:bg-gray-700/30" : ""
-                  }`}
-                >
-                  <td className="px-4 py-3 whitespace-nowrap border-r border-gray-200 dark:border-gray-600">
-                    <div className="flex items-center">
-                      {getRankIcon(submission.rank || 0)}
-                      <span className="ml-2 text-sm font-medium text-gray-900 dark:text-white">
-                        #{submission.rank || 0}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap border-r border-gray-200 dark:border-gray-600">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {submission.model_name}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      ID: {submission.submission_id.slice(0, 8)}...
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 border-r border-gray-200 dark:border-gray-600">
-                    <div className="text-sm text-gray-900 dark:text-white max-w-xs">
-                      {submission.description}
-                    </div>
-                  </td>
-                  {availableMetrics.map((metric, metricIndex) => (
-                    <td
-                      key={metric}
-                      className={`px-4 py-3 whitespace-nowrap ${
-                        metricIndex < availableMetrics.length - 1
-                          ? "border-r border-gray-200 dark:border-gray-600"
-                          : ""
-                      }`}
-                    >
-                      <div
-                        className={`text-sm font-semibold ${getMetricClass(
-                          metric
-                        )}`}
-                      >
-                        {submission.metrics[metric] !== undefined
-                          ? formatScore(submission.metrics[metric], metric)
-                          : "-"}
-                      </div>
-                    </td>
-                  ))}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {new Date(submission.created_at).toLocaleDateString()}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {new Date(submission.created_at).toLocaleTimeString()}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            {/* Footer with branding */}
-            <tfoot>
-              <tr className="bg-gray-100 dark:bg-gray-700">
-                <td
-                  colSpan={4 + availableMetrics.length}
-                  className="px-6 py-3 text-center"
-                >
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Powered by OpenPecha EvalAI | Showing top{" "}
-                    {submissions.length} of {pagination?.total || 0} submissions
-                  </p>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        )}
-        
-        {submissions.length > 0 && viewMode === "chart" && (
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
-            {/* Chart Header with Challenge Info */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4">
-              <div className="text-white flex items-center justify-between">
-                <div>
-                  <h1
-                    className="text-lg font-bold mb-1 cursor-help"
-                    title={challenge.description}
-                  >
-                    {challenge.title || challenge.name}
-                  </h1>
-                  <div className="flex flex-wrap items-center gap-4 text-sm">
-                    <span>📊 {pagination?.total || 0} Submissions</span>
-                    <span>
-                      📅 {new Date(challenge.created_at).toLocaleDateString()}
+                    <span className="mr-0.5 text-xs">
+                      {getStatusIcon(challenge.status || "unknown")}
                     </span>
-                    <span>🏆 Status: {challenge.status}</span>
-                  </div>
-                </div>
-                
-                {/* View Toggle Buttons */}
-                <div className="flex items-center bg-white/20 rounded-lg p-0.5">
-                  <button
-                    onClick={() => setViewMode("table")}
-                    className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
-                      viewMode === "table"
-                        ? "bg-white/30 text-white shadow-sm"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                    title="Table view"
-                  >
-                    <Table className="w-4 h-4 mr-1 inline-block" />
-                    Table
-                  </button>
-                  <button
-                    onClick={() => setViewMode("chart")}
-                    className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
-                      viewMode === "chart"
-                        ? "bg-white/30 text-white shadow-sm"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                    title="Chart view"
-                  >
-                    <BarChart3 className="w-4 h-4 mr-1 inline-block" />
-                    Chart
-                  </button>
+                    {challenge.status || "unknown"}
+                  </span>
                 </div>
               </div>
-            </div>
-            
-            {/* Chart Content */}
-            <LeaderboardChart
-              submissions={submissions}
-              availableMetrics={availableMetrics}
-              className="p-6"
-            />
-            
-            {/* Footer with branding */}
-            <div className="bg-gray-100 dark:bg-gray-700 px-6 py-3 text-center border-t border-gray-200 dark:border-gray-600">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Powered by OpenPecha EvalAI | Showing top{" "}
-                {submissions.length} of {pagination?.total || 0} submissions
-              </p>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {leaderboard.submissions.length}
+                </span>
+                
+                {/* View Toggle Buttons */}
+                {leaderboard.submissions.length > 0 && (
+                  <div className="flex items-center bg-gray-100 dark:bg-gray-600 rounded-md p-0.5">
+                    <button
+                      onClick={() => setViewMode("table")}
+                      className={`p-1 rounded text-xs transition-colors duration-200 ${
+                        viewMode === "table"
+                          ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      }`}
+                      title="Table view"
+                    >
+                      <Table className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode("chart")}
+                      className={`p-1 rounded text-xs transition-colors duration-200 ${
+                        viewMode === "chart"
+                          ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      }`}
+                      title="Chart view"
+                    >
+                      <BarChart3 className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Leaderboard Content - Table or Chart */}
+          {leaderboard.submissions.length === 0 && (
+            <div className="text-center py-8">
+              <Trophy className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                No submissions yet
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                Be the first to submit!
+              </p>
+            </div>
+          )}
+          
+          {leaderboard.submissions.length > 0 && viewMode === "table" && (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      #
+                    </th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Model
+                    </th>
+                    {availableMetrics.slice(0, 2).map((metric) => (
+                      <th
+                        key={metric}
+                        className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      >
+                        {metric}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {leaderboard.submissions
+                    .slice(0, 8)
+                    .map((submission) => (
+                      <tr
+                        key={
+                          submission.submission_id ||
+                          `submission-${Math.random()}`
+                        }
+                        className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                      >
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          <div className="flex items-center">
+                            {getRankIcon(submission.rank || 0)}
+                            <span className="ml-1 text-xs font-medium text-gray-900 dark:text-white">
+                              {submission.rank || 0}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          <div className="text-xs font-medium text-gray-900 dark:text-white truncate max-w-32">
+                            {submission.model_name}
+                          </div>
+                        </td>
+                        {availableMetrics.slice(0, 2).map((metric) => (
+                          <td
+                            key={metric}
+                            className="px-3 py-2 whitespace-nowrap"
+                          >
+                            <div
+                              className={`text-xs font-semibold ${getMetricClass(
+                                metric
+                              )}`}
+                            >
+                              {submission.metrics[metric] !== undefined
+                                ? formatScore(
+                                    submission.metrics[metric],
+                                    metric
+                                  )
+                                : "-"}
+                            </div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          
+          {leaderboard.submissions.length > 0 && viewMode === "chart" && (
+            <LeaderboardChart
+              submissions={leaderboard.submissions}
+              availableMetrics={availableMetrics}
+              className="p-4"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
