@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Upload, X, Check } from "lucide-react";
+import { Plus, Upload, X, Check, AlertCircle } from "lucide-react";
 import { useCurrentUser } from "../hooks/useUsers";
 import {
   useCategories,
@@ -16,7 +16,6 @@ const CreateChallenge = () => {
     useCategories();
   const createChallengeMutation = useCreateChallenge();
   const createCategoryMutation = useCreateCategory();
-
   const [formData, setFormData] = useState<ChallengeCreateRequest>({
     title: "",
     category_id: "",
@@ -29,6 +28,8 @@ const CreateChallenge = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [challengeError, setChallengeError] = useState("");
+  const [categoryError, setCategoryError] = useState("");
 
   const user = currentUserData?.data;
   const categories = categoriesData?.data || [];
@@ -64,6 +65,9 @@ const CreateChallenge = () => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Clear errors when user starts typing
+    if (challengeError) setChallengeError("");
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +81,8 @@ const CreateChallenge = () => {
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim()) return;
 
+    setCategoryError(""); // Clear previous errors
+
     try {
       const result = await createCategoryMutation.mutateAsync({
         name: newCategoryName.trim(),
@@ -87,6 +93,21 @@ const CreateChallenge = () => {
       setNewCategoryName("");
       setShowNewCategoryForm(false);
     } catch (error) {
+      let errorMessage = "Failed to create category. Please try again.";
+      
+      // Extract error message from different error formats
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        // Handle API response errors with detail property
+        if ('detail' in error && typeof error.detail === 'string') {
+          errorMessage = error.detail;
+        } else if ('message' in error && typeof error.message === 'string') {
+          errorMessage = error.message;
+        }
+      }
+      
+      setCategoryError(errorMessage);
       console.error("Failed to create category:", error);
     }
   };
@@ -95,18 +116,34 @@ const CreateChallenge = () => {
     e.preventDefault();
 
     if (!formData.title || !formData.category_id || !formData.description) {
-      alert("Please fill in all required fields");
+      setChallengeError("Please fill in all required fields");
       return;
     }
+
+    setChallengeError(""); // Clear previous errors
 
     try {
       await createChallengeMutation.mutateAsync(formData);
       navigate("/"); // Redirect to home page after successful creation
     } catch (error) {
+      let errorMessage = "Failed to create challenge. Please try again.";
+      
+      // Extract error message from different error formats
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        // Handle API response errors with detail property
+        if ('detail' in error && typeof error.detail === 'string') {
+          errorMessage = error.detail;
+        } else if ('message' in error && typeof error.message === 'string') {
+          errorMessage = error.message;
+        }
+      }
+      
+      setChallengeError(errorMessage);
       console.error("Failed to create challenge:", error);
     }
   };
-
   const removeFile = () => {
     setSelectedFile(null);
     setFormData((prev) => ({ ...prev, ground_truth_file: undefined }));
@@ -200,7 +237,10 @@ const CreateChallenge = () => {
                   <input
                     type="text"
                     value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    onChange={(e) => {
+                      setNewCategoryName(e.target.value);
+                      if (categoryError) setCategoryError("");
+                    }}
                     placeholder="New category name"
                     className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -230,6 +270,13 @@ const CreateChallenge = () => {
                     <X className="w-4 h-4" />
                   </button>
                 </div>
+                {/* Category Creation Error */}
+                {categoryError && (
+                  <div className="mt-2 flex items-center p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 mr-2" />
+                    <p className="text-sm text-red-800 dark:text-red-400">{categoryError}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -349,7 +396,13 @@ const CreateChallenge = () => {
               </div>
             )}
           </div>
-
+          {/* Challenge Creation Error */}
+          {challengeError && (
+            <div className="flex items-center p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+              <p className="text-red-800 dark:text-red-400">{challengeError}</p>
+            </div>
+          )}
           {/* Submit Buttons */}
           <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
             <button

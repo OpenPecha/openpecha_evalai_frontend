@@ -31,12 +31,14 @@ const Submission = () => {
   const [modelName, setModelName] = useState("");
   const [description, setDescription] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
 
   const handleFileSelect = (file: File) => {
     if (file.type === "application/json") {
       setSelectedFile(file);
+      if (submissionError) setSubmissionError(""); // Clear error when file is selected
     } else {
-      alert("Please select a valid JSON file");
+      setSubmissionError("Please select a valid JSON file");
     }
   };
 
@@ -88,9 +90,11 @@ const Submission = () => {
       !description.trim() ||
       !challengeId
     ) {
-      alert("Please fill in all required fields and select a file");
+      setSubmissionError("Please fill in all required fields and select a file");
       return;
     }
+
+    setSubmissionError(""); // Clear previous errors
 
     try {
       await submitMutation.mutateAsync({
@@ -112,6 +116,10 @@ const Submission = () => {
       setModelName("");
       setDescription("");
     } catch (error) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Submission failed. Please check your file format and try again.";
+      setSubmissionError(errorMessage);
       console.error("Submission failed:", error);
     }
   };
@@ -277,7 +285,10 @@ const Submission = () => {
                 type="text"
                 id="modelName"
                 value={modelName}
-                onChange={(e) => setModelName(e.target.value)}
+                onChange={(e) => {
+                  setModelName(e.target.value);
+                  if (submissionError) setSubmissionError("");
+                }}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="e.g., MyAwesomeModel-v1.0"
                 required
@@ -299,7 +310,10 @@ const Submission = () => {
               <textarea
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  if (submissionError) setSubmissionError("");
+                }}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Brief description of your model or approach..."
@@ -485,15 +499,26 @@ const Submission = () => {
             </div>
 
             {/* Status Messages */}
-
-            {submitMutation.isError && (
+            {(submissionError || submitMutation.isError) && (
               <div className="flex items-center p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
-                <p className="text-red-800 dark:text-red-400">
-                  {submitMutation.error instanceof Error
-                    ? submitMutation.error.message
-                    : "Submission failed. Please check your file format and try again."}
-                </p>
+                <div className="text-red-800 dark:text-red-400">
+                  {submissionError && <p>{submissionError}</p>}
+                  {submitMutation.isError && !submissionError && (
+                    <p>
+                      {submitMutation.error instanceof Error
+                        ? submitMutation.error.message
+                        : "Submission failed. Please check your file format and try again."}
+                    </p>
+                  )}
+                  {submitMutation.isError && submissionError && (
+                    <p className="mt-1 text-sm">
+                      Technical details: {submitMutation.error instanceof Error
+                        ? submitMutation.error.message
+                        : "Unknown error occurred"}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </form>

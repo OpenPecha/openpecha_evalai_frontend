@@ -304,7 +304,20 @@ export const challengeApi = {
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to parse error response body for detailed error message
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail && typeof errorData.detail === 'string') {
+            errorMessage = errorData.detail;
+          } else if (errorData.message && typeof errorData.message === 'string') {
+            errorMessage = errorData.message;
+          }
+        } catch (parseError) {
+          // If parsing fails, keep the generic error message
+          console.warn("Failed to parse error response:", parseError);
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -365,7 +378,20 @@ export const challengeApi = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to parse error response body for detailed error message
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail && typeof errorData.detail === 'string') {
+            errorMessage = errorData.detail;
+          } else if (errorData.message && typeof errorData.message === 'string') {
+            errorMessage = errorData.message;
+          }
+        } catch (parseError) {
+          // If parsing fails, keep the generic error message
+          console.warn("Failed to parse error response:", parseError);
+        }
+        throw new Error(errorMessage);
       }
 
       const newCategory: Category = await response.json();
@@ -421,7 +447,20 @@ export const challengeApi = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to parse error response body for detailed error message
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail && typeof errorData.detail === 'string') {
+            errorMessage = errorData.detail;
+          } else if (errorData.message && typeof errorData.message === 'string') {
+            errorMessage = errorData.message;
+          }
+        } catch (parseError) {
+          // If parsing fails, keep the generic error message
+          console.warn("Failed to parse error response:", parseError);
+        }
+        throw new Error(errorMessage);
       }
 
       const newChallenge: Challenge = await response.json();
