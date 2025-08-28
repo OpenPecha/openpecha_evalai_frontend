@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
 import {
   ArrowLeft,
   Medal,
@@ -7,6 +8,8 @@ import {
   Calendar,
   Edit,
   Trash2,
+  BarChart3,
+  Table,
 } from "lucide-react";
 import {
   useLeaderboard,
@@ -15,6 +18,7 @@ import {
 } from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
+import LeaderboardChart from "../components/LeaderboardChart";
 import { useToast } from "../components/use-toast";
 
 const getRankIcon = (rank: number) => {
@@ -61,6 +65,7 @@ const getMetricClass = (metric: string) => {
 
 const Leaderboard = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
+  const [viewMode, setViewMode] = useState<"table" | "chart">("table");
   const { data: currentUserData } = useCurrentUser();
   const deleteSubmissionMutation = useDeleteSubmission();
   const { success } = useToast();
@@ -180,8 +185,38 @@ const Leaderboard = () => {
                 </h1>
                 <p className="text-blue-100 mb-4">{challenge.description}</p>
               </div>
-              {/* Admin Controls & Share Button */}
-              <div className="flex space-x-2">
+              {/* View Toggle, Admin Controls & Share Button */}
+              <div className="flex items-center space-x-2">
+                {/* View Toggle Buttons */}
+                {submissions.length > 0 && (
+                  <div className="flex items-center bg-white/20 rounded-lg p-0.5">
+                    <button
+                      onClick={() => setViewMode("table")}
+                      className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
+                        viewMode === "table"
+                          ? "bg-white/30 text-white shadow-sm"
+                          : "text-white/70 hover:text-white"
+                      }`}
+                      title="Table view"
+                    >
+                      <Table className="w-4 h-4 mr-1 inline-block" />
+                      Table
+                    </button>
+                    <button
+                      onClick={() => setViewMode("chart")}
+                      className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
+                        viewMode === "chart"
+                          ? "bg-white/30 text-white shadow-sm"
+                          : "text-white/70 hover:text-white"
+                      }`}
+                      title="Chart view"
+                    >
+                      <BarChart3 className="w-4 h-4 mr-1 inline-block" />
+                      Chart
+                    </button>
+                  </div>
+                )}
+                
                 <ShareButton
                   challengeId={challengeId || ""}
                   challengeTitle={
@@ -230,7 +265,7 @@ const Leaderboard = () => {
             </p>
           </div>
 
-          {submissions.length === 0 ? (
+          {submissions.length === 0 && (
             <div className="text-center py-12">
               <Trophy className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -246,7 +281,9 @@ const Leaderboard = () => {
                 Submit Results
               </Link>
             </div>
-          ) : (
+          )}
+          
+          {submissions.length > 0 && viewMode === "table" && (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
@@ -351,6 +388,14 @@ const Leaderboard = () => {
                 </tbody>
               </table>
             </div>
+          )}
+          
+          {submissions.length > 0 && viewMode === "chart" && (
+            <LeaderboardChart
+              submissions={submissions}
+              availableMetrics={availableMetrics}
+              className="py-6"
+            />
           )}
         </div>
 

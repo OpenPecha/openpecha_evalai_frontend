@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
   Trophy,
-  ExternalLink,
   Crown,
   Medal,
   Award,
   Trash2,
+  BarChart3,
+  Table,
 } from "lucide-react";
 import {
   useChallenges,
@@ -14,9 +16,16 @@ import {
 } from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
+import LeaderboardChart from "../components/LeaderboardChart";
+import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
 import { useToast } from "../components/use-toast";
 
 const Leaderboards = () => {
+  // State to track view mode for each leaderboard (challengeId -> view mode)
+  const [viewModes, setViewModes] = useState<Record<string, "table" | "chart">>({});
+  // State to track which share modal to show
+  const [activeShareModal, setActiveShareModal] = useState<string | null>(null);
+  
   const {
     data: challengesResponse,
     isLoading: challengesLoading,
@@ -37,6 +46,19 @@ const Leaderboards = () => {
   const error = challengesError || leaderboardsError;
   const user = currentUserData?.data;
   const isAdmin = user?.role === "admin";
+
+  // Toggle view mode for a specific leaderboard
+  const toggleViewMode = (challengeId: string) => {
+    setViewModes(prev => ({
+      ...prev,
+      [challengeId]: prev[challengeId] === "chart" ? "table" : "chart"
+    }));
+  };
+
+  // Get current view mode for a leaderboard (defaults to table)
+  const getCurrentViewMode = (challengeId: string): "table" | "chart" => {
+    return viewModes[challengeId] || "table";
+  };
 
   const handleDeleteSubmission = async (
     submissionId: string,
@@ -233,25 +255,47 @@ const Leaderboards = () => {
                       <span className="text-xs text-gray-500 dark:text-gray-400">
                         {leaderboard.submissions.length}
                       </span>
-                      <ShareButton
+                      
+                      {/* View Toggle Buttons */}
+                      {leaderboard.submissions.length > 0 && (
+                        <div className="flex items-center bg-gray-100 dark:bg-gray-600 rounded-md p-0.5">
+                          <button
+                            onClick={() => toggleViewMode(leaderboard.challengeId)}
+                            className={`p-1 rounded text-xs transition-colors duration-200 ${
+                              getCurrentViewMode(leaderboard.challengeId) === "table"
+                                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                            }`}
+                            title="Table view"
+                          >
+                            <Table className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => toggleViewMode(leaderboard.challengeId)}
+                            className={`p-1 rounded text-xs transition-colors duration-200 ${
+                              getCurrentViewMode(leaderboard.challengeId) === "chart"
+                                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                            }`}
+                            title="Chart view"
+                          >
+                            <BarChart3 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* Hamburger Actions Menu */}
+                      <LeaderboardActionsMenu
                         challengeId={leaderboard.challengeId}
-                        challengeTitle={
-                          leaderboard.challengeTitle || "Challenge"
-                        }
+                        challengeTitle={leaderboard.challengeTitle || "Challenge"}
+                        onShare={() => setActiveShareModal(leaderboard.challengeId)}
                       />
-                      <Link
-                        to={`/leaderboard/${leaderboard.challengeId}`}
-                        className="inline-flex items-center text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
-                      >
-                        View all
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Link>
                     </div>
                   </div>
                 </div>
 
-                {/* Compact Leaderboard Table */}
-                {leaderboard.submissions.length === 0 ? (
+                {/* Leaderboard Content - Table or Chart */}
+                {leaderboard.submissions.length === 0 && (
                   <div className="text-center py-8">
                     <Trophy className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
                     <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
@@ -267,7 +311,9 @@ const Leaderboards = () => {
                       Submit Results
                     </Link>
                   </div>
-                ) : (
+                )}
+                
+                {leaderboard.submissions.length > 0 && getCurrentViewMode(leaderboard.challengeId) === "table" && (
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
@@ -286,9 +332,6 @@ const Leaderboards = () => {
                               {metric}
                             </th>
                           ))}
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            Votes
-                          </th>
                           {isAdmin && (
                             <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                               Actions
@@ -339,12 +382,7 @@ const Leaderboards = () => {
                                   </div>
                                 </td>
                               ))}
-                              <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
-                                  {Math.floor(Math.random() * 10000)}{" "}
-                                  {/* Placeholder for votes */}
-                                </div>
-                              </td>
+                            
                               {isAdmin && (
                                 <td className="px-3 py-2 whitespace-nowrap">
                                   <button
@@ -370,6 +408,14 @@ const Leaderboards = () => {
                     </table>
                   </div>
                 )}
+                
+                {leaderboard.submissions.length > 0 && getCurrentViewMode(leaderboard.challengeId) === "chart" && (
+                  <LeaderboardChart
+                    submissions={leaderboard.submissions}
+                    availableMetrics={availableMetrics}
+                    className="p-4"
+                  />
+                )}
               </div>
             );
           })}
@@ -387,6 +433,34 @@ const Leaderboards = () => {
           </div>
         )}
       </div>
+
+      {/* Share Modals */}
+      {activeShareModal && (
+        <button 
+          className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50"
+          onClick={() => setActiveShareModal(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setActiveShareModal(null);
+            }
+          }}
+          aria-label="Close share modal"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="pointer-events-auto"
+          >
+            <ShareButton
+              challengeId={activeShareModal}
+              challengeTitle={
+                leaderboardsData?.find(lb => lb.challengeId === activeShareModal)?.challengeTitle || "Challenge"
+              }
+              autoOpen={true}
+              onClose={() => setActiveShareModal(null)}
+            />
+          </div>
+        </button>
+      )}
     </div>
   );
 };

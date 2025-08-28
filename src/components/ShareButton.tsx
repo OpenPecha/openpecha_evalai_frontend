@@ -5,14 +5,18 @@ interface ShareButtonProps {
   challengeId: string;
   challengeTitle: string;
   onShare?: () => void;
+  autoOpen?: boolean;
+  onClose?: () => void;
 }
 
 const ShareButton = ({
   challengeId,
   challengeTitle,
   onShare,
+  autoOpen = false,
+  onClose,
 }: ShareButtonProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(autoOpen);
   const [copied, setCopied] = useState(false);
 
   // Generate the embed URL
@@ -54,23 +58,30 @@ const ShareButton = ({
     window.open(embedUrl, "_blank");
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    onClose?.();
+  };
+
   return (
     <>
-      <button
-        onClick={handleShare}
-        className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 border border-blue-200 dark:border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
-      >
-        <Share2 className="w-4 h-4 mr-1.5" />
-        Share
-      </button>
+      {!autoOpen && (
+        <button
+          onClick={handleShare}
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 border border-blue-200 dark:border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
+        >
+          <Share2 className="w-4 h-4 mr-1.5" />
+          Share
+        </button>
+      )}
 
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Overlay */}
           <button
-            className="fixed inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-50 border-0 p-0"
-            onClick={() => setIsModalOpen(false)}
+            className="fixed inset-0 bg-[rgba(0,0,0,0.5)] dark:bg-[rgba(0,0,0,0.5)] bg-opacity-50 border-0 p-0"
+            onClick={closeModal}
             aria-label="Close modal"
           ></button>
 
@@ -82,7 +93,7 @@ const ShareButton = ({
                 Share
               </h3>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={closeModal}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <svg
