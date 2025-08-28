@@ -64,10 +64,11 @@ const Settings = () => {
                       Display Name
                     </label>
                     <input
+                    disabled
                       id="displayName"
                       type="text"
                       defaultValue={user?.name || ""}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border dark:text-white rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
                       placeholder="Your display name"
                     />
                   </div>
@@ -86,33 +87,10 @@ const Settings = () => {
                       disabled
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Email cannot be changed here. Please update it in your
-                      Auth0 profile.
-                    </p>
+                   
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="public-profile"
-                      type="checkbox"
-                      checked={publicProfile}
-                      onChange={(e) => setPublicProfile(e.target.checked)}
-                      className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded"
-                    />
-                    <label
-                      htmlFor="public-profile"
-                      className="ml-2 block text-sm text-gray-900 dark:text-white"
-                    >
-                      Make my profile public
-                    </label>
-                  </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Others can see your submissions and rankings
-                  </span>
-                </div>
               </div>
             </div>
 
@@ -121,7 +99,7 @@ const Settings = () => {
               <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                   <Bell className="w-5 h-5 mr-2" />
-                  Notification Preferences (future functionality)
+                  Notification Preferences (Coming soon)
                 </h2>
               </div>
               <div className="p-6 space-y-4">
@@ -225,16 +203,7 @@ const Settings = () => {
               </div>
             </div>
 
-            {/* Save Button */}
-            <div className="flex justify-end">
-              <button
-                onClick={handleSaveSettings}
-                className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Settings
-              </button>
-            </div>
+       
           </div>
         </div>
       </div>
