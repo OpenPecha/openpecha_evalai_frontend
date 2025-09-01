@@ -50,24 +50,7 @@ const getAuthHeaders = async (
 
 // Mock submissions data (keeping for now until submission endpoints are available)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockSubmissions: { [key: string]: Submission[] } = {
-  "8caa7bc5-b688-4f0d-9721-9ad2d994e213": [
-    {
-      id: "1",
-      challengeId: "8caa7bc5-b688-4f0d-9721-9ad2d994e213",
-      modelName: "TibetanOCR-v2.1",
-      teamName: "Team Alpha",
-      cer: 0.045,
-      accuracy: 0.955,
-      f1Score: 0.962,
-      submissionDate: "2024-01-15T10:30:00Z",
-      rank: 1,
-      status: "evaluated",
-      fileName: "ocr_results_v2.json",
-      fileSize: 2048,
-    },
-  ],
-};
+
 
 // API functions
 export const challengeApi = {

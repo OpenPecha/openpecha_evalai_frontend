@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useAuth0 } from "../hooks/useAuth0";
 import { setAuthTokenGetter as setUserAuthTokenGetter } from "../api/user";
 import { setAuthTokenGetter as setChallengeAuthTokenGetter } from "../api/challenge";
+import { setTranslateAuthTokenGetter } from "../api/translate";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -13,9 +14,10 @@ const AuthWrapper = ({ children }: AuthWrapperProps) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      // Set up the token getter function for both APIs
+      // Set up the token getter function for all APIs
       setUserAuthTokenGetter(getAccessTokenSilently);
       setChallengeAuthTokenGetter(getAccessTokenSilently);
+      setTranslateAuthTokenGetter(getAccessTokenSilently);
     }
   }, [isAuthenticated, getAccessTokenSilently]);
 

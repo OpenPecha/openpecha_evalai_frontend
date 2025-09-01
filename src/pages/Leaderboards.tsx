@@ -18,6 +18,7 @@ import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
 import LeaderboardChart from "../components/LeaderboardChart";
 import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
+import TranslationLeaderboard from "../components/TranslationLeaderboard";
 import { useToast } from "../components/use-toast";
 
 const Leaderboards = () => {
@@ -198,7 +199,22 @@ const Leaderboards = () => {
             Leaderboards
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Track the performance of submissions across all challenges
+            Track the performance of submissions across all challenges and AI translation models
+          </p>
+        </div>
+
+        {/* Translation Model Leaderboard */}
+        <div className="mb-8">
+          <TranslationLeaderboard />
+        </div>
+
+        {/* Challenge Leaderboards Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Challenge Leaderboards
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Performance rankings for submitted models across different challenges
           </p>
         </div>
 
