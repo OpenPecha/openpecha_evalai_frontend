@@ -177,10 +177,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             <MessageCircle className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
             {isOpen && (
               <div className="flex items-center justify-between w-full">
-                <span>Chat</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-                  Soon
-                </span>
+                <span>Translation Arena</span>
               </div>
             )}
           </Link>
