@@ -212,7 +212,6 @@ const Chat = () => {
               token={token}
               onComplete={handleSessionComplete}
               onNewTranslation={handleNewChat}
-              selectionMethod={currentSession.selectionMethod}
             />
           </div>
         )}

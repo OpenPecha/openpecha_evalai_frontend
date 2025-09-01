@@ -3,30 +3,30 @@ import { StopCircle, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 
 interface ModelStreamPanelProps {
   modelId: string;
+  modelLabel: string;
   content: string;
   isStreaming: boolean;
   error: string | null;
   isComplete: boolean;
   onStop: () => void;
-  onSelect: () => void;
-  selected: boolean;
-  onScore: (score: 1 | 2 | 3 | 4 | 5) => void;
+  onScore: (modelId: string, score: 1 | 2 | 3 | 4 | 5) => void;
   disabled: boolean;
   voted: boolean;
+  anyVoted: boolean;
 }
 
 const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   modelId,
+  modelLabel,
   content,
   isStreaming,
   error,
   isComplete,
   onStop,
-  onSelect,
-  selected,
   onScore,
   disabled,
   voted,
+  anyVoted,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -42,8 +42,8 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   }, [content, isStreaming]);
 
   const handleScoreClick = (score: 1 | 2 | 3 | 4 | 5) => {
-    if (!voted && selected) {
-      onScore(score);
+    if (!voted && !disabled) {
+      onScore(modelId, score);
     }
   };
 
@@ -52,7 +52,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
     if (voted) {
       return `${baseClass} bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed`;
     }
-    if (!selected) {
+    if (disabled) {
       return `${baseClass} bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed`;
     }
     
@@ -72,7 +72,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
     if (error) {
       return "border-red-300 dark:border-red-600";
     }
-    if (selected) {
+    if (voted) {
       return "border-green-500 dark:border-green-400 bg-green-50/50 dark:bg-green-900/10";
     }
     if (disabled) {
@@ -88,9 +88,9 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <h3 className="font-semibold text-gray-900 dark:text-white">
-              {modelId}
+              {anyVoted ? modelId : modelLabel}
             </h3>
-            {selected && (
+            {voted && (
               <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
             )}
             {error && (
@@ -133,13 +133,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         ) : (
           <div
             ref={contentRef}
-            onClick={isComplete && !error && !selected ? onSelect : undefined}
-            className={`max-h-96 overflow-y-auto text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap scroll-smooth ${
-              isComplete && !error && !selected 
-                ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg p-3 -m-3 transition-colors duration-200" 
-                : ""
-            }`}
-            title={isComplete && !error && !selected ? "Click to rate this translation" : ""}
+            className="max-h-96 overflow-y-auto text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
           >
             {content ? (
               <div className="break-words">
@@ -170,11 +164,11 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
 
       {/* Actions */}
       <div className="p-4 border-t border-gray-100 dark:border-gray-700">
-        {/* Rating - Show when selected */}
-        {selected && (
+        {/* Rating - Show when translation is complete and not voted yet */}
+        {isComplete && !error && !voted && (
           <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {voted ? "Thank you for your feedback!" : "Rate this translation:"}
+            <div className="text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
+              Rate this translation:
             </div>
             <div className="flex items-center justify-center space-x-3">
               {[
@@ -188,25 +182,25 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
                   key={score}
                   onClick={() => handleScoreClick(score as 1 | 2 | 3 | 4 | 5)}
                   className={getScoreButtonClass(score)}
-                  disabled={voted || !selected}
+                  disabled={voted || disabled}
                   title={`Rate ${score} - ${emoji}`}
                 >
                   {emoji}
                 </button>
               ))}
             </div>
-            {voted && (
-              <div className="text-xs text-green-600 dark:text-green-400 mt-1 text-center">
-                ✓ Vote submitted successfully
-              </div>
-            )}
           </div>
         )}
 
-        {/* Click instruction for unselected but complete translations */}
-        {isComplete && !error && !selected && (
-          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            👆 Click on the translation above to rate it
+        {/* Thank you message when voted */}
+        {voted && (
+          <div className="text-center">
+            <div className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">
+              Thank you for your feedback!
+            </div>
+            <div className="text-xs text-green-600 dark:text-green-400">
+              ✓ Vote submitted successfully
+            </div>
           </div>
         )}
 

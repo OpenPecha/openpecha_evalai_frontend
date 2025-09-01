@@ -12,7 +12,6 @@ interface DualCompareProps {
   token: string;
   onComplete?: () => void;
   onNewTranslation?: () => void;
-  selectionMethod?: string;
 }
 
 const DualCompare: React.FC<DualCompareProps> = ({
@@ -24,7 +23,6 @@ const DualCompare: React.FC<DualCompareProps> = ({
   onNewTranslation,
 }) => {
   const { success: showSuccessToast, error: showErrorToast } = useToast();
-  const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [votedModel, setVotedModel] = useState<string | null>(null);
   const [isVoting, setIsVoting] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -50,20 +48,14 @@ const DualCompare: React.FC<DualCompareProps> = ({
     }
   }, [streamA.start, streamB.start, token]);
 
-  // Handle model selection
-  const handleSelectModel = useCallback((modelId: string) => {
-    if (votedModel) return; // Already voted, can't change selection
-    setSelectedModel(modelId);
-  }, [votedModel]);
-
-  // Handle scoring/voting
-  const handleScore = useCallback(async (score: 1 | 2 | 3 | 4 | 5) => {
-    if (!selectedModel || votedModel || isVoting) return;
+  // Handle scoring/voting - now takes modelId directly
+  const handleScore = useCallback(async (modelId: string, score: 1 | 2 | 3 | 4 | 5) => {
+    if (votedModel || isVoting) return; // Already voted or currently voting
 
     setIsVoting(true);
     try {
-      await voteModel(selectedModel, score, token);
-      setVotedModel(selectedModel);
+      await voteModel(modelId, score, token);
+      setVotedModel(modelId);
       showSuccessToast("Thank you!", "Your vote has been recorded.");
       onComplete?.();
       
@@ -78,7 +70,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
     } finally {
       setIsVoting(false);
     }
-  }, [selectedModel, votedModel, isVoting, token, showSuccessToast, showErrorToast, onComplete]);
+  }, [votedModel, isVoting, token, showSuccessToast, showErrorToast, onComplete]);
 
   // Countdown timer effect
   useEffect(() => {
@@ -107,31 +99,31 @@ const DualCompare: React.FC<DualCompareProps> = ({
         {/* Model A Panel */}
         <ModelStreamPanel
           modelId={modelA}
+          modelLabel="Model A"
           content={streamA.data}
           isStreaming={streamA.isStreaming}
           error={streamA.error}
           isComplete={streamA.isComplete}
           onStop={streamA.stop}
-          onSelect={() => handleSelectModel(modelA)}
-          selected={selectedModel === modelA}
           onScore={handleScore}
-          disabled={selectedModel !== null && selectedModel !== modelA}
+          disabled={votedModel !== null && votedModel !== modelA}
           voted={votedModel === modelA}
+          anyVoted={votedModel !== null}
         />
 
         {/* Model B Panel */}
         <ModelStreamPanel
           modelId={modelB}
+          modelLabel="Model B"
           content={streamB.data}
           isStreaming={streamB.isStreaming}
           error={streamB.error}
           isComplete={streamB.isComplete}
           onStop={streamB.stop}
-          onSelect={() => handleSelectModel(modelB)}
-          selected={selectedModel === modelB}
           onScore={handleScore}
-          disabled={selectedModel !== null && selectedModel !== modelB}
+          disabled={votedModel !== null && votedModel !== modelB}
           voted={votedModel === modelB}
+          anyVoted={votedModel !== null}
         />
       </div>
 
@@ -143,15 +135,9 @@ const DualCompare: React.FC<DualCompareProps> = ({
           </p>
         )}
         
-        {bothComplete && !selectedModel && !streamA.error && !streamB.error && (
+        {bothComplete && !votedModel && !streamA.error && !streamB.error && (
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            ✅ Both translations complete. Select the better response to rate it.
-          </p>
-        )}
-        
-        {selectedModel && !votedModel && (
-          <p className="text-sm text-green-600 dark:text-green-400">
-            📊 Rate the selected translation from 1-5 stars to submit your vote.
+            ✅ Both translations complete. Rate either response to reveal the model and continue.
           </p>
         )}
         
