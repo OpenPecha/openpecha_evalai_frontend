@@ -11,6 +11,7 @@ interface DualCompareProps {
   payload: TranslateRequest;
   token: string;
   onComplete?: () => void;
+  onNewTranslation?: () => void;
   selectionMethod?: string;
 }
 
@@ -20,12 +21,13 @@ const DualCompare: React.FC<DualCompareProps> = ({
   payload,
   token,
   onComplete,
-  selectionMethod,
+  onNewTranslation,
 }) => {
   const { success: showSuccessToast, error: showErrorToast } = useToast();
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [votedModel, setVotedModel] = useState<string | null>(null);
   const [isVoting, setIsVoting] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   // Stream hooks for both models
   const streamA = useModelStream(modelA, payload, token, {
@@ -64,6 +66,9 @@ const DualCompare: React.FC<DualCompareProps> = ({
       setVotedModel(selectedModel);
       showSuccessToast("Thank you!", "Your vote has been recorded.");
       onComplete?.();
+      
+      // Start countdown timer (5 seconds)
+      setCountdown(5);
     } catch (error) {
       console.error("Error submitting vote:", error);
       showErrorToast(
@@ -75,20 +80,28 @@ const DualCompare: React.FC<DualCompareProps> = ({
     }
   }, [selectedModel, votedModel, isVoting, token, showSuccessToast, showErrorToast, onComplete]);
 
+  // Countdown timer effect
+  useEffect(() => {
+    if (countdown === null) return;
+
+    if (countdown === 0) {
+      // Countdown finished, start new translation
+      onNewTranslation?.();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [countdown, onNewTranslation]);
+
   const bothComplete = streamA.isComplete && streamB.isComplete;
   const anyStreaming = streamA.isStreaming || streamB.isStreaming;
 
   return (
     <div className="space-y-6">
-      {/* Selection method info */}
-      {selectionMethod && (
-        <div className="text-center">
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-            Method: {selectionMethod}
-          </div>
-        </div>
-      )}
-
       {/* Model panels side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Model A Panel */}
@@ -147,6 +160,17 @@ const DualCompare: React.FC<DualCompareProps> = ({
             <p className="text-sm text-green-800 dark:text-green-400 font-medium">
               🎉 Thank you for your feedback! Your vote helps improve AI translation quality.
             </p>
+            {countdown !== null && countdown > 0 && (
+              <p className="text-xs text-green-600 dark:text-green-500 mt-2">
+                Starting new translation in {countdown} second{countdown !== 1 ? 's' : ''}... 
+                <button 
+                  onClick={() => onNewTranslation?.()} 
+                  className="ml-2 underline hover:no-underline"
+                >
+                  Start now
+                </button>
+              </p>
+            )}
           </div>
         )}
 
@@ -157,21 +181,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
         )}
       </div>
 
-      {/* Debug info (only in development) */}
-      {import.meta.env.DEV && (
-        <details className="text-xs text-gray-500 dark:text-gray-400">
-          <summary className="cursor-pointer">Debug Info</summary>
-          <pre className="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded text-left overflow-auto">
-            {JSON.stringify({
-              modelA: { id: modelA, streaming: streamA.isStreaming, complete: streamA.isComplete, error: streamA.error },
-              modelB: { id: modelB, streaming: streamB.isStreaming, complete: streamB.isComplete, error: streamB.error },
-              selected: selectedModel,
-              voted: votedModel,
-              payload: payload,
-            }, null, 2)}
-          </pre>
-        </details>
-      )}
+     
     </div>
   );
 };

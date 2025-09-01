@@ -3,6 +3,7 @@ import { Languages, RotateCcw, History } from "lucide-react";
 import ChatComposer from "../components/ChatComposer";
 import DualCompare from "../components/DualCompare";
 import { useAuth } from "../auth/use-auth-hook";
+import { DEFAULT_TRANSLATE_PROMPT } from "../types/translate";
 import type { TranslateRequest, TranslateSession } from "../types/translate";
 
 const Chat = () => {
@@ -171,7 +172,6 @@ const Chat = () => {
                           </p>
                           <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span>{session.modelA.name} vs {session.modelB.name}</span>
-                            <span>{session.voted ? "✓ Voted" : "Pending"}</span>
                           </div>
                         </div>
                       </button>
@@ -207,10 +207,11 @@ const Chat = () => {
               modelB={currentSession.modelB.id}
               payload={{
                 text: currentSession.inputText,
-                prompt: "translate",
+                prompt: DEFAULT_TRANSLATE_PROMPT,
               }}
               token={token}
               onComplete={handleSessionComplete}
+              onNewTranslation={handleNewChat}
               selectionMethod={currentSession.selectionMethod}
             />
           </div>

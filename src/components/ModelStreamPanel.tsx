@@ -48,21 +48,21 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   };
 
   const getScoreButtonClass = (score: number) => {
-    const baseClass = "w-8 h-8 rounded-full text-sm font-medium transition-all duration-200";
+    const baseClass = "w-12 h-12 rounded-full text-2xl flex items-center justify-center transition-all duration-200 transform hover:scale-110";
     if (voted) {
-      return `${baseClass} bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed`;
+      return `${baseClass} bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed`;
     }
     if (!selected) {
-      return `${baseClass} bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed`;
+      return `${baseClass} bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed`;
     }
     
-    // Active state colors
+    // Active state colors - lighter backgrounds for emojis
     const colors = {
-      1: "bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/20 dark:hover:bg-red-900/30 dark:text-red-400",
-      2: "bg-orange-100 hover:bg-orange-200 text-orange-700 dark:bg-orange-900/20 dark:hover:bg-orange-900/30 dark:text-orange-400",
-      3: "bg-yellow-100 hover:bg-yellow-200 text-yellow-700 dark:bg-yellow-900/20 dark:hover:bg-yellow-900/30 dark:text-yellow-400",
-      4: "bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 dark:text-blue-400",
-      5: "bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-900/20 dark:hover:bg-green-900/30 dark:text-green-400",
+      1: "bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-300 dark:bg-red-900/10 dark:hover:bg-red-900/20 dark:border-red-800 dark:hover:border-red-700",
+      2: "bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-300 dark:bg-orange-900/10 dark:hover:bg-orange-900/20 dark:border-orange-800 dark:hover:border-orange-700",
+      3: "bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 hover:border-yellow-300 dark:bg-yellow-900/10 dark:hover:bg-yellow-900/20 dark:border-yellow-800 dark:hover:border-yellow-700",
+      4: "bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-300 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 dark:border-blue-800 dark:hover:border-blue-700",
+      5: "bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-300 dark:bg-green-900/10 dark:hover:bg-green-900/20 dark:border-green-800 dark:hover:border-green-700",
     };
     
     return `${baseClass} ${colors[score as keyof typeof colors]} cursor-pointer`;
@@ -133,7 +133,13 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         ) : (
           <div
             ref={contentRef}
-            className="max-h-96 overflow-y-auto text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
+            onClick={isComplete && !error && !selected ? onSelect : undefined}
+            className={`max-h-96 overflow-y-auto text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap scroll-smooth ${
+              isComplete && !error && !selected 
+                ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg p-3 -m-3 transition-colors duration-200" 
+                : ""
+            }`}
+            title={isComplete && !error && !selected ? "Click to rate this translation" : ""}
           >
             {content ? (
               <div className="break-words">
@@ -164,46 +170,49 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
 
       {/* Actions */}
       <div className="p-4 border-t border-gray-100 dark:border-gray-700">
-        {/* Select button */}
-        {isComplete && !error && !selected && !disabled && (
-          <button
-            onClick={onSelect}
-            className="w-full mb-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
-          >
-            Select This Response
-          </button>
-        )}
-
-        {/* Rating */}
+        {/* Rating - Show when selected */}
         {selected && (
           <div className="space-y-2">
             <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {voted ? "Thank you for your feedback!" : "Rate this translation (1-5):"}
+              {voted ? "Thank you for your feedback!" : "Rate this translation:"}
             </div>
-            <div className="flex items-center space-x-2">
-              {[1, 2, 3, 4, 5].map((score) => (
+            <div className="flex items-center justify-center space-x-3">
+              {[
+                { score: 1, emoji: "😞" },
+                { score: 2, emoji: "😐" },
+                { score: 3, emoji: "🙂" },
+                { score: 4, emoji: "😊" },
+                { score: 5, emoji: "😍" }
+              ].map(({ score, emoji }) => (
                 <button
                   key={score}
                   onClick={() => handleScoreClick(score as 1 | 2 | 3 | 4 | 5)}
                   className={getScoreButtonClass(score)}
                   disabled={voted || !selected}
-                  title={`Rate ${score} star${score !== 1 ? 's' : ''}`}
+                  title={`Rate ${score} - ${emoji}`}
                 >
-                  {score}
+                  {emoji}
                 </button>
               ))}
             </div>
             {voted && (
-              <div className="text-xs text-green-600 dark:text-green-400 mt-1">
+              <div className="text-xs text-green-600 dark:text-green-400 mt-1 text-center">
                 ✓ Vote submitted successfully
               </div>
             )}
           </div>
         )}
 
+        {/* Click instruction for unselected but complete translations */}
+        {isComplete && !error && !selected && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+            👆 Click on the translation above to rate it
+          </div>
+        )}
+
         {/* Status indicators */}
         {!isComplete && !isStreaming && !error && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
+          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
             Ready to translate
           </div>
         )}

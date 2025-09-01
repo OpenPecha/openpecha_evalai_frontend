@@ -203,23 +203,10 @@ const Leaderboards = () => {
           </p>
         </div>
 
-        {/* Translation Model Leaderboard */}
-        <div className="mb-8">
-          <TranslationLeaderboard />
-        </div>
-
-        {/* Challenge Leaderboards Section */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Challenge Leaderboards
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Performance rankings for submitted models across different challenges
-          </p>
-        </div>
-
         {/* Leaderboards - 2 column layout */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Translation Model Leaderboard - First Item */}
+          <TranslationLeaderboard />
           {leaderboardsData?.map((leaderboard) => {
             // Get available metrics from first submission
             const availableMetrics =

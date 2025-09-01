@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Send, Languages, AlertTriangle } from "lucide-react";
 import { suggestModels } from "../api/translate";
-import { DEFAULT_MODELS } from "../types/translate";
-import type { SuggestResponse, TranslateRequest } from "../types/translate";
+import { DEFAULT_MODELS, SUPPORTED_LANGUAGES, createTranslatePrompt } from "../types/translate";
+import type { SuggestResponse, TranslateRequest, LanguageCode } from "../types/translate";
 
 interface ChatComposerProps {
   onSubmit: (payload: TranslateRequest, modelA: string, modelB: string, selectionMethod?: string) => void;
@@ -23,6 +23,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
   token,
 }) => {
   const [inputValue, setInputValue] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>("en"); // Default to English
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -35,11 +36,12 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
     setError(null);
 
     try {
-      // Get suggested models
-      let modelA = DEFAULT_MODELS[0];
-      let modelB = DEFAULT_MODELS[1];
+      // Get fresh suggested models for this translation
+      let modelA: string = DEFAULT_MODELS[0];
+      let modelB: string = DEFAULT_MODELS[1];
       let selectionMethod: string | undefined;
 
+      console.log('Fetching fresh model suggestions for new translation...');
       try {
         const suggestion: SuggestResponse = await suggestModels(token);
         
@@ -48,6 +50,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           modelA = suggestion.model_a;
           modelB = suggestion.model_b;
           selectionMethod = suggestion.selection_method || undefined;
+          console.log(`Using suggested models: ${modelA} vs ${modelB} (${selectionMethod})`);
         } else {
           console.warn("Incomplete model suggestion, using defaults:", suggestion);
           setError("Using default models (suggestion service unavailable)");
@@ -57,10 +60,12 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
         setError("Using default models (suggestion service unavailable)");
       }
 
-      // Create payload
+      // Create payload with target language
+      const selectedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLanguage);
+      const targetLanguageName = selectedLang?.name || 'English'; // Fallback to English
       const payload: TranslateRequest = {
         text,
-        prompt: "translate",
+        prompt: createTranslatePrompt(targetLanguageName),
       };
 
       // Clear input and submit
@@ -129,7 +134,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
               >
                 <div className="flex items-start space-x-2">
                   <Languages className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors flex-shrink-0" />
-                  <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <span className="font-['monlam'] text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     {text}
                   </span>
                 </div>
@@ -147,11 +152,31 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Enter text to translate (Tibetan, English, or other languages)..."
-          className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 pr-14 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[60px] max-h-[200px]"
+          className="w-full font-['monlam'] rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 pr-24 pb-12 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[80px] max-h-[200px]"
           disabled={disabled || isLoading}
           rows={2}
         />
         
+        {/* Target Language Selection - Inside textbox bottom left */}
+        <div className="absolute left-3 bottom-3 flex items-center space-x-1 bg-gray-50 dark:bg-gray-600 px-2 py-1 rounded-md">
+          <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">To:</span>
+          <select
+            id="target-language-inline"
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value as LanguageCode)}
+            className="text-xs bg-transparent border-none text-gray-700 dark:text-gray-200 focus:outline-none cursor-pointer font-medium"
+            disabled={disabled || isLoading}
+            title="Select target language for translation"
+          >
+            {SUPPORTED_LANGUAGES.map((language) => (
+              <option key={language.code} value={language.code} className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                {language.flag} {language.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        {/* Translate Button - Bottom right */}
         <button
           onClick={handleSubmit}
           disabled={!inputValue.trim() || disabled || isLoading}
@@ -169,8 +194,14 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       {/* Instructions */}
       <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
         <p>• Press Enter to translate, Shift+Enter for new line</p>
-        <p>• Two AI models will translate your text simultaneously for comparison</p>
-        <p>• You can vote on which translation is better to help improve AI quality</p>
+        <p>• Select target language in the bottom-left of the input area</p>
+        <p>• Fresh AI model pairs are selected for each translation</p>
+        <p>• Click on any translation to rate it with emoji feedback</p>
+        {isLoading && (
+          <p className="text-blue-600 dark:text-blue-400 font-medium">
+            🔄 Getting fresh model suggestions...
+          </p>
+        )}
       </div>
     </div>
   );

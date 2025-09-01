@@ -37,6 +37,9 @@ export async function suggestModels(token?: string): Promise<SuggestResponse> {
   try {
     const headers: Record<string, string> = {
       "accept": "application/json",
+      // Prevent caching to ensure fresh suggestions
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache",
     };
 
     // Add auth header if token is provided
@@ -44,7 +47,11 @@ export async function suggestModels(token?: string): Promise<SuggestResponse> {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}/translate/suggest_model`, {
+    // Add timestamp to prevent caching
+    const url = new URL(`${API_BASE_URL}/translate/suggest_model`);
+    url.searchParams.append('_t', Date.now().toString());
+
+    const response = await fetch(url.toString(), {
       method: "GET",
       headers,
     });
@@ -54,6 +61,7 @@ export async function suggestModels(token?: string): Promise<SuggestResponse> {
     }
 
     const data: SuggestResponse = await response.json();
+    console.log('Fresh model suggestions received:', data);
     return data;
   } catch (error) {
     console.error("Error fetching suggested models:", error);
