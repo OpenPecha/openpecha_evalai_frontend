@@ -16,12 +16,12 @@ const getRankIcon = (rank: number) => {
     case 1:
       return <Crown className="w-5 h-5 text-yellow-500" />;
     case 2:
-      return <Medal className="w-5 h-5 text-gray-400" />;
+      return <Medal className="w-5 h-5 text-neutral-400" />;
     case 3:
       return <Award className="w-5 h-5 text-amber-600" />;
     default:
       return (
-        <span className="w-5 h-5 flex items-center justify-center text-gray-600 dark:text-gray-400 font-semibold text-sm">
+        <span className="w-5 h-5 flex items-center justify-center text-neutral-600 dark:text-neutral-400 font-semibold text-sm">
           {rank}
         </span>
       );
@@ -47,9 +47,9 @@ const getMetricClass = (metric: string) => {
     case "ACCURACY":
       return "text-green-600 dark:text-green-400";
     case "BLEU":
-      return "text-blue-600 dark:text-blue-400";
+      return "text-primary-600 dark:text-primary-400";
     default:
-      return "text-gray-900 dark:text-white";
+      return "text-neutral-900 dark:text-neutral-100";
   }
 };
 
@@ -58,11 +58,11 @@ const getStatusColor = (status: string) => {
     case "active":
       return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
     case "completed":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400";
+      return "bg-primary-100 text-primary-800 dark:bg-primary-900/20 dark:text-primary-400";
     case "draft":
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+      return "bg-neutral-100 text-neutral-800 dark:bg-neutral-900/20 dark:text-neutral-400";
     default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+      return "bg-neutral-100 text-neutral-800 dark:bg-neutral-900/20 dark:text-neutral-400";
   }
 };
 
@@ -105,10 +105,10 @@ const LeaderboardEmbed = () => {
 
   if (isLoading) {
     return (
-      <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <div className="p-4 bg-neutral-50 dark:bg-neutral-900 min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400 text-sm">
             Loading leaderboard...
           </p>
         </div>
@@ -118,7 +118,7 @@ const LeaderboardEmbed = () => {
 
   if (error || !challenge || !leaderboard) {
     return (
-      <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <div className="p-4 bg-neutral-50 dark:bg-neutral-900 min-h-screen">
         <div className="text-center">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <h2 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-2">
@@ -142,16 +142,16 @@ const LeaderboardEmbed = () => {
       : [];
 
   return (
-    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="p-4 bg-neutral-50 dark:bg-neutral-900 min-h-screen">
       {/* Single Leaderboard Card */}
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
           {/* Compact Challenge Header */}
-          <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+          <div className="bg-neutral-50 dark:bg-neutral-700 px-4 py-2 border-b border-neutral-200 dark:border-neutral-600">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <h2
-                  className="text-sm font-semibold text-gray-900 dark:text-white truncate cursor-help"
+                  className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 truncate cursor-help"
                   title={challenge.description || leaderboard.challengeTitle}
                 >
                   {leaderboard.challengeTitle}
@@ -170,19 +170,19 @@ const LeaderboardEmbed = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">
                   {leaderboard.submissions.length}
                 </span>
                 
                 {/* View Toggle Buttons */}
                 {leaderboard.submissions.length > 0 && (
-                  <div className="flex items-center bg-gray-100 dark:bg-gray-600 rounded-md p-0.5">
+                  <div className="flex items-center bg-neutral-100 dark:bg-neutral-600 rounded-md p-0.5">
                     <button
                       onClick={() => setViewMode("table")}
                       className={`p-1 rounded text-xs transition-colors duration-200 ${
                         viewMode === "table"
-                          ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                          ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
+                          : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
                       }`}
                       title="Table view"
                     >
@@ -192,8 +192,8 @@ const LeaderboardEmbed = () => {
                       onClick={() => setViewMode("chart")}
                       className={`p-1 rounded text-xs transition-colors duration-200 ${
                         viewMode === "chart"
-                          ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                          ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
+                          : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
                       }`}
                       title="Chart view"
                     >
@@ -208,11 +208,11 @@ const LeaderboardEmbed = () => {
           {/* Leaderboard Content - Table or Chart */}
           {leaderboard.submissions.length === 0 && (
             <div className="text-center py-8">
-              <Trophy className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+              <Trophy className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
+              <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
                 No submissions yet
               </h3>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
                 Be the first to submit!
               </p>
             </div>
@@ -221,25 +221,25 @@ const LeaderboardEmbed = () => {
           {leaderboard.submissions.length > 0 && viewMode === "table" && (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
+                <thead className="bg-neutral-50 dark:bg-neutral-700">
                   <tr>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                       #
                     </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                       Model
                     </th>
                     {availableMetrics.slice(0, 2).map((metric) => (
                       <th
                         key={metric}
-                        className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                        className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
                       >
                         {metric}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {leaderboard.submissions
                     .slice(0, 8)
                     .map((submission) => (
@@ -248,18 +248,18 @@ const LeaderboardEmbed = () => {
                           submission.submission_id ||
                           `submission-${Math.random()}`
                         }
-                        className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                        className="hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-150"
                       >
                         <td className="px-3 py-2 whitespace-nowrap">
                           <div className="flex items-center">
                             {getRankIcon(submission.rank || 0)}
-                            <span className="ml-1 text-xs font-medium text-gray-900 dark:text-white">
+                            <span className="ml-1 text-xs font-medium text-neutral-900 dark:text-neutral-100">
                               {submission.rank || 0}
                             </span>
                           </div>
                         </td>
                         <td className="px-3 py-2 whitespace-nowrap">
-                          <div className="text-xs font-medium text-gray-900 dark:text-white truncate max-w-32">
+                          <div className="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-32">
                             {submission.model_name}
                           </div>
                         </td>

@@ -14,7 +14,7 @@ import MySubmissions from "./pages/MySubmissions";
 import Settings from "./pages/Settings";
 import CreateChallenge from "./pages/CreateChallenge";
 import EditChallenge from "./pages/EditChallenge";
-import "./app.css";
+// CSS imports handled in main.tsx
 import { useAuth } from "./auth/use-auth-hook";
 import { useAuthenticatedUser } from "./hooks/useUserApiAuth";
 const Login = lazy(() => import("./pages/Login"));
@@ -41,7 +41,7 @@ const App = () => {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen ">
         <Routes>
           {/* Embed routes - no sidebar */}
           <Route

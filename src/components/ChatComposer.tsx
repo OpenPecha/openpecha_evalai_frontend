@@ -121,7 +121,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       {/* Example texts */}
       {!inputValue && (
         <div className="space-y-3">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Try these examples:
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -129,12 +129,12 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
               <button
                 key={text}
                 onClick={() => handleExampleClick(text)}
-                className="p-3 text-left bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 group"
+                className="p-3 text-left bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group"
                 disabled={disabled || isLoading}
               >
                 <div className="flex items-start space-x-2">
-                  <Languages className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors flex-shrink-0" />
-                  <span className="font-['monlam'] text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <Languages className="w-4 h-4 text-primary-600 dark:text-primary-400 mt-0.5 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors flex-shrink-0" />
+                  <span className="font-['monlam'] text-sm text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
                     {text}
                   </span>
                 </div>
@@ -152,24 +152,24 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Enter text to translate (Tibetan, English, or other languages)..."
-          className="w-full font-['monlam'] rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 pr-24 pb-12 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[80px] max-h-[200px]"
+          className="w-full font-['monlam'] rounded-xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-4 py-3 pr-24 pb-12 text-neutral-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[80px] max-h-[200px]"
           disabled={disabled || isLoading}
           rows={2}
         />
         
         {/* Target Language Selection - Inside textbox bottom left */}
-        <div className="absolute left-3 bottom-3 flex items-center space-x-1 bg-gray-50 dark:bg-gray-600 px-2 py-1 rounded-md">
-          <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">To:</span>
+        <div className="absolute left-3 bottom-3 flex items-center space-x-1 bg-neutral-50 dark:bg-neutral-600 px-2 py-1 rounded-md">
+          <span className="text-xs text-neutral-600 dark:text-neutral-300 font-medium">To:</span>
           <select
             id="target-language-inline"
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value as LanguageCode)}
-            className="text-xs bg-transparent border-none text-gray-700 dark:text-gray-200 focus:outline-none cursor-pointer font-medium"
+            className="text-xs bg-transparent border-none text-neutral-700 dark:text-neutral-200 focus:outline-none cursor-pointer font-medium"
             disabled={disabled || isLoading}
             title="Select target language for translation"
           >
             {SUPPORTED_LANGUAGES.map((language) => (
-              <option key={language.code} value={language.code} className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <option key={language.code} value={language.code} className="bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white">
                 {language.flag} {language.name}
               </option>
             ))}
@@ -180,7 +180,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
         <button
           onClick={handleSubmit}
           disabled={!inputValue.trim() || disabled || isLoading}
-          className="absolute right-3 bottom-3 w-10 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors duration-200"
+          className="absolute right-3 bottom-3 w-10 h-10 bg-primary-600 hover:bg-primary-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors duration-200"
           title="Translate (Enter)"
         >
           {isLoading ? (
@@ -192,13 +192,13 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       </div>
 
       {/* Instructions */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+      <div className="text-xs text-neutral-500 dark:text-neutral-400 space-y-1">
         <p>• Press Enter to translate, Shift+Enter for new line</p>
         <p>• Select target language in the bottom-left of the input area</p>
         <p>• Fresh AI model pairs are selected for each translation</p>
         <p>• Click on any translation to rate it with emoji feedback</p>
         {isLoading && (
-          <p className="text-blue-600 dark:text-blue-400 font-medium">
+          <p className="text-primary-600 dark:text-primary-400 font-medium">
             🔄 Getting fresh model suggestions...
           </p>
         )}

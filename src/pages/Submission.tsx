@@ -126,11 +126,11 @@ const Submission = () => {
 
   if (challengeLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">
+            <p className="mt-4 text-neutral-600 dark:text-neutral-400">
               Loading challenge details...
             </p>
           </div>
@@ -141,12 +141,12 @@ const Submission = () => {
 
   if (challengeError || !challenge) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-6">
             <Link
               to="/challenges"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+              className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Challenges
@@ -171,12 +171,12 @@ const Submission = () => {
 
   if (challenge.status !== "active") {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-6">
             <Link
               to="/challenges"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+              className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Challenges
@@ -219,14 +219,14 @@ const Submission = () => {
         <div className="mb-6">
           <Link
             to="/"
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+            className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Challenges
           </Link>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden">
           <div className="bg-green-600 text-white px-6 py-6">
             <h1 className="text-2xl font-bold mb-2">
               Submit to {challenge.title || challenge.name}
@@ -277,7 +277,7 @@ const Submission = () => {
             <div>
               <label
                 htmlFor="modelName"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
               >
                 Model Name *
               </label>
@@ -289,11 +289,11 @@ const Submission = () => {
                   setModelName(e.target.value);
                   if (submissionError) setSubmissionError("");
                 }}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="e.g., MyAwesomeModel-v1.0"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
                 You can add new model names, and they will be created in our
                 model table if the submission passes validation.
               </p>
@@ -303,7 +303,7 @@ const Submission = () => {
             <div>
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
               >
                 Description *
               </label>
@@ -315,11 +315,11 @@ const Submission = () => {
                   if (submissionError) setSubmissionError("");
                 }}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Brief description of your model or approach..."
                 required
               />
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
                 This description will be displayed with your submission.
               </p>
             </div>
@@ -328,7 +328,7 @@ const Submission = () => {
             <div>
               <label
                 htmlFor="fileInput"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
               >
                 Upload Results File (JSON) *
               </label>
@@ -339,7 +339,7 @@ const Submission = () => {
                     ? "border-green-400 dark:border-green-600 bg-green-50 dark:bg-green-900/20"
                     : selectedFile
                     ? "border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20"
-                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                    : "border-neutral-300 dark:border-neutral-600 hover:border-neutral-400 dark:hover:border-neutral-500"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -367,20 +367,20 @@ const Submission = () => {
                   {selectedFile ? (
                     <div className="flex flex-col items-center">
                       <CheckCircle className="w-12 h-12 text-green-500 mb-2" />
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                         {selectedFile.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400">
                         {(selectedFile.size / 1024).toFixed(1)} KB
                       </p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center">
-                      <Upload className="w-12 h-12 text-gray-400 mb-2" />
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <Upload className="w-12 h-12 text-neutral-400 mb-2" />
+                      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                         Drop your JSON file here, or click to browse
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                         Only JSON files are accepted
                       </p>
                     </div>
@@ -467,7 +467,7 @@ const Submission = () => {
             <div className="flex justify-end space-x-4">
               <Link
                 to={`/leaderboard/${challengeId}`}
-                className="px-6 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                className="px-6 py-2 text-neutral-700 dark:text-neutral-300 bg-neutral-200 rounded-lg hover:bg-neutral-300 transition-colors duration-200"
               >
                 View Leaderboard
               </Link>
@@ -481,7 +481,7 @@ const Submission = () => {
                   !description.trim() ||
                   !isAuthenticated
                 }
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200 flex items-center"
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-neutral-400 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed transition-colors duration-200 flex items-center"
                 title={!isAuthenticated ? "Please login to submit" : ""}
               >
                 {submitMutation.isPending ? (

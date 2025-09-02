@@ -130,24 +130,24 @@ const DualCompare: React.FC<DualCompareProps> = ({
       {/* Status and instructions */}
       <div className="text-center space-y-2">
         {anyStreaming && (
-          <p className="text-sm text-blue-600 dark:text-blue-400">
+          <p className="text-sm text-primary-600 dark:text-primary-400">
             🔄 Streaming responses from both models...
           </p>
         )}
         
         {bothComplete && !votedModel && !streamA.error && !streamB.error && (
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
             ✅ Both translations complete. Rate either response to reveal the model and continue.
           </p>
         )}
         
         {votedModel && (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-            <p className="text-sm text-green-800 dark:text-green-400 font-medium">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3">
+            <p className="text-sm text-green-800 dark:text-green-300 font-medium">
               🎉 Thank you for your feedback! Your vote helps improve AI translation quality.
             </p>
             {countdown !== null && countdown > 0 && (
-              <p className="text-xs text-green-600 dark:text-green-500 mt-2">
+              <p className="text-xs text-green-600 dark:text-green-400 mt-2">
                 Starting new translation in {countdown} second{countdown !== 1 ? 's' : ''}... 
                 <button 
                   onClick={() => onNewTranslation?.()} 
@@ -161,7 +161,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
         )}
 
         {isVoting && (
-          <p className="text-sm text-blue-600 dark:text-blue-400">
+          <p className="text-sm text-primary-600 dark:text-primary-400">
             ⏳ Submitting your vote...
           </p>
         )}

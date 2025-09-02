@@ -50,10 +50,10 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   const getScoreButtonClass = (score: number) => {
     const baseClass = "w-12 h-12 rounded-full text-2xl flex items-center justify-center transition-all duration-200 transform hover:scale-110";
     if (voted) {
-      return `${baseClass} bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed`;
+      return `${baseClass} bg-neutral-100 dark:bg-neutral-700 opacity-50 cursor-not-allowed`;
     }
     if (disabled) {
-      return `${baseClass} bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed`;
+      return `${baseClass} bg-neutral-100 dark:bg-neutral-700 opacity-50 cursor-not-allowed`;
     }
     
     // Active state colors - lighter backgrounds for emojis
@@ -61,7 +61,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
       1: "bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-300 dark:bg-red-900/10 dark:hover:bg-red-900/20 dark:border-red-800 dark:hover:border-red-700",
       2: "bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-300 dark:bg-orange-900/10 dark:hover:bg-orange-900/20 dark:border-orange-800 dark:hover:border-orange-700",
       3: "bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 hover:border-yellow-300 dark:bg-yellow-900/10 dark:hover:bg-yellow-900/20 dark:border-yellow-800 dark:hover:border-yellow-700",
-      4: "bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-300 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 dark:border-blue-800 dark:hover:border-blue-700",
+      4: "bg-primary-50 hover:bg-primary-100 border-2 border-primary-200 hover:border-primary-300 dark:bg-primary-800/10 dark:hover:bg-primary-800/20 dark:border-primary-700 dark:hover:border-primary-600",
       5: "bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-300 dark:bg-green-900/10 dark:hover:bg-green-900/20 dark:border-green-800 dark:hover:border-green-700",
     };
     
@@ -76,18 +76,18 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
       return "border-green-500 dark:border-green-400 bg-green-50/50 dark:bg-green-900/10";
     }
     if (disabled) {
-      return "border-gray-200 dark:border-gray-600 opacity-75";
+      return "border-neutral-200 dark:border-neutral-600 opacity-75";
     }
-    return "border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500";
+    return "border-neutral-200 dark:border-neutral-600 hover:border-blue-300 dark:hover:border-blue-500";
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-xl border-2 transition-all duration-200 ${getPanelBorderClass()}`}>
+    <div className={`bg-white dark:bg-neutral-800 rounded-xl border-2 transition-all duration-200 ${getPanelBorderClass()}`}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+      <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+            <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">
               {anyVoted ? modelId : modelLabel}
             </h3>
             {voted && (
@@ -101,7 +101,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
           <div className="flex items-center space-x-2">
             {/* Streaming indicator */}
             {isStreaming && (
-              <div className="flex items-center space-x-1 text-blue-600 dark:text-blue-400">
+              <div className="flex items-center space-x-1 text-primary-600 dark:text-primary-400">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-xs">Streaming...</span>
               </div>
@@ -111,7 +111,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
             {isStreaming && (
               <button
                 onClick={onStop}
-                className="p-1 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
+                className="p-1 text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
                 title="Stop streaming"
               >
                 <StopCircle className="w-4 h-4" />
@@ -133,23 +133,23 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         ) : (
           <div
             ref={contentRef}
-            className="max-h-96 overflow-y-auto text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
+            className="max-h-96 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
           >
             {content ? (
               <div className="break-words">
                 {content}
                 {isStreaming && (
-                  <span className="inline-block w-2 h-5 ml-1 bg-blue-500 animate-pulse" />
+                  <span className="inline-block w-2 h-5 ml-1 bg-primary-500 animate-pulse" />
                 )}
               </div>
             ) : (
-              <div className="text-gray-400 dark:text-gray-500 italic">
+              <div className="text-neutral-400 dark:text-neutral-500 italic">
                 {isStreaming ? (
                   <div className="flex items-center space-x-2">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                     </div>
                     <span>Starting translation...</span>
                   </div>
@@ -163,11 +163,11 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
       </div>
 
       {/* Actions */}
-      <div className="p-4 border-t border-gray-100 dark:border-gray-700">
+      <div className="p-4 border-t border-neutral-100 dark:border-neutral-700">
         {/* Rating - Show when translation is complete and not voted yet */}
         {isComplete && !error && !voted && (
           <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
+            <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300 text-center">
               Rate this translation:
             </div>
             <div className="flex items-center justify-center space-x-3">
@@ -206,7 +206,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
 
         {/* Status indicators */}
         {!isComplete && !isStreaming && !error && (
-          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 text-center">
             Ready to translate
           </div>
         )}

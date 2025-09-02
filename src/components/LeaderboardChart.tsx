@@ -28,11 +28,11 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3">
-        <p className="font-medium text-gray-900 dark:text-white text-sm mb-2">
+      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg p-3">
+        <p className="font-medium text-neutral-900 dark:text-neutral-100 text-sm mb-2">
           {data.fullModel}
         </p>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-2">
           Rank: #{data.rank}
         </p>
         {payload.map((entry: any) => {
@@ -54,11 +54,11 @@ const CustomTooltip = ({ active, payload }: any) => {
                   className="w-3 h-3 rounded" 
                   style={{ backgroundColor: entry.color }}
                 />
-                <span className="text-xs text-gray-700 dark:text-gray-300">
+                <span className="text-xs text-neutral-700 dark:text-neutral-300">
                   {metric}:
                 </span>
               </div>
-              <span className="text-xs font-medium text-gray-900 dark:text-white">
+              <span className="text-xs font-medium text-neutral-900 dark:text-neutral-100">
                 {displayValue}
               </span>
             </div>
@@ -122,15 +122,15 @@ const LeaderboardChart: React.FC<LeaderboardChartProps> = ({
     return (
       <div className={`${className} flex items-center justify-center py-8`}>
         <div className="text-center">
-          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-3">
-            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 bg-neutral-100 dark:bg-neutral-700 rounded-lg flex items-center justify-center mx-auto mb-3">
+            <svg className="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+          <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
             No data to visualize
           </h3>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
             Submit results to see performance comparisons
           </p>
         </div>
@@ -157,18 +157,18 @@ const LeaderboardChart: React.FC<LeaderboardChartProps> = ({
             textAnchor="end"
             height={80}
             fontSize={10}
-            className="text-gray-600 dark:text-gray-400"
+            className="text-neutral-600 dark:text-neutral-400"
           />
           <YAxis 
             fontSize={10}
-            className="text-gray-600 dark:text-gray-400"
+            className="text-neutral-600 dark:text-neutral-400"
             domain={[0, 100]}
             ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend 
             wrapperStyle={{ fontSize: '12px' }}
-            className="text-gray-600 dark:text-gray-400"
+            className="text-neutral-600 dark:text-neutral-400"
           />
           {availableMetrics.slice(0, 3).map((metric) => (
             <Bar

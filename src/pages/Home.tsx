@@ -32,7 +32,7 @@ const Home = () => {
       case "upcoming":
         return <Clock className="w-4 h-4 text-orange-500" />;
       case "completed":
-        return <Calendar className="w-4 h-4 text-gray-500" />;
+        return <Calendar className="w-4 h-4 text-neutral-500" />;
       default:
         return null;
     }
@@ -53,11 +53,11 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">
+            <p className="mt-4 text-neutral-600 dark:text-neutral-400">
               Loading challenges...
             </p>
           </div>
@@ -93,7 +93,7 @@ const Home = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             ML Evaluation Challenges
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
+          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
             Discover and participate in machine learning challenges. Test your
             models and compete with others.
           </p>
@@ -101,7 +101,7 @@ const Home = () => {
 
         {challenges.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
+            <p className="text-neutral-500 dark:text-gray-400 text-lg">
               No challenges available at the moment.
             </p>
           </div>
@@ -151,12 +151,12 @@ const Home = () => {
                     {challenge.title || challenge.name}
                   </h3>
 
-                  <p className=" text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 flex-1">
+                  <p className=" text-sm text-neutral-600 dark:text-neutral-400 mb-3 line-clamp-2 flex-1">
                     {challenge.description}
                   </p>
 
                   {/* Created Date */}
-                  <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center text-xs text-neutral-500 dark:text-gray-400 mb-4">
                     <Calendar className="w-3 h-3 mr-1" />
                     <span>
                       Created{" "}

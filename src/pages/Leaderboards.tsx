@@ -95,9 +95,9 @@ const Leaderboards = () => {
       case "upcoming":
         return "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20";
       case "completed":
-        return "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700";
+        return "text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700";
       default:
-        return "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700";
+        return "text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700";
     }
   };
 
@@ -119,12 +119,12 @@ const Leaderboards = () => {
       case 1:
         return <Crown className="w-5 h-5 text-yellow-500" />;
       case 2:
-        return <Medal className="w-5 h-5 text-gray-400" />;
+        return <Medal className="w-5 h-5 text-neutral-400" />;
       case 3:
         return <Award className="w-5 h-5 text-amber-600" />;
       default:
         return (
-          <span className="w-5 h-5 flex items-center justify-center text-gray-600 dark:text-gray-400 font-semibold text-sm">
+          <span className="w-5 h-5 flex items-center justify-center text-neutral-600 dark:text-neutral-400 font-semibold text-sm">
             {rank}
           </span>
         );
@@ -150,19 +150,19 @@ const Leaderboards = () => {
       case "ACCURACY":
         return "text-green-600 dark:text-green-400";
       case "BLEU":
-        return "text-blue-600 dark:text-blue-400";
+        return "text-primary-600 dark:text-primary-400";
       default:
-        return "text-gray-900 dark:text-white";
+        return "text-neutral-900 dark:text-neutral-100";
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">
+            <p className="mt-4 text-neutral-600 dark:text-neutral-400">
               Loading leaderboards...
             </p>
           </div>
@@ -173,7 +173,7 @@ const Leaderboards = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
@@ -195,10 +195,10 @@ const Leaderboards = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
             Leaderboards
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
+          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
             Track the performance of submissions across all challenges and AI translation models
           </p>
         </div>
@@ -217,14 +217,14 @@ const Leaderboards = () => {
             return (
               <div
                 key={leaderboard.challengeId}
-                className="bg-white relative dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+                className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden"
               >
                 {/* Compact Challenge Header */}
                 <div className=" px-4 py-2 ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <h2
-                        className="text-md  font-semibold text-gray-900 dark:text-white truncate cursor-help"
+                        className="text-md  font-semibold text-neutral-900 dark:text-neutral-100 truncate cursor-help"
                         title={
                           challenges.find(
                             (c) => c.id === leaderboard.challengeId
@@ -236,19 +236,19 @@ const Leaderboards = () => {
                     
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
                         {leaderboard.submissions.length}
                       </span>
                       
                       {/* View Toggle Buttons */}
                       {leaderboard.submissions.length > 0 && (
-                        <div className="flex items-center bg-gray-100 dark:bg-gray-600 rounded-md p-0.5">
+                        <div className="flex items-center bg-neutral-100 dark:bg-neutral-600 rounded-md p-0.5">
                           <button
                             onClick={() => toggleViewMode(leaderboard.challengeId)}
                             className={`p-1 rounded text-xs transition-colors duration-200 ${
                               getCurrentViewMode(leaderboard.challengeId) === "table"
-                                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
+                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
                             }`}
                             title="Table view"
                           >
@@ -258,8 +258,8 @@ const Leaderboards = () => {
                             onClick={() => toggleViewMode(leaderboard.challengeId)}
                             className={`p-1 rounded text-xs transition-colors duration-200 ${
                               getCurrentViewMode(leaderboard.challengeId) === "chart"
-                                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
+                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
                             }`}
                             title="Chart view"
                           >
@@ -281,16 +281,16 @@ const Leaderboards = () => {
                 {/* Leaderboard Content - Table or Chart */}
                 {leaderboard.submissions.length === 0 && (
                   <div className="text-center py-8">
-                    <Trophy className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                    <Trophy className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
+                    <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
                       No submissions yet
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                    <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
                       Be the first to submit!
                     </p>
                     <Link
                       to={`/submit/${leaderboard.challengeId}`}
-                      className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200"
+                      className="inline-flex items-center px-3 py-1.5 bg-primary-600 text-white text-xs rounded hover:bg-primary-700 transition-colors duration-200"
                     >
                       Submit Results
                     </Link>
@@ -302,28 +302,28 @@ const Leaderboards = () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="">
                         <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                             #
                           </th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                             Model
                           </th>
                           {availableMetrics.slice(0, 2).map((metric) => (
                             <th
                               key={metric}
-                              className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                              className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
                             >
                               {metric}
                             </th>
                           ))}
                           {isAdmin && (
-                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                               Actions
                             </th>
                           )}
                         </tr>
                       </thead>
-                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                      <tbody className="bg-white dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {leaderboard.submissions
                           .slice(0, 8)
                           .map((submission) => (
@@ -332,18 +332,18 @@ const Leaderboards = () => {
                                 submission.submission_id ||
                                 `submission-${Math.random()}`
                               }
-                              className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                              className="hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-150"
                             >
                               <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex items-center">
                                   {getRankIcon(submission.rank || 0)}
-                                  <span className="ml-1 text-xs font-medium text-gray-900 dark:text-white">
+                                  <span className="ml-1 text-xs font-medium text-neutral-900 dark:text-neutral-100">
                                     {submission.rank || 0}
                                   </span>
                                 </div>
                               </td>
                               <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-xs font-medium text-gray-900 dark:text-white truncate max-w-32">
+                                <div className="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-32">
                                   {submission.model_name}
                                 </div>
                               </td>
@@ -402,7 +402,7 @@ const Leaderboards = () => {
                 )}
                 <Link
                   to={`/leaderboard/${leaderboard.challengeId}`}
-                  className="w-full flex items-center bottom-0 absolute justify-center bg-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 dark:bg-gray-700 p-3 text-center text-gray-600 dark:text-gray-200 ">View all</Link>
+                  className="w-full flex items-center bottom-0 absolute justify-center bg-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 dark:bg-neutral-700 p-3 text-center text-neutral-600 dark:text-neutral-200 ">View all</Link>
               </div>
             );
           })}
@@ -410,11 +410,11 @@ const Leaderboards = () => {
 
         {leaderboardsData?.length === 0 && (
           <div className="text-center py-12">
-            <Trophy className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <Trophy className="w-16 h-16 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
               No leaderboards available
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-neutral-600 dark:text-neutral-400">
               Check back later when challenges have submissions.
             </p>
           </div>

@@ -194,11 +194,11 @@ const EditChallenge = () => {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="animate-pulse">
-          <div className="bg-gray-200 dark:bg-gray-700 h-8 w-48 mb-6"></div>
+          <div className="bg-neutral-200 dark:bg-neutral-700 h-8 w-48 mb-6"></div>
           <div className="space-y-4">
-            <div className="bg-gray-200 dark:bg-gray-700 h-12 w-full"></div>
-            <div className="bg-gray-200 dark:bg-gray-700 h-12 w-full"></div>
-            <div className="bg-gray-200 dark:bg-gray-700 h-32 w-full"></div>
+            <div className="bg-neutral-200 dark:bg-neutral-700 h-12 w-full"></div>
+            <div className="bg-neutral-200 dark:bg-neutral-700 h-12 w-full"></div>
+            <div className="bg-neutral-200 dark:bg-neutral-700 h-32 w-full"></div>
           </div>
         </div>
       </div>
@@ -232,19 +232,19 @@ const EditChallenge = () => {
       <div className="mb-6">
         <Link
           to={`/leaderboard/${challengeId}`}
-          className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+          className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Challenge
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
             Edit Challenge
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-neutral-600 dark:text-neutral-400">
             Update challenge information and optionally replace the ground truth
             file
           </p>
@@ -255,7 +255,7 @@ const EditChallenge = () => {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Challenge Title *
             </label>
@@ -265,7 +265,7 @@ const EditChallenge = () => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter challenge title"
               required
             />
@@ -275,7 +275,7 @@ const EditChallenge = () => {
           <div>
             <label
               htmlFor="category_id"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Category *
             </label>
@@ -284,7 +284,7 @@ const EditChallenge = () => {
               name="category_id"
               value={formData.category_id}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="">Select a category</option>
@@ -300,7 +300,7 @@ const EditChallenge = () => {
           <div>
             <label
               htmlFor="image_uri"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Challenge Image URL
             </label>
@@ -310,7 +310,7 @@ const EditChallenge = () => {
               name="image_uri"
               value={formData.image_uri}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -319,7 +319,7 @@ const EditChallenge = () => {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Description *
             </label>
@@ -329,7 +329,7 @@ const EditChallenge = () => {
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Describe the challenge objectives, rules, and evaluation criteria"
               required
             />
@@ -339,7 +339,7 @@ const EditChallenge = () => {
           <div>
             <label
               htmlFor="status"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Status *
             </label>
@@ -348,7 +348,7 @@ const EditChallenge = () => {
               name="status"
               value={formData.status}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="upcoming">Upcoming</option>
@@ -361,7 +361,7 @@ const EditChallenge = () => {
           <div>
             <label
               htmlFor="groundTruthFile"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Update Ground Truth File (Optional)
             </label>
@@ -369,10 +369,10 @@ const EditChallenge = () => {
             <div
               className={`relative border-2 border-dashed rounded-lg p-6 transition-colors duration-200 ${
                 dragActive
-                  ? "border-blue-400 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                  ? "border-blue-400 dark:border-blue-600 bg-primary-50 dark:bg-primary-900/20"
                   : selectedFile
                   ? "border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20"
-                  : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                  : "border-neutral-300 dark:border-neutral-600 hover:border-neutral-400 dark:hover:border-neutral-500"
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -391,10 +391,10 @@ const EditChallenge = () => {
                 {selectedFile ? (
                   <div className="flex flex-col items-center">
                     <FileText className="w-12 h-12 text-green-500 mb-2" />
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                       {selectedFile.name}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       {(selectedFile.size / 1024).toFixed(1)} KB
                     </p>
                     <button
@@ -407,11 +407,11 @@ const EditChallenge = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center">
-                    <Upload className="w-12 h-12 text-gray-400 mb-2" />
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <Upload className="w-12 h-12 text-neutral-400 mb-2" />
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                       Drop your ground truth JSON file here, or click to browse
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                       Only JSON files are accepted. This will replace the
                       existing ground truth file.
                     </p>
@@ -420,7 +420,7 @@ const EditChallenge = () => {
               </div>
             </div>
 
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
               <p>
                 <strong>Note:</strong> Uploading a new ground truth file will
                 replace the existing one and may affect existing submissions and
@@ -430,7 +430,7 @@ const EditChallenge = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-between items-center pt-6 border-t border-neutral-200 dark:border-neutral-700">
             {/* Delete Button */}
             <button
               type="button"
@@ -445,14 +445,14 @@ const EditChallenge = () => {
             <div className="flex space-x-4">
               <Link
                 to={`/leaderboard/${challengeId}`}
-                className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-6 py-2 border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={updateChallengeMutation.isPending || !hasChanges}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center space-x-2"
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center space-x-2"
               >
                 {updateChallengeMutation.isPending && (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -491,28 +491,28 @@ const EditChallenge = () => {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
             <div className="flex items-center mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600 mr-3" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                 Delete Challenge
               </h3>
             </div>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-neutral-600 dark:text-neutral-400 mb-6">
               Are you sure you want to delete this challenge? This action cannot
               be undone and will remove all associated submissions and results.
             </p>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleteChallengeMutation.isPending}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
               >
                 {deleteChallengeMutation.isPending && (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

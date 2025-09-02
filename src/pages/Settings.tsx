@@ -36,20 +36,20 @@ const Settings = () => {
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 flex items-center">
               <SettingsIcon className="w-8 h-8 mr-3" />
               Settings
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-neutral-600 dark:text-neutral-400">
               Manage your account preferences and settings.
             </p>
           </div>
 
           <div className="space-y-6">
             {/* Profile Settings */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+            <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600">
+              <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-600">
+                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 flex items-center">
                   <User className="w-5 h-5 mr-2" />
                   Profile Settings
                 </h2>
@@ -59,7 +59,7 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="displayName"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
                     >
                       Display Name
                     </label>
@@ -68,7 +68,7 @@ const Settings = () => {
                       id="displayName"
                       type="text"
                       defaultValue={user?.name || ""}
-                      className="w-full px-3 py-2 border dark:text-white rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
+                      className="w-full px-3 py-2 border dark:text-neutral-100 rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
                       placeholder="Your display name"
                     />
                   </div>
@@ -76,7 +76,7 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="emailAddress"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
                     >
                       Email Address
                     </label>
@@ -85,7 +85,7 @@ const Settings = () => {
                       type="email"
                       defaultValue={user?.email || ""}
                       disabled
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-neutral-50 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed"
                     />
                    
                   </div>
@@ -95,9 +95,9 @@ const Settings = () => {
             </div>
 
             {/* Notification Settings */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+            <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600">
+              <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-600">
+                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 flex items-center">
                   <Bell className="w-5 h-5 mr-2" />
                   Notification Preferences (Coming soon)
                 </h2>
@@ -107,11 +107,11 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="emailNotifications"
-                      className="text-sm font-medium text-gray-900 dark:text-white "
+                      className="text-sm font-medium text-neutral-900 dark:text-neutral-100 "
                     >
                       Email Notifications 
                     </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       Receive notifications about your submissions and rankings
                     </p>
                   </div>
@@ -121,7 +121,7 @@ const Settings = () => {
                     disabled
                     checked={emailNotifications}
                     onChange={(e) => setEmailNotifications(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded"
+                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-neutral-300 dark:border-neutral-600 rounded"
                   />
                 </div>
 
@@ -129,11 +129,11 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="weeklyDigest"
-                      className="text-sm font-medium text-gray-900 dark:text-white"
+                      className="text-sm font-medium text-neutral-900 dark:text-neutral-100"
                     >
                       Weekly Digest
                     </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       Get a weekly summary of new challenges and leaderboard
                       updates
                     </p>
@@ -144,7 +144,7 @@ const Settings = () => {
                     type="checkbox"
                     checked={weeklyDigest}
                     onChange={(e) => setWeeklyDigest(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded"
+                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-neutral-300 dark:border-neutral-600 rounded"
                   />
                 </div>
 
@@ -152,11 +152,11 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="newChallengeAlerts"
-                      className="text-sm font-medium text-gray-900 dark:text-white"
+                      className="text-sm font-medium text-neutral-900 dark:text-neutral-100"
                     >
                       New Challenge Alerts
                     </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       Be notified when new challenges are published
                     </p>
                   </div>
@@ -166,16 +166,16 @@ const Settings = () => {
                     disabled
                     checked={newChallengeAlerts}
                     onChange={(e) => setNewChallengeAlerts(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded"
+                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 border-neutral-300 dark:border-neutral-600 rounded"
                   />
                 </div>
               </div>
             </div>
 
             {/* Account Security */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+            <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600">
+              <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-600">
+                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 flex items-center">
                   <Shield className="w-5 h-5 mr-2" />
                   Account Security
                 </h2>

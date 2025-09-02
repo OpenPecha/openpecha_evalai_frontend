@@ -80,21 +80,21 @@ const Chat = () => {
   const hasHistory = sessions.length > 0;
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="h-full flex flex-col bg-neutral-50 dark:bg-neutral-900">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+      <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
                   AI Translation Arena
                 </h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
                   ✨ Live
                 </span>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
                 Compare AI translations and vote for better results
               </p>
             </div>
@@ -104,7 +104,7 @@ const Chat = () => {
             {hasCurrentSession && (
               <button
                 onClick={handleNewChat}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>New Translation</span>
@@ -123,12 +123,12 @@ const Chat = () => {
               {/* Welcome Section */}
               <div className="text-center mb-8">
                 <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Languages className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                  <Languages className="w-10 h-10 text-primary-600 dark:text-primary-400" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-4">
                   AI Translation Arena
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+                <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6">
                   Compare translations from different AI models and help improve translation quality through your feedback.
                 </p>
                 
@@ -142,7 +142,7 @@ const Chat = () => {
               </div>
 
               {/* Composer */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600 p-6">
+              <div className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-600 p-6">
                 <ChatComposer
                   onSubmit={handleTranslateSubmit}
                   token={token}
@@ -153,8 +153,8 @@ const Chat = () => {
               {hasHistory && (
                 <div className="mt-8">
                   <div className="flex items-center space-x-2 mb-4">
-                    <History className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <History className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
+                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                       Recent Translations
                     </h3>
                   </div>
@@ -164,13 +164,13 @@ const Chat = () => {
                       <button
                         key={session.id}
                         onClick={() => handleViewSession(session)}
-                        className="p-4 text-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200 group"
+                        className="p-4 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200 group"
                       >
                         <div className="space-y-2">
-                          <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                          <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
                             {session.inputText}
                           </p>
-                          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
                             <span>{session.modelA.name} vs {session.modelB.name}</span>
                           </div>
                         </div>
@@ -185,16 +185,16 @@ const Chat = () => {
           /* Active Translation Session */
           <div className="max-w-7xl mx-auto p-6 space-y-6">
             {/* Input Display */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600 p-6">
+            <div className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-600 p-6">
               <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Languages className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+                  <h3 className="font-medium text-neutral-900 dark:text-neutral-100 mb-2">
                     Input Text
                   </h3>
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
                     {currentSession.inputText}
                   </p>
                 </div>

@@ -153,11 +153,11 @@ const CreateChallenge = () => {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="animate-pulse">
-          <div className="bg-gray-200 dark:bg-gray-700 h-8 w-48 mb-6"></div>
+          <div className="bg-neutral-200 dark:bg-neutral-700 h-8 w-48 mb-6"></div>
           <div className="space-y-4">
-            <div className="bg-gray-200 dark:bg-gray-700 h-12 w-full"></div>
-            <div className="bg-gray-200 dark:bg-gray-700 h-12 w-full"></div>
-            <div className="bg-gray-200 dark:bg-gray-700 h-32 w-full"></div>
+            <div className="bg-neutral-200 dark:bg-neutral-700 h-12 w-full"></div>
+            <div className="bg-neutral-200 dark:bg-neutral-700 h-12 w-full"></div>
+            <div className="bg-neutral-200 dark:bg-neutral-700 h-32 w-full"></div>
           </div>
         </div>
       </div>
@@ -166,12 +166,12 @@ const CreateChallenge = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
             Create New Challenge
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-neutral-600 dark:text-neutral-400">
             Create a new challenge for participants to compete in
           </p>
         </div>
@@ -181,7 +181,7 @@ const CreateChallenge = () => {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Challenge Title *
             </label>
@@ -191,7 +191,7 @@ const CreateChallenge = () => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter challenge title"
               required
             />
@@ -201,7 +201,7 @@ const CreateChallenge = () => {
           <div>
             <label
               htmlFor="category_id"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Category *
             </label>
@@ -211,7 +211,7 @@ const CreateChallenge = () => {
                 name="category_id"
                 value={formData.category_id}
                 onChange={handleInputChange}
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select a category</option>
@@ -232,7 +232,7 @@ const CreateChallenge = () => {
 
             {/* New Category Form */}
             {showNewCategoryForm && (
-              <div className="mt-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="mt-3 p-4 bg-neutral-50 dark:bg-neutral-700 rounded-lg">
                 <div className="flex space-x-2">
                   <input
                     type="text"
@@ -242,7 +242,7 @@ const CreateChallenge = () => {
                       if (categoryError) setCategoryError("");
                     }}
                     placeholder="New category name"
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <button
                     type="button"
@@ -251,7 +251,7 @@ const CreateChallenge = () => {
                       createCategoryMutation.isPending ||
                       !newCategoryName.trim()
                     }
-                    className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors flex items-center"
+                    className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-neutral-400 transition-colors flex items-center"
                   >
                     {createCategoryMutation.isPending ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -265,7 +265,7 @@ const CreateChallenge = () => {
                       setShowNewCategoryForm(false);
                       setNewCategoryName("");
                     }}
-                    className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center"
+                    className="px-3 py-2 bg-neutral-600 text-white rounded-lg hover:bg-neutral-700 transition-colors flex items-center"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -285,7 +285,7 @@ const CreateChallenge = () => {
           <div>
             <label
               htmlFor="image_uri"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Challenge Image URL
             </label>
@@ -295,7 +295,7 @@ const CreateChallenge = () => {
               name="image_uri"
               value={formData.image_uri}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -304,7 +304,7 @@ const CreateChallenge = () => {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Description *
             </label>
@@ -314,7 +314,7 @@ const CreateChallenge = () => {
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Describe the challenge objectives, rules, and evaluation criteria"
               required
             />
@@ -324,7 +324,7 @@ const CreateChallenge = () => {
           <div>
             <label
               htmlFor="status"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Status *
             </label>
@@ -333,7 +333,7 @@ const CreateChallenge = () => {
               name="status"
               value={formData.status}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="upcoming">Upcoming</option>
@@ -346,20 +346,20 @@ const CreateChallenge = () => {
           <div>
             <label
               htmlFor="ground_truth_file"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
               Ground Truth File (Optional)
             </label>
 
             {selectedFile ? (
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600">
+              <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-700 rounded-lg border border-neutral-300 dark:border-neutral-600">
                 <div className="flex items-center space-x-3">
-                  <Upload className="w-5 h-5 text-gray-500" />
+                  <Upload className="w-5 h-5 text-neutral-500" />
                   <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                       {selectedFile.name}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
@@ -373,7 +373,7 @@ const CreateChallenge = () => {
                 </button>
               </div>
             ) : (
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+              <div className="border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-lg p-6 text-center">
                 <input
                   type="file"
                   id="ground_truth_file"
@@ -385,11 +385,11 @@ const CreateChallenge = () => {
                   htmlFor="ground_truth_file"
                   className="cursor-pointer flex flex-col items-center"
                 >
-                  <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <Upload className="w-8 h-8 text-neutral-400 mb-2" />
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
                     Click to upload ground truth file
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
                     JSON, TXT, or CSV files only
                   </p>
                 </label>
@@ -404,18 +404,18 @@ const CreateChallenge = () => {
             </div>
           )}
           {/* Submit Buttons */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-end space-x-4 pt-6 border-t border-neutral-200 dark:border-neutral-700">
             <button
               type="button"
               onClick={() => navigate("/")}
-              className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="px-6 py-2 border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={createChallengeMutation.isPending}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
             >
               {createChallengeMutation.isPending && (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

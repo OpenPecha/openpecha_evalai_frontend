@@ -59,9 +59,9 @@ const getMetricClass = (metric: string) => {
     case "ACCURACY":
       return "text-green-600 dark:text-green-400";
     case "BLEU":
-      return "text-blue-600 dark:text-blue-400";
+      return "text-primary-600 dark:text-primary-400";
     default:
-      return "text-gray-900 dark:text-white";
+      return "text-neutral-800 dark:text-neutral-100";
   }
 };
 
@@ -164,7 +164,7 @@ const Leaderboard = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
             <p className="mt-4 text-gray-600 dark:text-gray-400">
               Loading leaderboard...
             </p>
@@ -181,7 +181,7 @@ const Leaderboard = () => {
           <div className="mb-6">
             <Link
               to="/leaderboards"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+              className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Leaderboards
@@ -212,7 +212,7 @@ const Leaderboard = () => {
         <div className="mb-6">
           <Link
             to="/leaderboards"
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+            className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Leaderboards
@@ -308,7 +308,7 @@ const Leaderboard = () => {
                     placeholder="Search by model name..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:placeholder-gray-400 dark:focus:placeholder-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md leading-5 bg-white dark:bg-neutral-800 placeholder-neutral-500 dark:placeholder-neutral-300 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:placeholder-neutral-400 dark:focus:placeholder-neutral-200 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
                   />
                 </div>
                 
@@ -318,7 +318,7 @@ const Leaderboard = () => {
                     <select
                       value={selectedMetric}
                       onChange={(e) => setSelectedMetric(e.target.value)}
-                      className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value="all">All Metrics</option>
                       {availableMetrics.map((metric) => (
@@ -335,7 +335,7 @@ const Leaderboard = () => {
                   <div className="flex items-center">
                     <button
                       onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                      className="inline-flex items-center    rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300  "
+                      className="inline-flex items-center    rounded-md bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300  "
                       title={`Sort ${sortOrder === "asc" ? "descending" : "ascending"}`}
                     >
                       <Filter className="h-4 w-4 mr-2" />
@@ -351,7 +351,7 @@ const Leaderboard = () => {
 
 
         {/* Leaderboard */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden">
           
           {/* Search and Filter Controls */}
         
@@ -359,7 +359,7 @@ const Leaderboard = () => {
           {submissions.length === 0 && (
             <div className="text-center py-12">
               <Trophy className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-100 mb-2">
                 No submissions yet
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -367,7 +367,7 @@ const Leaderboard = () => {
               </p>
               <Link
                 to={`/submit/${challengeId}`}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200"
               >
                 Submit Results
               </Link>
@@ -378,7 +378,7 @@ const Leaderboard = () => {
           {submissions.length > 0 && filteredAndSortedSubmissions.length === 0 && (
             <div className="text-center py-12">
               <Search className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-100 mb-2">
                 No submissions found
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -389,7 +389,7 @@ const Leaderboard = () => {
                   setSearchQuery("");
                   setSelectedMetric("all");
                 }}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200"
               >
                 Clear All Filters
               </button>
@@ -428,7 +428,7 @@ const Leaderboard = () => {
                     )}
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {filteredAndSortedSubmissions.map((submission, index) => (
                     <tr
                       key={submission.submission_id}
@@ -437,13 +437,13 @@ const Leaderboard = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {getRankIcon(submission.rank || 0)}
-                          <span className="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+                          <span className="ml-2 text-sm font-medium text-neutral-800 dark:text-neutral-100">
                             #{submission.rank || 0}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
                           {submission.model_name}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -451,7 +451,7 @@ const Leaderboard = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                        <div className="text-sm text-neutral-800 dark:text-neutral-100 max-w-xs truncate">
                           {submission.description}
                         </div>
                       </td>
@@ -472,7 +472,7 @@ const Leaderboard = () => {
                         </td>
                       ))}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-sm text-neutral-800 dark:text-neutral-100">
                           {new Date(submission.created_at).toLocaleDateString()}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">

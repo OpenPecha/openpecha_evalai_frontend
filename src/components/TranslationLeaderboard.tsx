@@ -23,12 +23,12 @@ const TranslationLeaderboard: React.FC = () => {
       case 1:
         return <Crown className="w-5 h-5 text-yellow-500" />;
       case 2:
-        return <Medal className="w-5 h-5 text-gray-400" />;
+        return <Medal className="w-5 h-5 text-neutral-400" />;
       case 3:
         return <Award className="w-5 h-5 text-amber-600" />;
       default:
         return (
-          <span className="w-5 h-5 flex items-center justify-center text-gray-600 dark:text-gray-400 font-semibold text-sm">
+          <span className="w-5 h-5 flex items-center justify-center text-neutral-600 dark:text-neutral-300 font-semibold text-sm">
             {rank}
           </span>
         );
@@ -37,11 +37,11 @@ const TranslationLeaderboard: React.FC = () => {
 
   const getProviderColor = (provider: string) => {
     const colors = {
-      google: "text-blue-600 dark:text-blue-400",
-      openai: "text-green-600 dark:text-green-400", 
-      anthropic: "text-purple-600 dark:text-purple-400",
+      google: "text-primary-600 dark:text-primary-400",
+      openai: "text-secondary-600 dark:text-secondary-400", 
+      anthropic: "text-primary-500 dark:text-primary-300",
     };
-    return colors[provider as keyof typeof colors] || "text-gray-600 dark:text-gray-400";
+    return colors[provider as keyof typeof colors] || "text-neutral-600 dark:text-neutral-300";
   };
 
   // Filter and sort scores based on search and score filter
@@ -75,26 +75,26 @@ const TranslationLeaderboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
         <div className="px-4 py-2 ">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
                 Translation Arena
               </h2>
               <div className="flex items-center space-x-1">
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20">
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-800/20">
                   <span className="mr-0.5 text-xs">🤖</span>
                   {" "}AI Arena
                 </span>
               </div>
             </div>
-            <RefreshCw className="w-3 h-3 animate-spin text-gray-400" />
+            <RefreshCw className="w-3 h-3 animate-spin text-neutral-400" />
           </div>
         </div>
         <div className="text-center py-8">
-          <TrendingUp className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-          <p className="text-xs text-gray-600 dark:text-gray-400">Loading rankings...</p>
+          <TrendingUp className="w-8 h-8 text-neutral-300 dark:text-neutral-300 mx-auto mb-2" />
+          <p className="text-xs text-neutral-600 dark:text-neutral-300">Loading rankings...</p>
         </div>
       </div>
     );
@@ -104,11 +104,11 @@ const TranslationLeaderboard: React.FC = () => {
     const errorMessage = error instanceof Error ? error.message : "Failed to fetch leaderboard";
     
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+        <div className="bg-neutral-50 dark:bg-neutral-700 px-4 py-2 border-b border-neutral-200 dark:border-neutral-600">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
                 Translation Arena
               </h2>
               <div className="flex items-center space-x-1">
@@ -120,7 +120,7 @@ const TranslationLeaderboard: React.FC = () => {
             </div>
             <button
               onClick={() => fetchLeaderboard()}
-              className="p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors"
+              className="p-1 text-neutral-500 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-400 transition-colors"
               title="Retry"
             >
               <RefreshCw className="w-3 h-3" />
@@ -133,7 +133,7 @@ const TranslationLeaderboard: React.FC = () => {
           </p>
           <button
             onClick={() => fetchLeaderboard()}
-            className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200"
+            className="inline-flex items-center px-3 py-1.5 bg-primary-600 text-white text-xs rounded hover:bg-primary-700 transition-colors duration-200"
           >
             Try Again
           </button>
@@ -148,17 +148,17 @@ const TranslationLeaderboard: React.FC = () => {
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h2 className="text-md font-semibold text-gray-900 dark:text-white truncate">
+            <h2 className="text-md font-semibold text-neutral-800 dark:text-neutral-100  truncate">
               Translation Arena
             </h2>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-neutral-500 dark:text-neutral-300">
               {filteredAndSortedScores.length}
             </span>
             <button
               onClick={() => fetchLeaderboard()}
-              className="p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors"
+              className="p-1 text-neutral-500 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-400 transition-colors"
               title="Refresh rankings"
             >
               <RefreshCw className="w-3 h-3" />
@@ -174,14 +174,14 @@ const TranslationLeaderboard: React.FC = () => {
             {/* Search Bar */}
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+                <Search className="h-4 w-4 text-neutral-400" />
               </div>
               <input
                 type="text"
                 placeholder="Search by model name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white text-sm focus:outline-none focus:placeholder-gray-400 dark:focus:placeholder-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md leading-5 bg-white dark:bg-neutral-800 placeholder-neutral-500 dark:placeholder-neutral-400 text-neutral-800 dark:text-neutral-100 text-sm focus:outline-none focus:placeholder-neutral-400 dark:focus:placeholder-neutral-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
             
@@ -190,7 +190,7 @@ const TranslationLeaderboard: React.FC = () => {
               <select
                 value={selectedScore}
                 onChange={(e) => setSelectedScore(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="all">All Scores</option>
                 <option value="5">⭐⭐⭐⭐⭐ (5.0)</option>
@@ -207,11 +207,11 @@ const TranslationLeaderboard: React.FC = () => {
       {/* Leaderboard Content - Table Format like other leaderboards */}
       {filteredAndSortedScores.length === 0 ? (
         <div className="text-center py-8">
-          <TrendingUp className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-          <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+          <TrendingUp className="w-8 h-8 text-neutral-300 dark:text-neutral-300 mx-auto mb-2" />
+          <h3 className="text-sm font-medium text-neutral-800 dark:text-neutral-100 mb-1">
             {scores.length === 0 ? "No rankings yet" : "No models found"}
           </h3>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-xs text-neutral-600 dark:text-neutral-300 mb-3">
             {scores.length === 0 
               ? "Vote in the Translation Arena to create rankings!"
               : "Try adjusting your search or filter criteria."
@@ -223,7 +223,7 @@ const TranslationLeaderboard: React.FC = () => {
                 setSearchQuery("");
                 setSelectedScore("all");
               }}
-              className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200"
+              className="inline-flex items-center px-3 py-1.5 bg-primary-600 text-white text-xs rounded hover:bg-primary-700 transition-colors duration-200"
             >
               Clear Filters
             </button>
@@ -234,37 +234,37 @@ const TranslationLeaderboard: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="">
               <tr>
-                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
                   #
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
                   Model
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
                   Score
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
                   Votes
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
               {(showAll ? filteredAndSortedScores : filteredAndSortedScores.slice(0, 8)).map((score, index) => (
                 <tr
                   key={`${score.provider}-${score.model_version}`}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                  className="hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-150"
                 >
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="flex items-center">
                       {getRankIcon(index + 1)}
-                      <span className="ml-1 text-xs font-medium text-gray-900 dark:text-white">
+                      <span className="ml-1 text-xs font-medium text-neutral-800 dark:text-neutral-100">
                         {index + 1}
                       </span>
                     </div>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="space-y-1">
-                      <div className="text-xs font-medium text-gray-900 dark:text-white truncate max-w-32">
+                      <div className="text-xs font-medium text-neutral-800 dark:text-neutral-100 truncate max-w-32">
                         {score.model_version}
                       </div>
                       <div className={`text-xs ${getProviderColor(score.provider)}`}>
@@ -275,18 +275,18 @@ const TranslationLeaderboard: React.FC = () => {
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="flex items-center space-x-1">
                       <Star className="w-3 h-3 text-yellow-500" />
-                      <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                      <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-100">
                         {score.total_votes > 0 ? score.average_score.toFixed(1) : "-"}
                       </span>
                       {score.total_votes > 0 && (
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-neutral-500 dark:text-neutral-300">
                           ({score.score_percentage}%)
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                    <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">
                       {score.total_votes}
                     </div>
                   </td>
@@ -299,10 +299,10 @@ const TranslationLeaderboard: React.FC = () => {
       
       {/* View All/Show Less Button */}
       {filteredAndSortedScores.length > 8 && (
-        <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+        <div className="px-4 py-3 bg-neutral-50 dark:bg-neutral-700 border-t border-neutral-200 dark:border-neutral-600">
           <button
             onClick={() => setShowAll(!showAll)}
-            className="w-full text-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+            className="w-full text-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium"
           >
             {showAll ? "Show Less" : `View All ${filteredAndSortedScores.length} Models`}
           </button>

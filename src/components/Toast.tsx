@@ -52,7 +52,7 @@ const Toast: React.FC<ToastProps> = ({
         return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
       case "info":
       default:
-        return <Info className="w-5 h-5 text-blue-500" />;
+        return <Info className="w-5 h-5 text-primary-500" />;
     }
   };
 
@@ -66,7 +66,7 @@ const Toast: React.FC<ToastProps> = ({
         return "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800";
       case "info":
       default:
-        return "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800";
+        return "bg-primary-50 dark:bg-primary-800/20 border-primary-200 dark:border-primary-700";
     }
   };
 
@@ -80,14 +80,14 @@ const Toast: React.FC<ToastProps> = ({
         return "text-yellow-800 dark:text-yellow-200";
       case "info":
       default:
-        return "text-blue-800 dark:text-blue-200";
+        return "text-primary-800 dark:text-primary-200";
     }
   };
 
   return (
     <div
       className={`
-        max-w-sm w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg pointer-events-auto border
+        max-w-sm w-full bg-white dark:bg-neutral-800 shadow-lg rounded-lg pointer-events-auto border
         ${getBackgroundColor()}
         transform transition-all duration-300 ease-in-out
         ${

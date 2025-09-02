@@ -46,7 +46,7 @@ const getStatusBadge = (status: string) => {
       );
     default:
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-300">
           {status}
         </span>
       );
@@ -103,23 +103,23 @@ const MySubmissions = () => {
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
               My Submissions
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500">
+            <p className="text-neutral-600 dark:text-neutral-400 dark:text-neutral-500">
               Track all your challenge submissions and their performance.
             </p>
           </div>
 
           {/* Filters and Controls */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-4 mb-6">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600 p-4 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center">
-                  <Filter className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" />
+                  <Filter className="w-4 h-4 text-neutral-400 dark:text-neutral-500 mr-2" />
                   <label
                     htmlFor="status-filter"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-600"
+                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300 dark:text-neutral-600"
                   >
                     Status:
                   </label>
@@ -127,7 +127,7 @@ const MySubmissions = () => {
                     id="status-filter"
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="ml-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="ml-2 border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-100 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All</option>
                     <option value="pending">Pending</option>
@@ -140,7 +140,7 @@ const MySubmissions = () => {
                 <div className="flex items-center">
                   <label
                     htmlFor="sort-by"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-600"
+                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300 dark:text-neutral-600"
                   >
                     Sort by:
                   </label>
@@ -148,14 +148,14 @@ const MySubmissions = () => {
                     id="sort-by"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="ml-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="ml-2 border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-100 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="date">Date</option>
                   </select>
                 </div>
               </div>
 
-              <div className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <div className="text-sm text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
                 {filteredSubmissions.length} submission
                 {filteredSubmissions.length !== 1 ? "s" : ""}
               </div>
@@ -166,7 +166,7 @@ const MySubmissions = () => {
           {(submissionsLoading || challengesLoading) && (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600 dark:text-gray-400">
+              <p className="mt-4 text-neutral-600 dark:text-neutral-400">
                 Loading your submissions...
               </p>
             </div>
@@ -198,13 +198,13 @@ const MySubmissions = () => {
               {filteredSubmissions.map((submission) => (
                 <div
                   key={submission.id}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6 hover:shadow-md transition-shadow duration-200"
+                  className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600 p-6 hover:shadow-md transition-shadow duration-200"
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
                         <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                           {submission.description ||
                             `Submission ${submission.id.slice(0, 8)}`}
                         </h3>
@@ -213,7 +213,7 @@ const MySubmissions = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                          <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
                             Challenge
                           </p>
                           <Link
@@ -226,10 +226,10 @@ const MySubmissions = () => {
                         </div>
 
                         <div>
-                          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                          <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
                             Dataset URL
                           </p>
-                          <p className="font-medium text-gray-900 dark:text-white text-xs break-all">
+                          <p className="font-medium text-neutral-900 dark:text-neutral-100 text-xs break-all">
                             {submission.dataset_url ? (
                               <a
                                 href={submission.dataset_url}
@@ -251,7 +251,7 @@ const MySubmissions = () => {
                           submission.status === "pending") &&
                           submission.status_message && (
                             <div className="md:col-span-2">
-                              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                              <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
                                 Status Message
                               </p>
                               <p className="font-medium text-yellow-600 dark:text-yellow-400">
@@ -263,7 +263,7 @@ const MySubmissions = () => {
                       </div>
                     </div>
 
-                    <div className="mt-4 lg:mt-0 lg:ml-6 flex flex-col lg:items-end text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                    <div className="mt-4 lg:mt-0 lg:ml-6 flex flex-col lg:items-end text-sm text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
                       <div className="flex items-center mb-2">
                         <Calendar className="w-4 h-4 mr-1" />
                         {new Date(submission.created_at).toLocaleDateString()}
@@ -287,11 +287,11 @@ const MySubmissions = () => {
             </div>
           ) : !submissionsLoading && !challengesLoading && !submissionsError ? (
             <div className="text-center py-12">
-              <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <FileText className="w-16 h-16 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
                 No submissions found
               </h3>
-              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6">
+              <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500 mb-6">
                 {filterStatus === "all"
                   ? "You haven't made any submissions yet."
                   : `No submissions with status "${filterStatus}".`}
