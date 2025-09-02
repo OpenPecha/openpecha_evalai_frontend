@@ -153,7 +153,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       {/* Navigation */}
       <div className="p-4">
         {isOpen && (
-          <h2 className="text-sm font-semibold text-neutral-500  dark:text-neutral-100 uppercase tracking-wider mb-4">
+          <h2 className="text-sm font-semibold text-neutral-300 dark:text-neutral-200 uppercase tracking-wider mb-4">
             Navigation
           </h2>
         )}
@@ -170,7 +170,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             } ${
               isActivePath("/chat")
                 ? "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400"
-                : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700"
+                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700"
             }`}
             title={isOpen ? "" : "Chat (Coming Soon)"}
           >
@@ -236,7 +236,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       {isAuthenticated && user?.role === "admin" && (
         <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
           {isOpen && (
-            <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">
+            <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-200 uppercase tracking-wider mb-4">
               Admin
             </h2>
           )}
@@ -279,7 +279,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
           >
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
             {isOpen && (
-              <span className="text-sm text-neutral-500 dark:text-neutral-400">
+              <span className="text-sm text-neutral-500 dark:text-neutral-200">
                 Loading...
               </span>
             )}
@@ -303,7 +303,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   />
                 ) : (
                   <div className="w-6 h-6 bg-neutral-300 dark:bg-neutral-600 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                    <User className="w-4 h-4 text-neutral-600 dark:text-neutral-200" />
                   </div>
                 )}
                 {isOpen && (
@@ -314,9 +314,9 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               </div>
               {isOpen &&
                 (isUserMenuOpen ? (
-                  <ChevronUp className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+                  <ChevronUp className="w-4 h-4 text-neutral-500 dark:text-neutral-200" />
                 ) : (
-                  <ChevronDown className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+                  <ChevronDown className="w-4 h-4 text-neutral-500 dark:text-neutral-200" />
                 ))}
             </button>
 
@@ -343,7 +343,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
 
                 {/* Theme Selector */}
                 <div className="px-3 py-1">
-                  <div className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">
+                  <div className="text-xs font-medium text-neutral-500 dark:text-neutral-200 mb-1">
                     Theme
                   </div>
                   <div className="space-y-1">

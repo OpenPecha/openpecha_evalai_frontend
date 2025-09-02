@@ -17,12 +17,16 @@ import EditChallenge from "./pages/EditChallenge";
 // CSS imports handled in main.tsx
 import { useAuth } from "./auth/use-auth-hook";
 import { useAuthenticatedUser } from "./hooks/useUserApiAuth";
+import { useTheme } from "./hooks/useTheme";
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
   const { isAuthenticated, isLoading, getToken } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Initialize theme system at root level
+  useTheme();
 
   // Initialize user API auth
   useAuthenticatedUser();

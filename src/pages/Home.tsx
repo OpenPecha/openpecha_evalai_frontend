@@ -93,7 +93,7 @@ const Home = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             ML Evaluation Challenges
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          <p className="text-neutral-600 dark:text-white text-sm">
             Discover and participate in machine learning challenges. Test your
             models and compete with others.
           </p>
