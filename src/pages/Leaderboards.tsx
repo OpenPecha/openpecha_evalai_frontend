@@ -217,14 +217,14 @@ const Leaderboards = () => {
             return (
               <div
                 key={leaderboard.challengeId}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+                className="bg-white relative dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
               >
                 {/* Compact Challenge Header */}
-                <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+                <div className=" px-4 py-2 ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <h2
-                        className="text-sm font-semibold text-gray-900 dark:text-white truncate cursor-help"
+                        className="text-md  font-semibold text-gray-900 dark:text-white truncate cursor-help"
                         title={
                           challenges.find(
                             (c) => c.id === leaderboard.challengeId
@@ -233,26 +233,7 @@ const Leaderboards = () => {
                       >
                         {leaderboard.challengeTitle}
                       </h2>
-                      <div className="flex items-center space-x-1">
-                        <span
-                          className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${getStatusColor(
-                            challenges.find(
-                              (c) => c.id === leaderboard.challengeId
-                            )?.status || "unknown"
-                          )}`}
-                        >
-                          <span className="mr-0.5 text-xs">
-                            {getStatusIcon(
-                              challenges.find(
-                                (c) => c.id === leaderboard.challengeId
-                              )?.status || "unknown"
-                            )}
-                          </span>
-                          {challenges.find(
-                            (c) => c.id === leaderboard.challengeId
-                          )?.status || "unknown"}
-                        </span>
-                      </div>
+                    
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -319,7 +300,7 @@ const Leaderboards = () => {
                 {leaderboard.submissions.length > 0 && getCurrentViewMode(leaderboard.challengeId) === "table" && (
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                      <thead className="bg-gray-50 dark:bg-gray-700">
+                      <thead className="">
                         <tr>
                           <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             #
@@ -419,6 +400,9 @@ const Leaderboards = () => {
                     className="p-4"
                   />
                 )}
+                <Link
+                  to={`/leaderboard/${leaderboard.challengeId}`}
+                  className="w-full flex items-center bottom-0 absolute justify-center bg-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 dark:bg-gray-700 p-3 text-center text-gray-600 dark:text-gray-200 ">View all</Link>
               </div>
             );
           })}

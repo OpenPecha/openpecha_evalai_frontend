@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   ArrowLeft,
   Medal,
@@ -10,6 +10,8 @@ import {
   Trash2,
   BarChart3,
   Table,
+  Search,
+  Filter,
 } from "lucide-react";
 import {
   useLeaderboard,
@@ -66,6 +68,9 @@ const getMetricClass = (metric: string) => {
 const Leaderboard = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
   const [viewMode, setViewMode] = useState<"table" | "chart">("table");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMetric, setSelectedMetric] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const { data: currentUserData } = useCurrentUser();
   const deleteSubmissionMutation = useDeleteSubmission();
   const { success } = useToast();
@@ -161,6 +166,45 @@ const Leaderboard = () => {
   const availableMetrics =
     submissions.length > 0 ? Object.keys(submissions[0].metrics || {}) : [];
 
+  // Filter and sort submissions based on search and filters
+  const filteredAndSortedSubmissions = useMemo(() => {
+    let filtered = [...submissions];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(submission => 
+        submission.model_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        submission.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        submission.submission_id.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply metric filter and sorting
+    if (selectedMetric !== "all" && availableMetrics.includes(selectedMetric)) {
+      // Filter out submissions that don't have the selected metric
+      filtered = filtered.filter(submission => 
+        submission.metrics[selectedMetric] !== undefined
+      );
+
+      // Sort by the selected metric
+      filtered.sort((a, b) => {
+        const aValue = a.metrics[selectedMetric];
+        const bValue = b.metrics[selectedMetric];
+        
+        if (sortOrder === "asc") {
+          return aValue - bValue;
+        } else {
+          return bValue - aValue;
+        }
+      });
+    } else {
+      // Default sort by rank
+      filtered.sort((a, b) => (a.rank || 0) - (b.rank || 0));
+    }
+
+    return filtered;
+  }, [submissions, searchQuery, selectedMetric, sortOrder, availableMetrics]);
+
   return (
     <div className="py-0">
       <div className="max-w-7xl mx-auto px-4">
@@ -176,23 +220,37 @@ const Leaderboard = () => {
         </div>
 
         {/* Challenge Info Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-gradient-to-r  rounded-lg shadow-lg p-6 mb-8">
           <div className="text-white">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h1 className="text-3xl font-bold mb-2">
-                  {challenge.title || challenge.name} - Leaderboard
+                  {challenge.title || challenge.name}
                 </h1>
-                <p className="text-blue-100 mb-4">{challenge.description}</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">{challenge.description}</p>
               </div>
               {/* View Toggle, Admin Controls & Share Button */}
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center space-x-6 text-sm">
+                <div className="flex items-start flex-col">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Submissions</span>
+                  <span className="text-lg mt-2 font-medium">{pagination?.total || 0} </span>
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">Last updated</span>
+                  <span className="text-lg mt-2 font-medium">
+                    {new Date(challenge.updated_at).toLocaleDateString()}
+                  </span>
+                </div>
+            </div>
+              
+            </div>
+            <div className="flex items-center justify-between space-x-2">
                 {/* View Toggle Buttons */}
                 {submissions.length > 0 && (
                   <div className="flex items-center bg-white/20 rounded-lg p-0.5">
                     <button
                       onClick={() => setViewMode("table")}
-                      className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
+                      className={`px-3 py-1 rounded text-sm transition-colors duration-200 ${
                         viewMode === "table"
                           ? "bg-white/30 text-white shadow-sm"
                           : "text-white/70 hover:text-white"
@@ -200,11 +258,10 @@ const Leaderboard = () => {
                       title="Table view"
                     >
                       <Table className="w-4 h-4 mr-1 inline-block" />
-                      Table
                     </button>
                     <button
                       onClick={() => setViewMode("chart")}
-                      className={`px-3 py-2 rounded text-sm transition-colors duration-200 ${
+                      className={`px-3 py-1 rounded text-sm transition-colors duration-200 ${
                         viewMode === "chart"
                           ? "bg-white/30 text-white shadow-sm"
                           : "text-white/70 hover:text-white"
@@ -212,58 +269,92 @@ const Leaderboard = () => {
                       title="Chart view"
                     >
                       <BarChart3 className="w-4 h-4 mr-1 inline-block" />
-                      Chart
                     </button>
                   </div>
                 )}
                 
-                <ShareButton
+              
+                <div className="flex gap-2"> 
+                  <ShareButton
                   challengeId={challengeId || ""}
                   challengeTitle={
                     challenge.title || challenge.name || "Leaderboard"
                   }
+              
                 />
-                {isAdmin && (
-                  <Link
-                    to={`/admin/edit-challenge/${challengeId}`}
-                    className="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors duration-200"
-                  >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Challenge
-                  </Link>
-                )}
+                    {isAdmin && (
+                    <Link
+                      to={`/admin/edit-challenge/${challengeId}`}
+                      className="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors duration-200"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                    </Link>
+                  )}
+                  </div>
               </div>
-            </div>
-            <div className="flex flex-wrap items-center space-x-6 text-sm">
-              <div className="flex items-center">
-                <Users className="w-4 h-4 mr-2" />
-                <span>{pagination?.total || 0} Submissions</span>
-              </div>
-              <div className="flex items-center">
-                <Calendar className="w-4 h-4 mr-2" />
-                <span>
-                  Created: {new Date(challenge.created_at).toLocaleDateString()}
-                </span>
-              </div>
-              <div className="flex items-center">
-                <Trophy className="w-4 h-4 mr-2" />
-                <span>Status: {challenge.status}</span>
-              </div>
-            </div>
           </div>
         </div>
 
+        {submissions.length > 0 && (
+            <div className="  mb-4">
+              <div className="flex flex-col lg:flex-row gap-4">
+                {/* Search Bar */}
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search by model name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:placeholder-gray-400 dark:focus:placeholder-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                
+                {/* Metric Filter */}
+                {availableMetrics.length > 0 && (
+                  <div className="lg:w-56">
+                    <select
+                      value={selectedMetric}
+                      onChange={(e) => setSelectedMetric(e.target.value)}
+                      className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="all">All Metrics</option>
+                      {availableMetrics.map((metric) => (
+                        <option key={metric} value={metric}>
+                          Sort by {metric}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                
+                {/* Sort Order Toggle */}
+                {selectedMetric !== "all" && (
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                      className="inline-flex items-center    rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300  "
+                      title={`Sort ${sortOrder === "asc" ? "descending" : "ascending"}`}
+                    >
+                      <Filter className="h-4 w-4 mr-2" />
+                      {sortOrder === "asc" ? "Low to High" : "High to Low"}
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+         
+            </div>
+          )}
+
+
         {/* Leaderboard */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Rankings
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Showing {submissions.length} of {pagination?.total || 0}{" "}
-              submissions
-            </p>
-          </div>
+          
+          {/* Search and Filter Controls */}
+        
 
           {submissions.length === 0 && (
             <div className="text-center py-12">
@@ -283,10 +374,32 @@ const Leaderboard = () => {
             </div>
           )}
           
-          {submissions.length > 0 && viewMode === "table" && (
+          {/* No results after filtering */}
+          {submissions.length > 0 && filteredAndSortedSubmissions.length === 0 && (
+            <div className="text-center py-12">
+              <Search className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                No submissions found
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Try adjusting your search or filter criteria.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedMetric("all");
+                }}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Clear All Filters
+              </button>
+            </div>
+          )}
+          
+          {filteredAndSortedSubmissions.length > 0 && viewMode === "table" && (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
+                <thead className="">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Rank
@@ -316,7 +429,7 @@ const Leaderboard = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {submissions.map((submission) => (
+                  {filteredAndSortedSubmissions.map((submission, index) => (
                     <tr
                       key={submission.submission_id}
                       className="hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -390,32 +503,16 @@ const Leaderboard = () => {
             </div>
           )}
           
-          {submissions.length > 0 && viewMode === "chart" && (
+          {filteredAndSortedSubmissions.length > 0 && viewMode === "chart" && (
             <LeaderboardChart
-              submissions={submissions}
+              submissions={filteredAndSortedSubmissions}
               availableMetrics={availableMetrics}
               className="py-6"
             />
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-8 flex justify-center space-x-4">
-          <Link
-            to={`/submit/${challengeId}`}
-            className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
-          >
-            <Trophy className="w-5 h-5 mr-2" />
-            Submit Your Results
-          </Link>
-          <Link
-            to="/leaderboards"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
-            <Users className="w-5 h-5 mr-2" />
-            View All Leaderboards
-          </Link>
-        </div>
+   
       </div>
     </div>
   );

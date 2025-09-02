@@ -61,15 +61,7 @@ const LeaderboardActionsMenu: React.FC<LeaderboardActionsMenuProps> = ({
               Share Leaderboard
             </button>
 
-            {/* View All Link */}
-            <Link
-              to={`/leaderboard/${challengeId}`}
-              className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center transition-colors duration-200"
-              onClick={() => setIsOpen(false)}
-            >
-              <ExternalLink className="w-4 h-4 mr-3" />
-              View All
-            </Link>
+      
           </div>
         </div>
       )}

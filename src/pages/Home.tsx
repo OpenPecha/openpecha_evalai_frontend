@@ -110,7 +110,7 @@ const Home = () => {
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                className="flex flex-col group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
                 onMouseEnter={() => handleMouseEnter(challenge.id)}
               >
                 {/* Header with image or gradient */}
@@ -151,7 +151,7 @@ const Home = () => {
                     {challenge.title || challenge.name}
                   </h3>
 
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 flex-1">
+                  <p className=" text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 flex-1">
                     {challenge.description}
                   </p>
 
