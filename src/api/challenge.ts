@@ -1,7 +1,6 @@
 import type {
   Challenge,
   Category,
-  Submission,
   UserSubmission,
   SubmissionRequest,
   SubmissionResponse,
@@ -13,44 +12,14 @@ import type {
   ApiResponse,
   PaginatedResponse,
 } from "../types/challenge";
+import { getAuthHeaders, setAuthTokenGetter } from "../lib/auth";
 
 // API Base URL
 const API_BASE_URL =
   import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
-// Helper function to get access token (should be set by AuthWrapper)
-let getAccessTokenSilently: (() => Promise<string>) | null = null;
-
-export const setAuthTokenGetter = (tokenGetter: () => Promise<string>) => {
-  getAccessTokenSilently = tokenGetter;
-};
-
-// Helper function to get auth headers
-const getAuthHeaders = async (
-  contentType: "json" | "multipart" = "json"
-): Promise<Record<string, string>> => {
-  const headers: Record<string, string> = {};
-
-  // Only set Content-Type for JSON requests, FormData will set it automatically for multipart
-  if (contentType === "json") {
-    headers["Content-Type"] = "application/json";
-  }
-
-  if (getAccessTokenSilently) {
-    try {
-      const token = await getAccessTokenSilently();
-      headers.Authorization = `Bearer ${token}`;
-    } catch (error) {
-      console.warn("Failed to get access token:", error);
-    }
-  }
-
-  return headers;
-};
-
-// Mock submissions data (keeping for now until submission endpoints are available)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-
+// Export the centralized auth token setter for backward compatibility
+export { setAuthTokenGetter };
 
 // API functions
 export const challengeApi = {
@@ -266,16 +235,7 @@ export const challengeApi = {
       formData.append("description", submission.description);
 
       // Get headers without Content-Type (let browser set it for FormData)
-      const headers: Record<string, string> = {};
-
-      if (getAccessTokenSilently) {
-        try {
-          const token = await getAccessTokenSilently();
-          headers.Authorization = `Bearer ${token}`;
-        } catch (error) {
-          console.warn("Failed to get access token:", error);
-        }
-      }
+      const headers = await getAuthHeaders("none");
 
       const response = await fetch(
         `${API_BASE_URL}/submissions/create-submission`,
@@ -412,16 +372,7 @@ export const challengeApi = {
       }
 
       // Get headers without Content-Type (let browser set it for FormData)
-      const headers: Record<string, string> = {};
-
-      if (getAccessTokenSilently) {
-        try {
-          const token = await getAccessTokenSilently();
-          headers.Authorization = `Bearer ${token}`;
-        } catch (error) {
-          console.warn("Failed to get access token:", error);
-        }
-      }
+      const headers = await getAuthHeaders("none");
 
       const response = await fetch(`${API_BASE_URL}/challenges/create`, {
         method: "POST",

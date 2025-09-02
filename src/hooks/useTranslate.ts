@@ -1,0 +1,70 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { translateApi } from "../api/translate";
+
+// Query keys
+export const translateKeys = {
+  all: ["translate"] as const,
+  leaderboard: () => [...translateKeys.all, "leaderboard"] as const,
+  models: () => [...translateKeys.all, "models"] as const,
+  suggestions: (query: string) => [...translateKeys.models(), "suggestions", query] as const,
+};
+
+// Hook for translation leaderboard
+export const useTranslationLeaderboard = () => {
+  return useQuery({
+    queryKey: translateKeys.leaderboard(),
+    queryFn: translateApi.getTranslationLeaderboard,
+    staleTime: 2 * 60 * 1000, // 2 minutes - leaderboards update frequently due to voting
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
+
+// Hook for model suggestions
+export const useModelSuggestions = (query: string) => {
+  return useQuery({
+    queryKey: translateKeys.suggestions(query),
+    queryFn: () => translateApi.suggestModels(query),
+    enabled: !!query && query.length > 2, // Only fetch if query is meaningful
+    staleTime: 5 * 60 * 1000, // 5 minutes - model suggestions don't change often
+    gcTime: 10 * 60 * 1000,
+  });
+};
+
+// Mutation for voting on models
+export const useVoteOnModel = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ modelId, score, token }: { modelId: string; score: number; token: string }) =>
+      translateApi.voteModel(modelId, score, token),
+    onSuccess: () => {
+      // Invalidate and refetch leaderboard after voting
+      queryClient.invalidateQueries({
+        queryKey: translateKeys.leaderboard(),
+      });
+      
+      // Force immediate refetch for better UX
+      queryClient.refetchQueries({
+        queryKey: translateKeys.leaderboard(),
+      });
+    },
+    onError: (error) => {
+      console.error("Vote submission failed:", error);
+    },
+  });
+};
+
+// Helper hook to prefetch leaderboard data
+export const usePrefetchTranslationLeaderboard = () => {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.prefetchQuery({
+      queryKey: translateKeys.leaderboard(),
+      queryFn: translateApi.getTranslationLeaderboard,
+      staleTime: 2 * 60 * 1000,
+    });
+  };
+};

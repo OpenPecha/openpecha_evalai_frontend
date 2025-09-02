@@ -1,31 +1,16 @@
 import type { SuggestResponse, TranslateRequest, VoteRequest, TranslationLeaderboardResponse } from "../types/translate";
+import { getAuthHeaders as getCentralAuthHeaders, setAuthTokenGetter } from "../lib/auth";
 
 // API Base URL
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
-// Helper function to get access token (should be set by AuthWrapper)
-let getAccessTokenSilently: (() => Promise<string>) | null = null;
+// Export the centralized auth token setter with the original name for backward compatibility
+export const setTranslateAuthTokenGetter = setAuthTokenGetter;
 
-export const setTranslateAuthTokenGetter = (tokenGetter: () => Promise<string>) => {
-  getAccessTokenSilently = tokenGetter;
-};
-
-// Helper function to get auth headers
+// Helper function to get auth headers with accept header for translate API
 const getAuthHeaders = async (includeAuth = true): Promise<Record<string, string>> => {
-  const headers: Record<string, string> = {
-    "accept": "application/json",
-    "Content-Type": "application/json",
-  };
-
-  if (includeAuth && getAccessTokenSilently) {
-    try {
-      const token = await getAccessTokenSilently();
-      headers.Authorization = `Bearer ${token}`;
-    } catch (error) {
-      console.warn("Failed to get access token:", error);
-    }
-  }
-
+  const headers = await getCentralAuthHeaders("json", includeAuth);
+  headers.accept = "application/json"; // Add accept header specific to translate API
   return headers;
 };
 

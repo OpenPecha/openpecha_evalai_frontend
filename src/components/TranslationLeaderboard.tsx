@@ -1,33 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Crown, Medal, Award, TrendingUp, RefreshCw, Star, Search } from "lucide-react";
-import { getTranslationLeaderboard } from "../api/translate";
-import type { TranslationModelScore } from "../types/translate";
+import { useTranslationLeaderboard } from "../hooks/useTranslate";
 
 const TranslationLeaderboard: React.FC = () => {
-  const [scores, setScores] = useState<TranslationModelScore[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedScore, setSelectedScore] = useState<string>("all");
   const [showAll, setShowAll] = useState(false);
 
-  const fetchLeaderboard = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await getTranslationLeaderboard();
-      setScores(response.leaderboard);
-    } catch (err) {
-      console.error("Error fetching translation leaderboard:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch leaderboard");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLeaderboard();
-  }, []);
+  // Use react-query hook for data fetching
+  const { 
+    data: leaderboardData, 
+    isLoading: loading, 
+    error, 
+    refetch: fetchLeaderboard 
+  } = useTranslationLeaderboard();
+  
+  // Memoize scores to prevent unnecessary re-renders
+  const scores = useMemo(() => leaderboardData?.leaderboard || [], [leaderboardData?.leaderboard]);
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -91,7 +80,7 @@ const TranslationLeaderboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Translation Models
+                Translation Arena
               </h2>
               <div className="flex items-center space-x-1">
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20">
@@ -112,13 +101,15 @@ const TranslationLeaderboard: React.FC = () => {
   }
 
   if (error) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch leaderboard";
+    
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Translation Models
+                Translation Arena
               </h2>
               <div className="flex items-center space-x-1">
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20">
@@ -128,7 +119,7 @@ const TranslationLeaderboard: React.FC = () => {
               </div>
             </div>
             <button
-              onClick={fetchLeaderboard}
+              onClick={() => fetchLeaderboard()}
               className="p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors"
               title="Retry"
             >
@@ -137,9 +128,11 @@ const TranslationLeaderboard: React.FC = () => {
           </div>
         </div>
         <div className="text-center py-8">
-          <p className="text-xs text-red-600 dark:text-red-400 mb-3">Failed to load</p>
+          <p className="text-xs text-red-600 dark:text-red-400 mb-3">
+            {errorMessage}
+          </p>
           <button
-            onClick={fetchLeaderboard}
+            onClick={() => fetchLeaderboard()}
             className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200"
           >
             Try Again
@@ -156,7 +149,7 @@ const TranslationLeaderboard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <h2 className="text-md font-semibold text-gray-900 dark:text-white truncate">
-              Translation Models
+              Translation Arena
             </h2>
           </div>
           <div className="flex items-center space-x-2">
@@ -164,7 +157,7 @@ const TranslationLeaderboard: React.FC = () => {
               {filteredAndSortedScores.length}
             </span>
             <button
-              onClick={fetchLeaderboard}
+              onClick={() => fetchLeaderboard()}
               className="p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors"
               title="Refresh rankings"
             >

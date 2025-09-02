@@ -92,6 +92,48 @@ const Leaderboard = () => {
   const pagination = leaderboardResponse?.pagination;
   const user = currentUserData?.data;
   const isAdmin = user?.role === "admin";
+ // Get available metrics from submissions
+ const availableMetrics =
+ submissions.length > 0 ? Object.keys(submissions[0].metrics || {}) : [];
+
+  // Filter and sort submissions based on search and filters
+  const filteredAndSortedSubmissions = useMemo(() => {
+    let filtered = [...submissions];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(submission => 
+        submission.model_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        submission.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        submission.submission_id.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply metric filter and sorting
+    if (selectedMetric !== "all" && availableMetrics.includes(selectedMetric)) {
+      // Filter out submissions that don't have the selected metric
+      filtered = filtered.filter(submission => 
+        submission.metrics[selectedMetric] !== undefined
+      );
+
+      // Sort by the selected metric
+      filtered.sort((a, b) => {
+        const aValue = a.metrics[selectedMetric];
+        const bValue = b.metrics[selectedMetric];
+        
+        if (sortOrder === "asc") {
+          return aValue - bValue;
+        } else {
+          return bValue - aValue;
+        }
+      });
+    } else {
+      // Default sort by rank
+      filtered.sort((a, b) => (a.rank || 0) - (b.rank || 0));
+    }
+
+    return filtered;
+  }, [submissions, searchQuery, selectedMetric, sortOrder, availableMetrics]);
 
   const handleDeleteSubmission = async (submissionId: string) => {
     if (
@@ -162,49 +204,7 @@ const Leaderboard = () => {
     );
   }
 
-  // Get available metrics from submissions
-  const availableMetrics =
-    submissions.length > 0 ? Object.keys(submissions[0].metrics || {}) : [];
-
-  // Filter and sort submissions based on search and filters
-  const filteredAndSortedSubmissions = useMemo(() => {
-    let filtered = [...submissions];
-
-    // Apply search filter
-    if (searchQuery.trim()) {
-      filtered = filtered.filter(submission => 
-        submission.model_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        submission.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        submission.submission_id.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Apply metric filter and sorting
-    if (selectedMetric !== "all" && availableMetrics.includes(selectedMetric)) {
-      // Filter out submissions that don't have the selected metric
-      filtered = filtered.filter(submission => 
-        submission.metrics[selectedMetric] !== undefined
-      );
-
-      // Sort by the selected metric
-      filtered.sort((a, b) => {
-        const aValue = a.metrics[selectedMetric];
-        const bValue = b.metrics[selectedMetric];
-        
-        if (sortOrder === "asc") {
-          return aValue - bValue;
-        } else {
-          return bValue - aValue;
-        }
-      });
-    } else {
-      // Default sort by rank
-      filtered.sort((a, b) => (a.rank || 0) - (b.rank || 0));
-    }
-
-    return filtered;
-  }, [submissions, searchQuery, selectedMetric, sortOrder, availableMetrics]);
-
+ 
   return (
     <div className="py-0">
       <div className="max-w-7xl mx-auto px-4">

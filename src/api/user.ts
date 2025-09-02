@@ -1,34 +1,14 @@
 import type { User, UserProfile, UserUpdateRequest } from "../types/user";
 import type { ApiResponse } from "../types/challenge";
+import { getAuthHeaders, setAuthTokenGetter } from "../lib/auth";
 
-// Helper function to get access token (should be called from components with Auth0 context)
-let getAccessTokenSilently: (() => Promise<string>) | null = null;
-
-export const setAuthTokenGetter = (tokenGetter: () => Promise<string>) => {
-  getAccessTokenSilently = tokenGetter;
-};
-
-// Helper function to get auth headers
-const getAuthHeaders = async (): Promise<Record<string, string>> => {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  if (getAccessTokenSilently) {
-    try {
-      const token = await getAccessTokenSilently();
-      headers.Authorization = `Bearer ${token}`;
-    } catch (error) {
-      console.warn("Failed to get access token:", error);
-    }
-  }
-
-  return headers;
-};
+// Export the centralized auth token setter for backward compatibility
+export { setAuthTokenGetter };
 
 // API Base URL
 const API_BASE_URL =
   import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
+  
 
 // API functions
 export const userApi = {
