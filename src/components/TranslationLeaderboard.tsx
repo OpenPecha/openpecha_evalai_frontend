@@ -79,7 +79,7 @@ const TranslationLeaderboard: React.FC = () => {
         <div className="px-4 py-2 ">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+              <h2 className="text-sm font-semibold text-neutral-600 dark:text-neutral-100">
                 Translation Arena
               </h2>
               <div className="flex items-center space-x-1">
@@ -108,7 +108,7 @@ const TranslationLeaderboard: React.FC = () => {
         <div className="bg-neutral-50 dark:bg-neutral-700 px-4 py-2 border-b border-neutral-200 dark:border-neutral-600">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+              <h2 className="text-sm font-semibold text-neutral-600 dark:text-neutral-100">
                 Translation Arena
               </h2>
               <div className="flex items-center space-x-1">
@@ -148,7 +148,7 @@ const TranslationLeaderboard: React.FC = () => {
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h2 className="text-md font-semibold  dark:text-neutral-100  truncate">
+            <h2 className="text-md font-semibold text-neutral-500 dark:text-neutral-100  truncate">
               Translation Arena
             </h2>
           </div>
@@ -181,7 +181,7 @@ const TranslationLeaderboard: React.FC = () => {
                 placeholder="Search by model name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md leading-5 bg-white dark:bg-neutral-800 placeholder-neutral-500 dark:placeholder-neutral-400 text-neutral-800 dark:text-neutral-100 text-sm focus:outline-none focus:placeholder-neutral-400 dark:focus:placeholder-neutral-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md leading-5 bg-white dark:bg-neutral-800 placeholder-neutral-500 dark:placeholder-neutral-400 text-neutral-600 dark:text-neutral-100 text-sm focus:outline-none focus:placeholder-neutral-400 dark:focus:placeholder-neutral-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
             
@@ -190,7 +190,7 @@ const TranslationLeaderboard: React.FC = () => {
               <select
                 value={selectedScore}
                 onChange={(e) => setSelectedScore(e.target.value)}
-                className="block w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                className="block w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="all">All Scores</option>
                 <option value="5">⭐⭐⭐⭐⭐ (5.0)</option>
@@ -208,7 +208,7 @@ const TranslationLeaderboard: React.FC = () => {
       {filteredAndSortedScores.length === 0 ? (
         <div className="text-center py-8">
           <TrendingUp className="w-8 h-8 text-neutral-300 dark:text-neutral-300 mx-auto mb-2" />
-          <h3 className="text-sm font-medium text-neutral-800 dark:text-neutral-100 mb-1">
+          <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-100 mb-1">
             {scores.length === 0 ? "No rankings yet" : "No models found"}
           </h3>
           <p className="text-xs text-neutral-600 dark:text-neutral-300 mb-3">
@@ -264,7 +264,7 @@ const TranslationLeaderboard: React.FC = () => {
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="space-y-1">
-                      <div className="text-xs font-medium  dark:text-neutral-100 truncate max-w-32">
+                      <div className="text-xs font-medium text-neutral-700 dark:text-neutral-100 truncate max-w-32">
                         {score.model_version}
                       </div>
                       <div className={`text-xs ${getProviderColor(score.provider)}`}>
@@ -275,18 +275,18 @@ const TranslationLeaderboard: React.FC = () => {
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="flex items-center space-x-1">
                       <Star className="w-3 h-3 text-yellow-500" />
-                      <span className="text-xs font-semibold  dark:text-neutral-100">
+                      <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-100">
                         {score.total_votes > 0 ? score.average_score.toFixed(1) : "-"}
                       </span>
                       {score.total_votes > 0 && (
-                        <span className="text-xs  dark:text-neutral-300">
+                        <span className="text-xs text-neutral-700 dark:text-neutral-300">
                           ({score.score_percentage}%)
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <div className="text-xs font-semibold  dark:text-neutral-300">
+                    <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
                       {score.total_votes}
                     </div>
                   </td>

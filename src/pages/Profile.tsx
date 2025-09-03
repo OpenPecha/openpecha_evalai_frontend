@@ -61,7 +61,7 @@ const Profile = () => {
                 {/* Basic Information */}
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100 mb-4 flex items-center">
+                    <h2 className="text-lg font-semibold text-neutral-600 dark:text-neutral-100 mb-4 flex items-center">
                       <User className="w-5 h-5 mr-2" />
                       Basic Information
                     </h2>
@@ -72,7 +72,7 @@ const Profile = () => {
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             Email
                           </p>
-                          <p className="font-medium text-neutral-800 dark:text-neutral-100">
+                          <p className="font-medium text-neutral-600 dark:text-neutral-100">
                             {user?.email || "Not provided"}
                           </p>
                         </div>
@@ -84,7 +84,7 @@ const Profile = () => {
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             Full Name
                           </p>
-                          <p className="font-medium text-neutral-800 dark:text-neutral-100">
+                          <p className="font-medium text-neutral-600 dark:text-neutral-100">
                             {user?.name || "Not provided"}
                           </p>
                         </div>
@@ -108,7 +108,7 @@ const Profile = () => {
                 {/* Activity Summary */}
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100 mb-4 flex items-center">
+                    <h2 className="text-lg font-semibold text-neutral-600 dark:text-neutral-100 mb-4 flex items-center">
                       <Trophy className="w-5 h-5 mr-2" />
                       Activity Summary
                     </h2>
@@ -116,7 +116,7 @@ const Profile = () => {
                       <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                         <div className="flex items-center">
                           <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3" />
-                          <span className="font-medium text-neutral-800 dark:text-neutral-100">
+                          <span className="font-medium text-neutral-600 dark:text-neutral-100">
                             Total Submissions
                           </span>
                         </div>
@@ -128,7 +128,7 @@ const Profile = () => {
                       <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                         <div className="flex items-center">
                           <Trophy className="w-5 h-5 text-green-600 mr-3" />
-                          <span className="font-medium text-neutral-800 dark:text-neutral-100">
+                          <span className="font-medium text-neutral-600 dark:text-neutral-100">
                             Best Ranking
                           </span>
                         </div>
@@ -140,7 +140,7 @@ const Profile = () => {
                       <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                         <div className="flex items-center">
                           <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400 mr-3" />
-                          <span className="font-medium text-neutral-800 dark:text-neutral-100">
+                          <span className="font-medium text-neutral-600 dark:text-neutral-100">
                             Challenges Participated
                           </span>
                         </div>

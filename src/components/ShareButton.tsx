@@ -68,7 +68,7 @@ const ShareButton = ({
       {!autoOpen && (
         <button
           onClick={handleShare}
-          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 rounded-lg transition-colors duration-200"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-700 dark:hover:text-white bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 rounded-lg transition-colors duration-200"
         >
           <Share2 className="w-4 h-4 mr-1.5" />
           Share
@@ -89,7 +89,7 @@ const ShareButton = ({
           <div className="relative bg-white dark:bg-neutral-800 rounded-lg shadow-xl w-96 max-w-[90vw] mx-4">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-700">
-              <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-100">
+              <h3 className="text-lg font-medium text-neutral-600 dark:text-neutral-100">
                 Share
               </h3>
               <button
@@ -171,7 +171,7 @@ const ShareButton = ({
                   type="text"
                   value={embedUrl}
                   readOnly
-                  className="flex-1 bg-transparent text-sm text-neutral-800 dark:text-neutral-100 outline-none"
+                  className="flex-1 bg-transparent text-sm text-neutral-600 dark:text-neutral-100 outline-none"
                 />
                 <button
                   onClick={() => copyToClipboard(embedUrl)}

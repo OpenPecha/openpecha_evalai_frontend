@@ -49,7 +49,7 @@ const getMetricClass = (metric: string) => {
     case "BLEU":
       return "text-primary-600 dark:text-primary-400";
     default:
-      return "text-neutral-900 dark:text-neutral-100";
+      return "text-neutral-700 dark:text-neutral-100";
   }
 };
 
@@ -60,9 +60,9 @@ const getStatusColor = (status: string) => {
     case "completed":
       return "bg-primary-100 text-primary-800 dark:bg-primary-900/20 dark:text-primary-400";
     case "draft":
-      return "bg-neutral-100 text-neutral-800 dark:bg-neutral-900/20 dark:text-neutral-400";
+      return "bg-neutral-100 text-neutral-600 dark:bg-neutral-900/20 dark:text-neutral-400";
     default:
-      return "bg-neutral-100 text-neutral-800 dark:bg-neutral-900/20 dark:text-neutral-400";
+      return "bg-neutral-100 text-neutral-600 dark:bg-neutral-900/20 dark:text-neutral-400";
   }
 };
 
@@ -151,7 +151,7 @@ const LeaderboardEmbed = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <h2
-                  className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 truncate cursor-help"
+                  className="text-sm font-semibold text-neutral-700 dark:text-neutral-100 truncate cursor-help"
                   title={challenge.description || leaderboard.challengeTitle}
                 >
                   {leaderboard.challengeTitle}
@@ -181,8 +181,8 @@ const LeaderboardEmbed = () => {
                       onClick={() => setViewMode("table")}
                       className={`p-1 rounded text-xs transition-colors duration-200 ${
                         viewMode === "table"
-                          ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
-                          : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                          ? "bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 shadow-sm"
+                          : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100"
                       }`}
                       title="Table view"
                     >
@@ -192,8 +192,8 @@ const LeaderboardEmbed = () => {
                       onClick={() => setViewMode("chart")}
                       className={`p-1 rounded text-xs transition-colors duration-200 ${
                         viewMode === "chart"
-                          ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
-                          : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                          ? "bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 shadow-sm"
+                          : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100"
                       }`}
                       title="Chart view"
                     >
@@ -209,7 +209,7 @@ const LeaderboardEmbed = () => {
           {leaderboard.submissions.length === 0 && (
             <div className="text-center py-8">
               <Trophy className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
-              <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
+              <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-100 mb-1">
                 No submissions yet
               </h3>
               <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
@@ -253,13 +253,13 @@ const LeaderboardEmbed = () => {
                         <td className="px-3 py-2 whitespace-nowrap">
                           <div className="flex items-center">
                             {getRankIcon(submission.rank || 0)}
-                            <span className="ml-1 text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                            <span className="ml-1 text-xs font-medium text-neutral-700 dark:text-neutral-100">
                               {submission.rank || 0}
                             </span>
                           </div>
                         </td>
                         <td className="px-3 py-2 whitespace-nowrap">
-                          <div className="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-32">
+                          <div className="text-xs font-medium text-neutral-700 dark:text-neutral-100 truncate max-w-32">
                             {submission.model_name}
                           </div>
                         </td>

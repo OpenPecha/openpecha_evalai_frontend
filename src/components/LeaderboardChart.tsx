@@ -29,7 +29,7 @@ const CustomTooltip = ({ active, payload }: any) => {
     const data = payload[0].payload;
     return (
       <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg p-3">
-        <p className="font-medium text-neutral-900 dark:text-neutral-100 text-sm mb-2">
+        <p className="font-medium text-neutral-700 dark:text-neutral-100 text-sm mb-2">
           {data.fullModel}
         </p>
         <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-2">
@@ -58,7 +58,7 @@ const CustomTooltip = ({ active, payload }: any) => {
                   {metric}:
                 </span>
               </div>
-              <span className="text-xs font-medium text-neutral-900 dark:text-neutral-100">
+              <span className="text-xs font-medium text-neutral-700 dark:text-neutral-100">
                 {displayValue}
               </span>
             </div>
@@ -127,7 +127,7 @@ const LeaderboardChart: React.FC<LeaderboardChartProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
+          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-100 mb-1">
             No data to visualize
           </h3>
           <p className="text-xs text-neutral-600 dark:text-neutral-400">

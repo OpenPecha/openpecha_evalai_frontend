@@ -289,7 +289,7 @@ const Submission = () => {
                   setModelName(e.target.value);
                   if (submissionError) setSubmissionError("");
                 }}
-                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="e.g., MyAwesomeModel-v1.0"
                 required
               />
@@ -315,7 +315,7 @@ const Submission = () => {
                   if (submissionError) setSubmissionError("");
                 }}
                 rows={3}
-                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Brief description of your model or approach..."
                 required
               />
@@ -367,7 +367,7 @@ const Submission = () => {
                   {selectedFile ? (
                     <div className="flex flex-col items-center">
                       <CheckCircle className="w-12 h-12 text-green-500 mb-2" />
-                      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      <p className="text-sm font-medium text-neutral-700 dark:text-neutral-100">
                         {selectedFile.name}
                       </p>
                       <p className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -377,7 +377,7 @@ const Submission = () => {
                   ) : (
                     <div className="flex flex-col items-center">
                       <Upload className="w-12 h-12 text-neutral-400 mb-2" />
-                      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      <p className="text-sm font-medium text-neutral-700 dark:text-neutral-100">
                         Drop your JSON file here, or click to browse
                       </p>
                       <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">

@@ -241,7 +241,7 @@ const EditChallenge = () => {
 
       <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+          <h1 className="text-2xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
             Edit Challenge
           </h1>
           <p className="text-neutral-600 dark:text-neutral-400">
@@ -265,7 +265,7 @@ const EditChallenge = () => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter challenge title"
               required
             />
@@ -284,7 +284,7 @@ const EditChallenge = () => {
               name="category_id"
               value={formData.category_id}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="">Select a category</option>
@@ -310,7 +310,7 @@ const EditChallenge = () => {
               name="image_uri"
               value={formData.image_uri}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -329,7 +329,7 @@ const EditChallenge = () => {
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Describe the challenge objectives, rules, and evaluation criteria"
               required
             />
@@ -348,7 +348,7 @@ const EditChallenge = () => {
               name="status"
               value={formData.status}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="upcoming">Upcoming</option>
@@ -391,7 +391,7 @@ const EditChallenge = () => {
                 {selectedFile ? (
                   <div className="flex flex-col items-center">
                     <FileText className="w-12 h-12 text-green-500 mb-2" />
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-100">
                       {selectedFile.name}
                     </p>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -408,7 +408,7 @@ const EditChallenge = () => {
                 ) : (
                   <div className="flex flex-col items-center">
                     <Upload className="w-12 h-12 text-neutral-400 mb-2" />
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-100">
                       Drop your ground truth JSON file here, or click to browse
                     </p>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
@@ -494,7 +494,7 @@ const EditChallenge = () => {
           <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
             <div className="flex items-center mb-4">
               <AlertTriangle className="w-6 h-6 text-red-600 mr-3" />
-              <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+              <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
                 Delete Challenge
               </h3>
             </div>

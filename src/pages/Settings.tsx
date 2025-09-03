@@ -36,7 +36,7 @@ const Settings = () => {
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 flex items-center">
+            <h1 className="text-3xl font-bold text-neutral-700 dark:text-neutral-100 mb-2 flex items-center">
               <SettingsIcon className="w-8 h-8 mr-3" />
               Settings
             </h1>
@@ -49,7 +49,7 @@ const Settings = () => {
             {/* Profile Settings */}
             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600">
               <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-600">
-                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 flex items-center">
+                <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100 flex items-center">
                   <User className="w-5 h-5 mr-2" />
                   Profile Settings
                 </h2>
@@ -97,7 +97,7 @@ const Settings = () => {
             {/* Notification Settings */}
             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600">
               <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-600">
-                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 flex items-center">
+                <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100 flex items-center">
                   <Bell className="w-5 h-5 mr-2" />
                   Notification Preferences (Coming soon)
                 </h2>
@@ -107,7 +107,7 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="emailNotifications"
-                      className="text-sm font-medium text-neutral-900 dark:text-neutral-100 "
+                      className="text-sm font-medium text-neutral-700 dark:text-neutral-100 "
                     >
                       Email Notifications 
                     </label>
@@ -129,7 +129,7 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="weeklyDigest"
-                      className="text-sm font-medium text-neutral-900 dark:text-neutral-100"
+                      className="text-sm font-medium text-neutral-700 dark:text-neutral-100"
                     >
                       Weekly Digest
                     </label>
@@ -152,7 +152,7 @@ const Settings = () => {
                   <div>
                     <label
                       htmlFor="newChallengeAlerts"
-                      className="text-sm font-medium text-neutral-900 dark:text-neutral-100"
+                      className="text-sm font-medium text-neutral-700 dark:text-neutral-100"
                     >
                       New Challenge Alerts
                     </label>
@@ -175,7 +175,7 @@ const Settings = () => {
             {/* Account Security */}
             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-600">
               <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-600">
-                <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 flex items-center">
+                <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100 flex items-center">
                   <Shield className="w-5 h-5 mr-2" />
                   Account Security
                 </h2>

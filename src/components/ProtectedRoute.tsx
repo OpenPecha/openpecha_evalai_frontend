@@ -34,7 +34,7 @@ const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
               <Shield className="w-8 h-8 text-blue-600" />
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-gray-700 mb-2">
               Authentication Required
             </h2>
 

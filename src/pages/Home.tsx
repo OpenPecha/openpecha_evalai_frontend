@@ -68,7 +68,7 @@ const Home = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center">
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
@@ -90,10 +90,10 @@ const Home = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Modern Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-neutral-600 dark:text-neutral-100 mb-2">
             ML Evaluation Challenges
           </h1>
-          <p className="text-neutral-600 dark:text-white text-sm">
+          <p className="text-neutral-500 dark:text-neutral-400 text-sm">
             Discover and participate in machine learning challenges. Test your
             models and compete with others.
           </p>
@@ -101,7 +101,7 @@ const Home = () => {
 
         {challenges.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-neutral-500 dark:text-gray-400 text-lg">
+            <p className="text-neutral-500 dark:text-neutral-400 text-lg">
               No challenges available at the moment.
             </p>
           </div>
@@ -110,7 +110,7 @@ const Home = () => {
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="flex flex-col group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                className="flex flex-col group bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
                 onMouseEnter={() => handleMouseEnter(challenge.id)}
               >
                 {/* Header with image or gradient */}
@@ -147,16 +147,16 @@ const Home = () => {
 
                 {/* Content */}
                 <div className="p-4 flex-1 flex flex-col">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                  <h3 className="text-lg font-bold text-neutral-600 dark:text-neutral-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                     {challenge.title || challenge.name}
                   </h3>
 
-                  <p className=" text-sm text-neutral-600 dark:text-neutral-400 mb-3 line-clamp-2 flex-1">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3 line-clamp-2 flex-1">
                     {challenge.description}
                   </p>
 
                   {/* Created Date */}
-                  <div className="flex items-center text-xs text-neutral-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center text-xs text-neutral-500 dark:text-neutral-400 mb-4">
                     <Calendar className="w-3 h-3 mr-1" />
                     <span>
                       Created{" "}
@@ -198,7 +198,7 @@ const Home = () => {
                     {isAdmin && (
                       <Link
                         to={`/admin/edit-challenge/${challenge.id}`}
-                        className="w-full flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                        className="w-full flex items-center justify-center px-3 py-2 border border-neutral-300 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300 text-sm rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-200"
                       >
                         <Edit className="w-3 h-3 mr-1" />
                         Edit
@@ -210,7 +210,7 @@ const Home = () => {
                       href={repoUrl + challenge.title.toLowerCase() + "_dataset"}//lower the title and add dataset to the url 
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center px-3 py-2 mt-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 group"
+                      className="w-full flex items-center justify-center px-3 py-2 mt-2 border border-neutral-300 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300 text-sm rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 group"
                     >
                       <Github className="w-3 h-3 mr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                       <span className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">

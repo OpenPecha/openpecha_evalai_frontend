@@ -152,7 +152,7 @@ const Leaderboards = () => {
       case "BLEU":
         return "text-primary-600 dark:text-primary-400";
       default:
-        return "text-neutral-900 dark:text-neutral-100";
+        return "text-neutral-700 dark:text-neutral-100";
     }
   };
 
@@ -195,7 +195,7 @@ const Leaderboards = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+          <h1 className="text-2xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
             Leaderboards
           </h1>
           <p className=" dark:text-neutral-400 text-sm">
@@ -217,14 +217,14 @@ const Leaderboards = () => {
             return (
               <div
                 key={leaderboard.challengeId}
-                className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border  dark:border-neutral-700 overflow-hidden"
+                className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border  border-neutral-200 dark:border-neutral-700 overflow-hidden"
               >
                 {/* Compact Challenge Header */}
                 <div className=" px-4 py-2 ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <h2
-                        className="text-md  font-semibold  dark:text-neutral-100 truncate cursor-help"
+                        className="text-md  font-semibold  text-neutral-500 dark:text-neutral-100 truncate cursor-help"
                         title={
                           challenges.find(
                             (c) => c.id === leaderboard.challengeId
@@ -248,7 +248,7 @@ const Leaderboards = () => {
                             className={`p-1 rounded text-xs transition-colors duration-200 ${
                               getCurrentViewMode(leaderboard.challengeId) === "table"
                                 ? "bg-white dark:bg-neutral-700  dark:text-neutral-100 shadow-sm"
-                                : " dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                                : " dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100"
                             }`}
                             title="Table view"
                           >
@@ -258,8 +258,8 @@ const Leaderboards = () => {
                             onClick={() => toggleViewMode(leaderboard.challengeId)}
                             className={`p-1 rounded text-xs transition-colors duration-200 ${
                               getCurrentViewMode(leaderboard.challengeId) === "chart"
-                                ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
-                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                                ? "bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 shadow-sm"
+                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100"
                             }`}
                             title="Chart view"
                           >
@@ -282,7 +282,7 @@ const Leaderboards = () => {
                 {leaderboard.submissions.length === 0 && (
                   <div className="text-center py-8">
                     <Trophy className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
-                    <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
+                    <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-100 mb-1">
                       No submissions yet
                     </h3>
                     <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
@@ -337,13 +337,13 @@ const Leaderboards = () => {
                               <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex items-center">
                                   {getRankIcon(submission.rank || 0)}
-                                  <span className="ml-1 text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                                  <span className="ml-1 text-xs font-medium text-neutral-700 dark:text-neutral-100">
                                     {submission.rank || 0}
                                   </span>
                                 </div>
                               </td>
                               <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-32">
+                                <div className="text-xs font-medium text-neutral-700 dark:text-neutral-100 truncate max-w-32">
                                   {submission.model_name}
                                 </div>
                               </td>
@@ -402,7 +402,7 @@ const Leaderboards = () => {
                 )}
                 <Link
                   to={`/leaderboard/${leaderboard.challengeId}`}
-                  className="w-full flex items-center bottom-0 absolute justify-center  hover:bg-neutral-200 dark:hover:bg-neutral-700 dark:bg-neutral-700 p-3 text-center  dark:text-neutral-200 ">View all</Link>
+                  className="w-full flex items-center bottom-0 absolute justify-center bg-neutral-100   hover:bg-neutral-200 dark:hover:bg-neutral-700 dark:bg-neutral-700 p-3 text-center  text-neutral-500 dark:text-neutral-200 ">View all</Link>
               </div>
             );
           })}
@@ -411,7 +411,7 @@ const Leaderboards = () => {
         {leaderboardsData?.length === 0 && (
           <div className="text-center py-12">
             <Trophy className="w-16 h-16 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+            <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-100 mb-2">
               No leaderboards available
             </h3>
             <p className="text-neutral-600 dark:text-neutral-400">

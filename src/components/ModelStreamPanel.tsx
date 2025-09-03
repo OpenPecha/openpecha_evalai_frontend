@@ -87,7 +87,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
       <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">
+            <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
               {anyVoted ? modelId : modelLabel}
             </h3>
             {voted && (

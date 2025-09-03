@@ -13,7 +13,7 @@ const Navbar = ({ onToggleSidebar }: NavbarProps) => {
           <div className="flex items-center">
             <button
               onClick={onToggleSidebar}
-              className="p-2 text-gray-600 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
+              className="p-2 text-gray-600 dark:text-neutral-300 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
             >
               <Menu className="w-6 h-6" />
             </button>

@@ -46,7 +46,7 @@ const getStatusBadge = (status: string) => {
       );
     default:
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-300">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300">
           {status}
         </span>
       );
@@ -103,10 +103,10 @@ const MySubmissions = () => {
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+            <h1 className="text-3xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
               My Submissions
             </h1>
-            <p className="text-neutral-600 dark:text-neutral-400 dark:text-neutral-500">
+            <p className="text-neutral-600 dark:text-neutral-400">
               Track all your challenge submissions and their performance.
             </p>
           </div>
@@ -119,7 +119,7 @@ const MySubmissions = () => {
                   <Filter className="w-4 h-4 text-neutral-400 dark:text-neutral-500 mr-2" />
                   <label
                     htmlFor="status-filter"
-                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300 dark:text-neutral-600"
+                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
                   >
                     Status:
                   </label>
@@ -140,7 +140,7 @@ const MySubmissions = () => {
                 <div className="flex items-center">
                   <label
                     htmlFor="sort-by"
-                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300 dark:text-neutral-600"
+                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
                   >
                     Sort by:
                   </label>
@@ -155,7 +155,7 @@ const MySubmissions = () => {
                 </div>
               </div>
 
-              <div className="text-sm text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
                 {filteredSubmissions.length} submission
                 {filteredSubmissions.length !== 1 ? "s" : ""}
               </div>
@@ -204,7 +204,7 @@ const MySubmissions = () => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
                         <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                        <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
                           {submission.description ||
                             `Submission ${submission.id.slice(0, 8)}`}
                         </h3>
@@ -213,7 +213,7 @@ const MySubmissions = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         <div>
-                          <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
+                          <p className="text-neutral-500 dark:text-neutral-400">
                             Challenge
                           </p>
                           <Link
@@ -226,10 +226,10 @@ const MySubmissions = () => {
                         </div>
 
                         <div>
-                          <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
+                          <p className="text-neutral-500 dark:text-neutral-400">
                             Dataset URL
                           </p>
-                          <p className="font-medium text-neutral-900 dark:text-neutral-100 text-xs break-all">
+                          <p className="font-medium text-neutral-700 dark:text-neutral-100 text-xs break-all">
                             {submission.dataset_url ? (
                               <a
                                 href={submission.dataset_url}
@@ -251,7 +251,7 @@ const MySubmissions = () => {
                           submission.status === "pending") &&
                           submission.status_message && (
                             <div className="md:col-span-2">
-                              <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
+                              <p className="text-neutral-500 dark:text-neutral-400">
                                 Status Message
                               </p>
                               <p className="font-medium text-yellow-600 dark:text-yellow-400">
@@ -263,7 +263,7 @@ const MySubmissions = () => {
                       </div>
                     </div>
 
-                    <div className="mt-4 lg:mt-0 lg:ml-6 flex flex-col lg:items-end text-sm text-neutral-500 dark:text-neutral-400 dark:text-neutral-500">
+                    <div className="mt-4 lg:mt-0 lg:ml-6 flex flex-col lg:items-end text-sm text-neutral-500 dark:text-neutral-400">
                       <div className="flex items-center mb-2">
                         <Calendar className="w-4 h-4 mr-1" />
                         {new Date(submission.created_at).toLocaleDateString()}
@@ -288,10 +288,10 @@ const MySubmissions = () => {
           ) : !submissionsLoading && !challengesLoading && !submissionsError ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+              <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-100 mb-2">
                 No submissions found
               </h3>
-              <p className="text-neutral-500 dark:text-neutral-400 dark:text-neutral-500 mb-6">
+              <p className="text-neutral-500 dark:text-neutral-400 mb-6">
                 {filterStatus === "all"
                   ? "You haven't made any submissions yet."
                   : `No submissions with status "${filterStatus}".`}

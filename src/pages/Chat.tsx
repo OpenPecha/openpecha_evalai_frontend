@@ -87,7 +87,7 @@ const Chat = () => {
           <div className="flex items-center space-x-3">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+                <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
                   AI Translation Arena
                 </h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
@@ -125,7 +125,7 @@ const Chat = () => {
                 <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Languages className="w-10 h-10 text-primary-600 dark:text-primary-400" />
                 </div>
-                <h2 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-4">
+                <h2 className="text-3xl font-bold text-neutral-700 dark:text-neutral-100 mb-4">
                   AI Translation Arena
                 </h2>
                 <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6">
@@ -154,7 +154,7 @@ const Chat = () => {
                 <div className="mt-8">
                   <div className="flex items-center space-x-2 mb-4">
                     <History className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
-                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                    <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
                       Recent Translations
                     </h3>
                   </div>
@@ -167,7 +167,7 @@ const Chat = () => {
                         className="p-4 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200 group"
                       >
                         <div className="space-y-2">
-                          <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+                          <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 group-hover:text-neutral-700 dark:group-hover:text-white transition-colors">
                             {session.inputText}
                           </p>
                           <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
@@ -191,7 +191,7 @@ const Chat = () => {
                   <Languages className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+                  <h3 className="font-medium text-neutral-700 dark:text-neutral-100 mb-2">
                     Input Text
                   </h3>
                   <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">

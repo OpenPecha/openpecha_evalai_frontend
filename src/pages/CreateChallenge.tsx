@@ -168,7 +168,7 @@ const CreateChallenge = () => {
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+          <h1 className="text-2xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
             Create New Challenge
           </h1>
           <p className="text-neutral-600 dark:text-neutral-400">
@@ -191,7 +191,7 @@ const CreateChallenge = () => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter challenge title"
               required
             />
@@ -211,7 +211,7 @@ const CreateChallenge = () => {
                 name="category_id"
                 value={formData.category_id}
                 onChange={handleInputChange}
-                className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select a category</option>
@@ -242,7 +242,7 @@ const CreateChallenge = () => {
                       if (categoryError) setCategoryError("");
                     }}
                     placeholder="New category name"
-                    className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <button
                     type="button"
@@ -295,7 +295,7 @@ const CreateChallenge = () => {
               name="image_uri"
               value={formData.image_uri}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -314,7 +314,7 @@ const CreateChallenge = () => {
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Describe the challenge objectives, rules, and evaluation criteria"
               required
             />
@@ -333,7 +333,7 @@ const CreateChallenge = () => {
               name="status"
               value={formData.status}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="upcoming">Upcoming</option>
@@ -356,7 +356,7 @@ const CreateChallenge = () => {
                 <div className="flex items-center space-x-3">
                   <Upload className="w-5 h-5 text-neutral-500" />
                   <div>
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-100">
                       {selectedFile.name}
                     </p>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400">
