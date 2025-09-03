@@ -68,7 +68,7 @@ const Settings = () => {
                       id="displayName"
                       type="text"
                       defaultValue={user?.name || ""}
-                      className="w-full px-3 py-2 border dark:text-neutral-100 rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
                       placeholder="Your display name"
                     />
                   </div>

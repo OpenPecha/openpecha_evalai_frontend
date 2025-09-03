@@ -68,7 +68,7 @@ const ShareButton = ({
       {!autoOpen && (
         <button
           onClick={handleShare}
-          className="inline-flex items-center px-3 py-1.5 text-sm font-medium  rounded-lg "
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 rounded-lg transition-colors duration-200"
         >
           <Share2 className="w-4 h-4 mr-1.5" />
           Share

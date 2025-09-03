@@ -69,7 +69,7 @@ const Profile = () => {
                       <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <Mail className="w-5 h-5 text-gray-400 dark:text-gray-500 mr-3" />
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             Email
                           </p>
                           <p className="font-medium text-neutral-800 dark:text-neutral-100">
@@ -81,7 +81,7 @@ const Profile = () => {
                       <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <User className="w-5 h-5 text-gray-400 dark:text-gray-500 mr-3" />
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             Full Name
                           </p>
                           <p className="font-medium text-neutral-800 dark:text-neutral-100">
@@ -93,10 +93,10 @@ const Profile = () => {
                       <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <Shield className="w-5 h-5 text-gray-400 dark:text-gray-500 mr-3" />
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             Account Status
                           </p>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400">
                             {user?.email_verified ? "Verified" : "Unverified"}
                           </span>
                         </div>

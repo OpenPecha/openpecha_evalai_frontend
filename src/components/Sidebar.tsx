@@ -27,6 +27,24 @@ interface SidebarProps {
   onToggle?: () => void;
 }
 
+interface NavigationItem {
+  label: string;
+  path?: string;
+  href?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isActive: () => boolean;
+  activeClasses: string;
+  tooltip: string;
+  isExternal?: boolean;
+}
+
+interface UserMenuItem {
+  label: string;
+  path: string;
+  icon: React.ComponentType<{ className?: string }>;
+  tooltip: string;
+}
+
 const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   const location = useLocation();
   const {
@@ -54,6 +72,86 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       location.pathname === "/leaderboards"
     );
   };
+
+  // Navigation configuration
+  const navigationItems: NavigationItem[] = [
+    {
+      label: "Translation Arena",
+      path: "/chat",
+      href: undefined,
+      icon: MessageCircle,
+      isActive: () => isActivePath("/chat"),
+      activeClasses: "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400",
+      tooltip: "Chat (Coming Soon)",
+      isExternal: false,
+    },
+    {
+      label: "Challenges",
+      path: "/challenges",
+      href: undefined,
+      icon: Trophy,
+      isActive: () => isActivePath("/challenges"),
+      activeClasses: "text-primary-600 bg-primary-50 border-l-4 border-blue-600",
+      tooltip: "Challenges",
+      isExternal: false,
+    },
+    {
+      label: "Leaderboards",
+      path: "/leaderboards",
+      href: undefined,
+      icon: BarChart3,
+      isActive: () => isLeaderboardPath(),
+      activeClasses: "text-primary-600 bg-primary-50 border-l-4 border-blue-600",
+      tooltip: "Leaderboards",
+      isExternal: false,
+    },
+    {
+      label: "Documentation",
+      path: undefined,
+      href: `${import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"}/documentation`,
+      icon: BookOpen,
+      isExternal: true,
+      isActive: () => false,
+      activeClasses: "",
+      tooltip: "API Documentation",
+    },
+  ];
+
+  // Admin navigation items
+  const adminItems: NavigationItem[] = [
+    {
+      label: "Create Challenge",
+      path: "/admin/create-challenge",
+      href: undefined,
+      icon: Plus,
+      isActive: () => isActivePath("/admin/create-challenge"),
+      activeClasses: "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-600 dark:border-green-400",
+      tooltip: "Create Challenge",
+      isExternal: false,
+    },
+  ];
+
+  // User menu items for collapsed state
+  const userMenuItems: UserMenuItem[] = [
+    {
+      label: "Profile",
+      path: "/profile",
+      icon: User,
+      tooltip: "Profile",
+    },
+    {
+      label: "My Submissions", 
+      path: "/my-submissions",
+      icon: FileText,
+      tooltip: "My Submissions",
+    },
+    {
+      label: "Settings",
+      path: "/settings", 
+      icon: Settings,
+      tooltip: "Settings",
+    },
+  ];
 
   const handleLogin = () => {
     loginWithRedirect();
@@ -153,7 +251,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       {/* Navigation */}
       <div className="p-4">
         {isOpen && (
-          <h2 className="text-sm font-semibold text-neutral-300 dark:text-neutral-200 uppercase tracking-wider mb-4">
+          <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-200 uppercase tracking-wider mb-4">
             Navigation
           </h2>
         )}
@@ -163,72 +261,48 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             isOpen ? "space-y-2" : "space-y-3 flex flex-col items-center"
           }`}
         >
-          <Link
-            to="/chat"
-            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+          {navigationItems.map((item) => {
+            const IconComponent = item.icon;
+            const isActiveItem = item.isActive();
+            const baseClasses = `flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
               isOpen ? "px-3 py-2" : "p-2 justify-center"
-            } ${
-              isActivePath("/chat")
-                ? "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400"
-                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700"
-            }`}
-            title={isOpen ? "" : "Chat (Coming Soon)"}
-          >
-            <MessageCircle className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
-            {isOpen && (
-              <div className="flex items-center justify-between w-full">
-                <span>Translation Arena</span>
-              </div>
-            )}
-          </Link>
+            }`;
+            const stateClasses = isActiveItem
+              ? item.activeClasses
+              : "text-neutral-600 dark:text-neutral-100 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700";
 
-          {/* Challenges Link */}
-          <Link
-            to="/challenges"
-            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
-              isOpen ? "px-3 py-2" : "p-2 justify-center"
-            } ${
-              isActivePath("/challenges")
-                ? "text-primary-600 bg-primary-50 border-l-4 border-blue-600"
-                : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700"
-            }`}
-            title={isOpen ? "" : "Challenges"}
-          >
-            <Trophy className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
-            {isOpen && "Challenges"}
-          </Link>
+            if (item.isExternal) {
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${baseClasses} ${stateClasses}`}
+                  title={isOpen ? "" : item.tooltip}
+                >
+                  <IconComponent className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+                  {isOpen && item.label}
+                </a>
+              );
+            }
 
-          {/* Leaderboards Link */}
-          <Link
-            to="/leaderboards"
-            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
-              isOpen ? "px-3 py-2" : "p-2 justify-center"
-            } ${
-              isLeaderboardPath()
-                ? "text-primary-600 bg-primary-50 border-l-4 border-blue-600"
-                : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700"
-            }`}
-            title={isOpen ? "" : "Leaderboards"}
-          >
-            <BarChart3 className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
-            {isOpen && "Leaderboards"}
-          </Link>
-
-          {/* Documentation Link */}
-          <a
-            href={`${
-              import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"
-            }/documentation`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
-              isOpen ? "px-3 py-2" : "p-2 justify-center"
-            } text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700`}
-            title={isOpen ? "" : "API Documentation"}
-          >
-            <BookOpen className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
-            {isOpen && "Documentation"}
-          </a>
+            return (
+              <Link
+                key={item.label}
+                to={item.path!}
+                className={`${baseClasses} ${stateClasses}`}
+                title={isOpen ? "" : item.tooltip}
+              >
+                <IconComponent className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+                {isOpen && (
+                  <div className="flex items-center justify-between w-full">
+                    <span>{item.label}</span>
+                  </div>
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
 
@@ -246,20 +320,28 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               isOpen ? "space-y-2" : "space-y-3 flex flex-col items-center"
             }`}
           >
-            <Link
-              to="/admin/create-challenge"
-              className={`flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+            {adminItems.map((item) => {
+              const IconComponent = item.icon;
+              const isActiveItem = item.isActive();
+              const baseClasses = `flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
                 isOpen ? "px-3 py-2" : "p-2 justify-center"
-              } ${
-                isActivePath("/admin/create-challenge")
-                  ? "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-600 dark:border-green-400"
-                  : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700"
-              }`}
-              title={isOpen ? "" : "Create Challenge"}
-            >
-              <Plus className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
-              {isOpen && "Create Challenge"}
-            </Link>
+              }`;
+              const stateClasses = isActiveItem
+                ? item.activeClasses
+                : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700";
+
+              return (
+                <Link
+                  key={item.label}
+                  to={item.path!}
+                  className={`${baseClasses} ${stateClasses}`}
+                  title={isOpen ? "" : item.tooltip}
+                >
+                  <IconComponent className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
+                  {isOpen && item.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
@@ -323,23 +405,20 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             {/* User Menu Dropdown */}
             {isUserMenuOpen && isOpen && (
               <div className="space-y-1 pl-2">
-                <Link
-                  to="/profile"
-                  className="flex items-center px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  onClick={() => setIsUserMenuOpen(false)}
-                >
-                  <User className="w-3 h-3 mr-2" />
-                  Profile
-                </Link>
-
-                <Link
-                  to="/my-submissions"
-                  className="flex items-center px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  onClick={() => setIsUserMenuOpen(false)}
-                >
-                  <FileText className="w-3 h-3 mr-2" />
-                  My Submissions
-                </Link>
+                {userMenuItems.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      className="flex items-center px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <IconComponent className="w-3 h-3 mr-2" />
+                      {item.label}
+                    </Link>
+                  );
+                })}
 
                 {/* Theme Selector */}
                 <div className="px-3 py-1">
@@ -375,15 +454,6 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
 
                 <div className="h-px bg-neutral-200 dark:bg-neutral-600 mx-3 my-1" />
 
-                <Link
-                  to="/settings"
-                  className="flex items-center px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  onClick={() => setIsUserMenuOpen(false)}
-                >
-                  <Settings className="w-3 h-3 mr-2" />
-                  Settings
-                </Link>
-
                 <button
                   onClick={handleLogout}
                   className="flex items-center w-full px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
@@ -397,20 +467,19 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             {/* Collapsed state - show tooltip menu items */}
             {!isOpen && (
               <div className="space-y-1 flex flex-col items-center">
-                <Link
-                  to="/profile"
-                  className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  title="Profile"
-                >
-                  <User className="w-4 h-4" />
-                </Link>
-                <Link
-                  to="/my-submissions"
-                  className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  title="My Submissions"
-                >
-                  <FileText className="w-4 h-4" />
-                </Link>
+                {userMenuItems.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
+                      title={item.tooltip}
+                    >
+                      <IconComponent className="w-4 h-4" />
+                    </Link>
+                  );
+                })}
                 <button
                   onClick={() => {
                     const themes: Array<"light" | "dark" | "system"> = [
@@ -429,13 +498,6 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                 >
                   {getThemeIcon(theme)}
                 </button>
-                <Link
-                  to="/settings"
-                  className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  title="Settings"
-                >
-                  <Settings className="w-4 h-4" />
-                </Link>
                 <button
                   onClick={handleLogout}
                   className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"

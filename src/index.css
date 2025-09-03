@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-
 @font-face {
   font-family: monlam-2;
   src: url('/font/MonlamUniOuChan2.ttf') format('truetype');
@@ -23,6 +22,7 @@
   font-style: normal;
 }
 
+@custom-variant dark (&:is(.dark *));
 
 :root {
   /* New Design System - Primary Colors */
@@ -302,6 +302,7 @@
 .dark .border-border { border-color: var(--border); }
 .dark .bg-accent { background-color: var(--accent); }
 .dark .text-accent-foreground { color: var(--accent-foreground); }
+.dark .text-neutral-100 { color: var(--color-neutral-100); }
 
 /* Global dark mode background and body styling */
 .dark body { background-color: var(--background); color: var(--foreground); }
