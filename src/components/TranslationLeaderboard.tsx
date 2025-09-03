@@ -37,9 +37,9 @@ const TranslationLeaderboard: React.FC = () => {
 
   const getProviderColor = (provider: string) => {
     const colors = {
-      google: "text-primary-600 dark:text-primary-400",
-      openai: "text-secondary-600 dark:text-secondary-400", 
-      anthropic: "text-primary-500 dark:text-primary-300",
+      google: "text-primary-400",
+      openai: "text-secondary-400", 
+      anthropic: "text-primary-300",
     };
     return colors[provider as keyof typeof colors] || "text-neutral-600 dark:text-neutral-300";
   };
@@ -148,7 +148,7 @@ const TranslationLeaderboard: React.FC = () => {
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h2 className="text-md font-semibold text-neutral-800 dark:text-neutral-100  truncate">
+            <h2 className="text-md font-semibold  dark:text-neutral-100  truncate">
               Translation Arena
             </h2>
           </div>
@@ -234,16 +234,16 @@ const TranslationLeaderboard: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="">
               <tr>
-                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-300 uppercase tracking-wider">
                   #
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-300 uppercase tracking-wider">
                   Model
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-300 uppercase tracking-wider">
                   Score
                 </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-300 uppercase tracking-wider">
                   Votes
                 </th>
               </tr>
@@ -257,14 +257,14 @@ const TranslationLeaderboard: React.FC = () => {
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="flex items-center">
                       {getRankIcon(index + 1)}
-                      <span className="ml-1 text-xs font-medium text-neutral-800 dark:text-neutral-100">
+                      <span className="ml-1 text-xs font-medium  dark:text-neutral-100">
                         {index + 1}
                       </span>
                     </div>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="space-y-1">
-                      <div className="text-xs font-medium text-neutral-800 dark:text-neutral-100 truncate max-w-32">
+                      <div className="text-xs font-medium  dark:text-neutral-100 truncate max-w-32">
                         {score.model_version}
                       </div>
                       <div className={`text-xs ${getProviderColor(score.provider)}`}>
@@ -275,18 +275,18 @@ const TranslationLeaderboard: React.FC = () => {
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="flex items-center space-x-1">
                       <Star className="w-3 h-3 text-yellow-500" />
-                      <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-100">
+                      <span className="text-xs font-semibold  dark:text-neutral-100">
                         {score.total_votes > 0 ? score.average_score.toFixed(1) : "-"}
                       </span>
                       {score.total_votes > 0 && (
-                        <span className="text-xs text-neutral-500 dark:text-neutral-300">
+                        <span className="text-xs  dark:text-neutral-300">
                           ({score.score_percentage}%)
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
-                    <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">
+                    <div className="text-xs font-semibold  dark:text-neutral-300">
                       {score.total_votes}
                     </div>
                   </td>
@@ -299,7 +299,7 @@ const TranslationLeaderboard: React.FC = () => {
       
       {/* View All/Show Less Button */}
       {filteredAndSortedScores.length > 8 && (
-        <div className="px-4 py-3 bg-neutral-50 dark:bg-neutral-700 border-t border-neutral-200 dark:border-neutral-600">
+        <div className="px-4 py-3  dark:bg-neutral-700 border-t border-neutral-200 dark:border-neutral-600">
           <button
             onClick={() => setShowAll(!showAll)}
             className="w-full text-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium"

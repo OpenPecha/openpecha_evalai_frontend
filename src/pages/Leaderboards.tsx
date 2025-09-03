@@ -198,7 +198,7 @@ const Leaderboards = () => {
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
             Leaderboards
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          <p className=" dark:text-neutral-400 text-sm">
             Track the performance of submissions across all challenges and AI translation models
           </p>
         </div>
@@ -217,14 +217,14 @@ const Leaderboards = () => {
             return (
               <div
                 key={leaderboard.challengeId}
-                className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden"
+                className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border  dark:border-neutral-700 overflow-hidden"
               >
                 {/* Compact Challenge Header */}
                 <div className=" px-4 py-2 ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <h2
-                        className="text-md  font-semibold text-neutral-900 dark:text-neutral-100 truncate cursor-help"
+                        className="text-md  font-semibold  dark:text-neutral-100 truncate cursor-help"
                         title={
                           challenges.find(
                             (c) => c.id === leaderboard.challengeId
@@ -236,7 +236,7 @@ const Leaderboards = () => {
                     
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                      <span className="text-xs  dark:text-neutral-400">
                         {leaderboard.submissions.length}
                       </span>
                       
@@ -247,8 +247,8 @@ const Leaderboards = () => {
                             onClick={() => toggleViewMode(leaderboard.challengeId)}
                             className={`p-1 rounded text-xs transition-colors duration-200 ${
                               getCurrentViewMode(leaderboard.challengeId) === "table"
-                                ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
-                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                                ? "bg-white dark:bg-neutral-700  dark:text-neutral-100 shadow-sm"
+                                : " dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
                             }`}
                             title="Table view"
                           >
@@ -302,22 +302,22 @@ const Leaderboards = () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="">
                         <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                          <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider">
                             #
                           </th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                          <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider">
                             Model
                           </th>
                           {availableMetrics.slice(0, 2).map((metric) => (
                             <th
                               key={metric}
-                              className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                              className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider"
                             >
                               {metric}
                             </th>
                           ))}
                           {isAdmin && (
-                            <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                            <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider">
                               Actions
                             </th>
                           )}
@@ -402,7 +402,7 @@ const Leaderboards = () => {
                 )}
                 <Link
                   to={`/leaderboard/${leaderboard.challengeId}`}
-                  className="w-full flex items-center bottom-0 absolute justify-center bg-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 dark:bg-neutral-700 p-3 text-center text-neutral-600 dark:text-neutral-200 ">View all</Link>
+                  className="w-full flex items-center bottom-0 absolute justify-center  hover:bg-neutral-200 dark:hover:bg-neutral-700 dark:bg-neutral-700 p-3 text-center  dark:text-neutral-200 ">View all</Link>
               </div>
             );
           })}

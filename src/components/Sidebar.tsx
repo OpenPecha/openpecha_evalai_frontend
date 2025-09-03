@@ -203,7 +203,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       <div
         className={`flex items-center ${
           isOpen ? "justify-between" : "justify-center"
-        } p-4 border-b border-neutral-200 dark:border-neutral-700`}
+        } p-4 border-b  dark:border-neutral-700`}
       >
         {isOpen ? (
           <>
@@ -269,7 +269,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             }`;
             const stateClasses = isActiveItem
               ? item.activeClasses
-              : "text-neutral-600 dark:text-neutral-100 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700";
+              : "dark:text-neutral-100  hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700";
 
             if (item.isExternal) {
               return (
@@ -308,9 +308,9 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
 
       {/* Admin Section */}
       {isAuthenticated && user?.role === "admin" && (
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
+        <div className="p-4 border-t dark:border-neutral-700">
           {isOpen && (
-            <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-200 uppercase tracking-wider mb-4">
+            <h2 className="text-sm font-semibold  dark:text-neutral-200 uppercase tracking-wider mb-4">
               Admin
             </h2>
           )}
@@ -328,7 +328,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               }`;
               const stateClasses = isActiveItem
                 ? item.activeClasses
-                : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700";
+                : "dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700";
 
               return (
                 <Link
@@ -348,7 +348,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
 
       {/* User Section at Bottom */}
       <div
-        className={`mt-auto border-t border-neutral-200 dark:border-neutral-700 ${
+        className={`mt-auto border-t  dark:border-neutral-700 ${
           isOpen ? "p-4" : "p-2"
         }`}
       >
@@ -374,7 +374,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className={`w-full flex items-center ${
                 isOpen ? "justify-between" : "justify-center"
-              } p-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200`}
+              } p-2 text-sm  dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200`}
             >
               <div className={`flex items-center ${isOpen ? "space-x-3" : ""}`}>
                 {user?.avatar ? (
@@ -385,7 +385,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   />
                 ) : (
                   <div className="w-6 h-6 bg-neutral-300 dark:bg-neutral-600 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-neutral-600 dark:text-neutral-200" />
+                    <User className="w-4 h-4  dark:text-neutral-200" />
                   </div>
                 )}
                 {isOpen && (
@@ -411,7 +411,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                     <Link
                       key={item.label}
                       to={item.path}
-                      className="flex items-center px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
+                      className="flex items-center px-3 py-2 text-xs dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <IconComponent className="w-3 h-3 mr-2" />
@@ -422,7 +422,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
 
                 {/* Theme Selector */}
                 <div className="px-3 py-1">
-                  <div className="text-xs font-medium text-neutral-500 dark:text-neutral-200 mb-1">
+                  <div className="text-xs font-medium  dark:text-neutral-200 mb-1">
                     Theme
                   </div>
                   <div className="space-y-1">
@@ -435,7 +435,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                         className={`flex items-center w-full px-2 py-1 text-xs rounded transition-colors duration-200 ${
                           theme === themeOption
                             ? "bg-primary-100 dark:bg-primary-800/30 text-primary-700 dark:text-primary-300"
-                            : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-700"
+                            : " dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-700"
                         }`}
                       >
                         <span className="mr-2">
@@ -452,11 +452,11 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   </div>
                 </div>
 
-                <div className="h-px bg-neutral-200 dark:bg-neutral-600 mx-3 my-1" />
+                <div className="h-px  bg-neutral-700 mx-3 my-1" />
 
                 <button
                   onClick={handleLogout}
-                  className="flex items-center w-full px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
+                  className="flex items-center w-full px-3 py-2 text-xs  dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
                 >
                   <LogOut className="w-3 h-3 mr-2" />
                   Sign out
