@@ -37,8 +37,20 @@ export const useVoteOnModel = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ modelId, score, token }: { modelId: string; score: number; token: string }) =>
-      translateApi.voteModel(modelId, score, token),
+    mutationFn: ({ 
+      translationOutput1Id, 
+      translationOutput2Id, 
+      winnerChoice, 
+      responseTimeMs, 
+      token 
+    }: { 
+      translationOutput1Id: string; 
+      translationOutput2Id: string; 
+      winnerChoice: "output1" | "output2" | "tie" | "neither"; 
+      responseTimeMs: number; 
+      token: string 
+    }) =>
+      translateApi.voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token),
     onSuccess: () => {
       // Invalidate and refetch leaderboard after voting
       queryClient.invalidateQueries({

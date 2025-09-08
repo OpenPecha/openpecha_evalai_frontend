@@ -100,12 +100,66 @@ export async function streamTranslate(
 }
 
 /**
- * Vote on a model's translation quality
+ * Stream translation from two specific models simultaneously
+ * Uses a single job ID for both streams to ensure proper session tracking
+ * Requires authentication
+ */
+export async function streamDualTranslate(
+  modelA: string,
+  modelB: string,
+  body: TranslateRequest,
+  token: string,
+  signal: AbortSignal
+): Promise<Response> {
+  try {
+    const headers: Record<string, string> = {
+      "accept": "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    const dualRequest = {
+      ...body,
+      models: [modelA, modelB]
+    };
+
+    console.log(`FRONTEND: Calling dual-stream endpoint with models: ${modelA}, ${modelB}`);
+
+    const response = await fetch(
+      `${API_BASE_URL}/translate/dual-stream`,
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify(dualRequest),
+        signal,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response;
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error; // Re-throw abort errors as-is
+    }
+    console.error("Error streaming dual translation:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to stream dual translation"
+    );
+  }
+}
+
+/**
+ * Vote on translation models
  * Requires authentication
  */
 export async function voteModel(
-  modelId: string,
-  score: number,
+  translationOutput1Id: string,
+  translationOutput2Id: string,
+  winnerChoice: "output1" | "output2" | "tie" | "neither",
+  responseTimeMs: number,
   token: string
 ): Promise<void> {
   try {
@@ -116,10 +170,17 @@ export async function voteModel(
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const body: VoteRequest = { score: score as VoteRequest['score'] };
+    const body: VoteRequest = { 
+      translation_output1_id: translationOutput1Id,
+      translation_output2_id: translationOutput2Id,
+      winner_choice: winnerChoice,
+      response_time_ms: responseTimeMs
+    };
+
+    console.log(`FRONTEND: Voting on outputs: ${translationOutput1Id} vs ${translationOutput2Id}, choice: ${winnerChoice}`);
 
     const response = await fetch(
-      `${API_BASE_URL}/translate/vote/${encodeURIComponent(modelId)}`,
+      `${API_BASE_URL}/translate/vote`,
       {
         method: "POST",
         headers,
@@ -175,6 +236,7 @@ export async function getTranslationLeaderboard(): Promise<TranslationLeaderboar
 export const translateApi = {
   suggestModels,
   streamTranslate,
+  streamDualTranslate,
   voteModel,
   getTranslationLeaderboard,
 };

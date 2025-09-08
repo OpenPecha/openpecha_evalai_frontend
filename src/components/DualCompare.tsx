@@ -1,8 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { useModelStream } from "../hooks/useModelStream";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useDualModelStream } from "../hooks/useDualModelStream";
 import ModelStreamPanel from "./ModelStreamPanel";
 import { voteModel } from "../api/translate";
 import { useToast } from "./use-toast";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FaHandshake } from "react-icons/fa";
+import { AiOutlineStop } from "react-icons/ai";
 import type { TranslateRequest } from "../types/translate";
 
 interface DualCompareProps {
@@ -11,7 +14,6 @@ interface DualCompareProps {
   payload: TranslateRequest;
   token: string;
   onComplete?: () => void;
-  onNewTranslation?: () => void;
 }
 
 const DualCompare: React.FC<DualCompareProps> = ({
@@ -20,47 +22,94 @@ const DualCompare: React.FC<DualCompareProps> = ({
   payload,
   token,
   onComplete,
-  onNewTranslation,
 }) => {
   const { success: showSuccessToast, error: showErrorToast } = useToast();
   const [votedModel, setVotedModel] = useState<string | null>(null);
   const [isVoting, setIsVoting] = useState(false);
-  const [countdown, setCountdown] = useState<number | null>(null);
+  const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
+  const [bothCompleteTime, setBothCompleteTime] = useState<number | null>(null);
+  const hasStartedRef = useRef(false);
 
-  // Stream hooks for both models
-  const streamA = useModelStream(modelA, payload, token, {
-    onError: (error) => {
-      console.error(`Model A (${modelA}) error:`, error);
+  // Stable error handlers to prevent infinite re-renders
+  const handleModelAError = useCallback((error: string) => {
+    console.error(`Model A (${modelA}) error:`, error);
+  }, [modelA]);
+
+  const handleModelBError = useCallback((error: string) => {
+    console.error(`Model B (${modelB}) error:`, error);
+  }, [modelB]);
+
+  // Memoize the options object to prevent infinite re-renders
+  const dualStreamOptions = useMemo(() => ({
+    onModelAError: handleModelAError,
+    onModelBError: handleModelBError,
+    onBothComplete: () => {
+      if (!bothCompleteTime && !votedModel) {
+        setBothCompleteTime(Date.now());
+      }
     },
-  });
+  }), [handleModelAError, handleModelBError, bothCompleteTime, votedModel]);
 
-  const streamB = useModelStream(modelB, payload, token, {
-    onError: (error) => {
-      console.error(`Model B (${modelB}) error:`, error);
-    },
-  });
+  // Dual stream hook for both models using same job ID
+  const dualStream = useDualModelStream(modelA, modelB, payload, token, dualStreamOptions);
 
-  // Auto-start streaming when component mounts
+  // Dummy score handler (not used since hideRating is true)
+  const handleScore = useCallback(() => {
+    // No-op since we use centralized voting buttons
+  }, []);
+
+  // Auto-start streaming when component mounts  
   useEffect(() => {
-    if (token) {
-      streamA.start();
-      streamB.start();
+    if (token && modelA && modelB && payload.text && !hasStartedRef.current) {
+      hasStartedRef.current = true;
+      dualStream.start();
     }
-  }, [streamA.start, streamB.start, token]);
+  }, [token, modelA, modelB, payload.text, dualStream.start]); // Include start function but use ref to prevent multiple calls
 
-  // Handle scoring/voting - now takes modelId directly
-  const handleScore = useCallback(async (modelId: string, score: 1 | 2 | 3 | 4 | 5) => {
+  // Handle voting with new API format
+  const handleVoteOption = useCallback(async (option: 'left' | 'right' | 'both' | 'none') => {
     if (votedModel || isVoting) return; // Already voted or currently voting
+
+    // Get translation output IDs from both streams
+    const translationOutput1Id = dualStream.modelA.translationOutputId;
+    const translationOutput2Id = dualStream.modelB.translationOutputId;
+    
+    if (!translationOutput1Id || !translationOutput2Id) {
+      showErrorToast("Vote Failed", "Translation output IDs not available. Please try again.");
+      return;
+    }
+
+    // Calculate response time
+    const responseTimeMs = bothCompleteTime ? Date.now() - bothCompleteTime : 0;
 
     setIsVoting(true);
     try {
-      await voteModel(modelId, score, token);
-      setVotedModel(modelId);
+      let winnerChoice: "output1" | "output2" | "tie" | "neither";
+      let votedModelId: string;
+      
+      switch (option) {
+        case 'left':
+          winnerChoice = 'output1';
+          votedModelId = modelA;
+          break;
+        case 'right':
+          winnerChoice = 'output2';
+          votedModelId = modelB;
+          break;
+        case 'both':
+          winnerChoice = 'tie';
+          votedModelId = 'both';
+          break;
+        case 'none':
+          winnerChoice = 'neither';
+          votedModelId = 'none';
+          break;
+      }
+      
+      await voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token);
+      setVotedModel(votedModelId);
       showSuccessToast("Thank you!", "Your vote has been recorded.");
       onComplete?.();
-      
-      // Start countdown timer (5 seconds)
-      setCountdown(5);
     } catch (error) {
       console.error("Error submitting vote:", error);
       showErrorToast(
@@ -70,27 +119,55 @@ const DualCompare: React.FC<DualCompareProps> = ({
     } finally {
       setIsVoting(false);
     }
-  }, [votedModel, isVoting, token, showSuccessToast, showErrorToast, onComplete]);
+  }, [votedModel, isVoting, token, modelA, modelB, dualStream.modelA.translationOutputId, dualStream.modelB.translationOutputId, bothCompleteTime, showSuccessToast, showErrorToast, onComplete]);
 
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown === null) return;
-
-    if (countdown === 0) {
-      // Countdown finished, start new translation
-      onNewTranslation?.();
-      return;
+  // Copy content handler
+  const handleCopyA = useCallback(async () => {
+    if (dualStream.modelA.data) {
+      try {
+        await navigator.clipboard.writeText(dualStream.modelA.data);
+        showSuccessToast("Copied!", "Content copied to clipboard");
+      } catch {
+        showErrorToast("Copy Failed", "Unable to copy to clipboard");
+      }
     }
+  }, [dualStream.modelA.data, showSuccessToast, showErrorToast]);
 
-    const timer = setTimeout(() => {
-      setCountdown(countdown - 1);
-    }, 1000);
+  const handleCopyB = useCallback(async () => {
+    if (dualStream.modelB.data) {
+      try {
+        await navigator.clipboard.writeText(dualStream.modelB.data);
+        showSuccessToast("Copied!", "Content copied to clipboard");
+      } catch {
+        showErrorToast("Copy Failed", "Unable to copy to clipboard");
+      }
+    }
+  }, [dualStream.modelB.data, showSuccessToast, showErrorToast]);
 
-    return () => clearTimeout(timer);
-  }, [countdown, onNewTranslation]);
+  // Refresh translation handler
+  const handleRefreshA = useCallback(() => {
+    setBothCompleteTime(null); // Reset timer when refreshing
+    hasStartedRef.current = false; // Allow restart
+    dualStream.reset();
+    dualStream.start();
+  }, [dualStream]);
 
-  const bothComplete = streamA.isComplete && streamB.isComplete;
-  const anyStreaming = streamA.isStreaming || streamB.isStreaming;
+  const handleRefreshB = useCallback(() => {
+    setBothCompleteTime(null); // Reset timer when refreshing
+    hasStartedRef.current = false; // Allow restart
+    dualStream.reset();
+    dualStream.start();
+  }, [dualStream]);
+
+  const bothComplete = dualStream.areBothComplete;
+  const anyStreaming = dualStream.isAnyStreaming;
+
+  // Track when both translations complete to start response time timer
+  useEffect(() => {
+    if (bothComplete && !bothCompleteTime && !votedModel) {
+      setBothCompleteTime(Date.now());
+    }
+  }, [bothComplete, bothCompleteTime, votedModel]);
 
   return (
     <div className="space-y-6">
@@ -100,32 +177,108 @@ const DualCompare: React.FC<DualCompareProps> = ({
         <ModelStreamPanel
           modelId={modelA}
           modelLabel="Model A"
-          content={streamA.data}
-          isStreaming={streamA.isStreaming}
-          error={streamA.error}
-          isComplete={streamA.isComplete}
-          onStop={streamA.stop}
+          content={dualStream.modelA.data}
+          isStreaming={dualStream.modelA.isStreaming}
+          error={dualStream.modelA.error}
+          isComplete={dualStream.modelA.isComplete}
+          onStop={dualStream.stop}
           onScore={handleScore}
           disabled={votedModel !== null && votedModel !== modelA}
           voted={votedModel === modelA}
           anyVoted={votedModel !== null}
+          hideRating={true}
+          hoverEffect={
+            hoveredOption === 'left' || hoveredOption === 'both' 
+              ? 'shiny' 
+              : hoveredOption === 'none' ? 'red' : null
+          }
+          onCopy={handleCopyA}
+          onRefresh={handleRefreshA}
         />
 
         {/* Model B Panel */}
         <ModelStreamPanel
           modelId={modelB}
           modelLabel="Model B"
-          content={streamB.data}
-          isStreaming={streamB.isStreaming}
-          error={streamB.error}
-          isComplete={streamB.isComplete}
-          onStop={streamB.stop}
+          content={dualStream.modelB.data}
+          isStreaming={dualStream.modelB.isStreaming}
+          error={dualStream.modelB.error}
+          isComplete={dualStream.modelB.isComplete}
+          onStop={dualStream.stop}
           onScore={handleScore}
           disabled={votedModel !== null && votedModel !== modelB}
           voted={votedModel === modelB}
           anyVoted={votedModel !== null}
+          hideRating={true}
+          hoverEffect={
+            hoveredOption === 'right' || hoveredOption === 'both' 
+              ? 'shiny' 
+              : hoveredOption === 'none' ? 'red' : null
+          }
+          onCopy={handleCopyB}
+          onRefresh={handleRefreshB}
         />
       </div>
+
+      {/* Centralized Voting Buttons */}
+      {bothComplete && !votedModel && !dualStream.modelA.error && !dualStream.modelB.error && (
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-6">
+          <div className="text-center space-y-4">
+            <div className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
+              Which translation is better?
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Left is Better */}
+              <button
+                onClick={() => handleVoteOption('left')}
+                disabled={isVoting}
+                onMouseEnter={() => setHoveredOption('left')}
+                onMouseLeave={() => setHoveredOption(null)}
+                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+              >
+                <ChevronLeft size={18} />
+                Left is Better
+              </button>
+              
+              {/* It's a Tie */}
+              <button
+                onClick={() => handleVoteOption('both')}
+                disabled={isVoting}
+                onMouseEnter={() => setHoveredOption('both')}
+                onMouseLeave={() => setHoveredOption(null)}
+                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+              >
+                <FaHandshake size={18} />
+                It's a Tie
+              </button>
+              
+              {/* Both are Bad */}
+              <button
+                onClick={() => handleVoteOption('none')}
+                disabled={isVoting}
+                onMouseEnter={() => setHoveredOption('none')}
+                onMouseLeave={() => setHoveredOption(null)}
+                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+              >
+                <AiOutlineStop size={18} />
+                Both are Bad
+              </button>
+              
+              {/* Right is Better */}
+              <button
+                onClick={() => handleVoteOption('right')}
+                disabled={isVoting}
+                onMouseEnter={() => setHoveredOption('right')}
+                onMouseLeave={() => setHoveredOption(null)}
+                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+              >
+                Right is Better
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Status and instructions */}
       <div className="text-center space-y-2">
@@ -135,9 +288,9 @@ const DualCompare: React.FC<DualCompareProps> = ({
           </p>
         )}
         
-        {bothComplete && !votedModel && !streamA.error && !streamB.error && (
+        {bothComplete && !votedModel && !dualStream.modelA.error && !dualStream.modelB.error && (
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            ✅ Both translations complete. Rate either response to reveal the model and continue.
+            ✅ Both translations complete. Choose your preference above to continue.
           </p>
         )}
         
@@ -146,17 +299,6 @@ const DualCompare: React.FC<DualCompareProps> = ({
             <p className="text-sm text-green-800 dark:text-green-300 font-medium">
               🎉 Thank you for your feedback! Your vote helps improve AI translation quality.
             </p>
-            {countdown !== null && countdown > 0 && (
-              <p className="text-xs text-green-600 dark:text-green-400 mt-2">
-                Starting new translation in {countdown} second{countdown !== 1 ? 's' : ''}... 
-                <button 
-                  onClick={() => onNewTranslation?.()} 
-                  className="ml-2 underline hover:no-underline"
-                >
-                  Start now
-                </button>
-              </p>
-            )}
           </div>
         )}
 

@@ -14,7 +14,10 @@ export interface TranslateRequest {
 }
 
 export interface VoteRequest {
-  score: 1 | 2 | 3 | 4 | 5;
+  translation_output1_id: string;
+  translation_output2_id: string;
+  winner_choice: "output1" | "output2" | "tie" | "neither";
+  response_time_ms: number;
 }
 
 export interface ModelStreamState {
@@ -22,6 +25,7 @@ export interface ModelStreamState {
   isStreaming: boolean;
   error: string | null;
   isComplete: boolean;
+  translationOutputId?: string;
 }
 
 export interface TranslateSession {

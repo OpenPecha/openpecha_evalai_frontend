@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { StopCircle, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { StopCircle, CheckCircle, AlertCircle, Loader2, Copy, RefreshCw } from "lucide-react";
 
 interface ModelStreamPanelProps {
   modelId: string;
@@ -13,6 +13,10 @@ interface ModelStreamPanelProps {
   disabled: boolean;
   voted: boolean;
   anyVoted: boolean;
+  hideRating?: boolean; // New prop to hide individual rating buttons
+  hoverEffect?: 'shiny' | 'red' | null; // New prop for hover effects
+  onCopy?: () => void; // Callback for copy action
+  onRefresh?: () => void; // Callback for refresh action
 }
 
 const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
@@ -27,6 +31,10 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   disabled,
   voted,
   anyVoted,
+  hideRating = false,
+  hoverEffect = null,
+  onCopy,
+  onRefresh,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +77,14 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   };
 
   const getPanelBorderClass = () => {
+    // Hover effects take priority
+    if (hoverEffect === 'shiny') {
+      return "border-blue-400 dark:border-blue-300 shadow-lg shadow-blue-200/50 dark:shadow-blue-800/30 bg-blue-50/30 dark:bg-blue-900/20";
+    }
+    if (hoverEffect === 'red') {
+      return "border-red-400 dark:border-red-300 shadow-lg shadow-red-200/50 dark:shadow-red-800/30 bg-red-50/30 dark:bg-red-900/20";
+    }
+    
     if (error) {
       return "border-red-300 dark:border-red-600";
     }
@@ -105,6 +121,28 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-xs">Streaming...</span>
               </div>
+            )}
+            
+            {/* Copy button */}
+            {content && onCopy && (
+              <button
+                onClick={onCopy}
+                className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
+                title="Copy content"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+            )}
+            
+            {/* Refresh button */}
+            {onRefresh && !isStreaming && (
+              <button
+                onClick={onRefresh}
+                className="p-1 text-neutral-500 hover:text-green-600 dark:text-neutral-400 dark:hover:text-green-400 transition-colors"
+                title="Refresh translation"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
             )}
             
             {/* Stop button */}
@@ -164,8 +202,8 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
 
       {/* Actions */}
       <div className="p-4 border-t border-neutral-100 dark:border-neutral-700">
-        {/* Rating - Show when translation is complete and not voted yet */}
-        {isComplete && !error && !voted && (
+        {/* Rating - Show when translation is complete and not voted yet and not hidden */}
+        {isComplete && !error && !voted && !hideRating && (
           <div className="space-y-2">
             <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300 text-center">
               Rate this translation:

@@ -13,6 +13,7 @@ interface UseModelStreamReturn {
   isStreaming: boolean;
   error: string | null;
   isComplete: boolean;
+  translationOutputId: string | undefined;
   start: () => Promise<void>;
   stop: () => void;
   reset: () => void;
@@ -33,6 +34,7 @@ export function useModelStream(
     isStreaming: false,
     error: null,
     isComplete: false,
+    translationOutputId: undefined,
   });
 
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -46,6 +48,7 @@ export function useModelStream(
       isStreaming: false,
       error: null,
       isComplete: false,
+      translationOutputId: undefined,
     });
     // Reset decoder to handle new stream
     decoderRef.current = new TextDecoder();
@@ -192,6 +195,7 @@ export function useModelStream(
                   data: accumulatedData,
                   isStreaming: false,
                   isComplete: true,
+                  translationOutputId: parsed.output_id || prev.translationOutputId,
                 }));
                 options.onComplete?.();
                 return; // Exit the loop
@@ -226,7 +230,7 @@ export function useModelStream(
       readerRef.current = null;
       abortControllerRef.current = null;
     }
-  }, [reset]); // Only depend on reset function
+  }, [reset, modelId, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Cleanup on unmount
   useEffect(() => {
@@ -240,6 +244,7 @@ export function useModelStream(
     isStreaming: state.isStreaming,
     error: state.error,
     isComplete: state.isComplete,
+    translationOutputId: state.translationOutputId,
     start,
     stop,
     reset,
