@@ -52,7 +52,7 @@ export const useVoteOnModel = () => {
     }) =>
       translateApi.voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token),
     onSuccess: () => {
-      // Invalidate and refetch leaderboard after voting
+      // Invalidate and refetch leaderboard after voting (both endpoints)
       queryClient.invalidateQueries({
         queryKey: translateKeys.leaderboard(),
       });
@@ -60,6 +60,12 @@ export const useVoteOnModel = () => {
       // Force immediate refetch for better UX
       queryClient.refetchQueries({
         queryKey: translateKeys.leaderboard(),
+      });
+      
+      // Also invalidate score endpoint for real-time updates
+      queryClient.invalidateQueries({
+        queryKey: translateKeys.all,
+        predicate: (query) => query.queryKey.includes('score') || query.queryKey.includes('leaderboard')
       });
     },
     onError: (error) => {

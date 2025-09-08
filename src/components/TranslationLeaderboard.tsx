@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Crown, Medal, Award, TrendingUp, RefreshCw, Star, Search } from "lucide-react";
+import { Crown, Medal, Award, TrendingUp, RefreshCw, Star, Search, Info } from "lucide-react";
 import { useTranslationLeaderboard } from "../hooks/useTranslate";
 
 const TranslationLeaderboard: React.FC = () => {
@@ -151,6 +151,15 @@ const TranslationLeaderboard: React.FC = () => {
             <h2 className="text-md font-semibold text-neutral-500 dark:text-neutral-100  truncate">
               Translation Arena
             </h2>
+            <div className="group relative">
+              <Info className="w-3 h-3 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 cursor-help" />
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-56 p-2 bg-neutral-900 dark:bg-neutral-700 text-white text-xs rounded-lg shadow-lg z-10">
+                <p className="font-medium mb-1">How scoring works:</p>
+                <p>• Head-to-head model comparisons</p>
+                <p>• Star rating based on win rate</p>
+                <p>• Updates in real-time</p>
+              </div>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-xs text-neutral-500 dark:text-neutral-300">
@@ -280,7 +289,7 @@ const TranslationLeaderboard: React.FC = () => {
                       </span>
                       {score.total_votes > 0 && (
                         <span className="text-xs text-neutral-700 dark:text-neutral-300">
-                          ({score.score_percentage}%)
+                          ({score.score_percentage.toFixed(1)}%)
                         </span>
                       )}
                     </div>
@@ -288,6 +297,11 @@ const TranslationLeaderboard: React.FC = () => {
                   <td className="px-3 py-2 whitespace-nowrap">
                     <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
                       {score.total_votes}
+                      {score.total_votes > 0 && (
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                          comparisons
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>
