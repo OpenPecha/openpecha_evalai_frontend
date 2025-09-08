@@ -63,7 +63,7 @@ export interface StreamChunk {
 export const DEFAULT_MODELS = ['gpt-4', 'gemini-1.0-pro'] as const;
 
 // Default translate prompt
-export const DEFAULT_TRANSLATE_PROMPT = "Translate the following text accurately while preserving meaning and context:";
+export const DEFAULT_TRANSLATE_PROMPT = "";
 
 // Supported target languages
 export const SUPPORTED_LANGUAGES = [
