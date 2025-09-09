@@ -147,20 +147,6 @@ const DualCompare: React.FC<DualCompareProps> = ({
     }
   }, [dualStream.modelB.data, showSuccessToast, showErrorToast]);
 
-  // Refresh translation handler
-  const handleRefreshA = useCallback(() => {
-    setBothCompleteTime(null); // Reset timer when refreshing
-    hasStartedRef.current = false; // Allow restart
-    dualStream.reset();
-    dualStream.start();
-  }, [dualStream]);
-
-  const handleRefreshB = useCallback(() => {
-    setBothCompleteTime(null); // Reset timer when refreshing
-    hasStartedRef.current = false; // Allow restart
-    dualStream.reset();
-    dualStream.start();
-  }, [dualStream]);
 
   const bothComplete = dualStream.areBothComplete;
   const anyStreaming = dualStream.isAnyStreaming;
@@ -196,7 +182,6 @@ const DualCompare: React.FC<DualCompareProps> = ({
               : hoveredOption === 'none' ? 'red' : null
           }
           onCopy={handleCopyA}
-          onRefresh={handleRefreshA}
         />
 
         {/* Model B Panel */}
@@ -219,7 +204,6 @@ const DualCompare: React.FC<DualCompareProps> = ({
               : hoveredOption === 'none' ? 'red' : null
           }
           onCopy={handleCopyB}
-          onRefresh={handleRefreshB}
         />
       </div>
 

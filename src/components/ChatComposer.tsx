@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Send, Languages, AlertTriangle } from "lucide-react";
+import { Send, Languages, AlertTriangle, Settings, X, Save } from "lucide-react";
 import { suggestModels } from "../api/translate";
 import { DEFAULT_MODELS, SUPPORTED_LANGUAGES, createTranslatePrompt } from "../types/translate";
 import type { SuggestResponse, TranslateRequest, LanguageCode } from "../types/translate";
@@ -17,21 +17,47 @@ const exampleTexts = [
   "ང་རང་ཞིང་པ་ཞིག་ཡིན། ང་ནས་འབྲུ་དང་གྲོ་མ་བཟོ་གི་ཡོད།",
   "སྐུ་ཚེ་རིང་བ་དང་ནད་མེད་ཚེ་དབང་ཐོབ་པར་ཤོག",
 ];
-
+const DEFAULT_TEMPLATE = "Translate the following text accurately while preserving meaning and context:";
 const ChatComposer: React.FC<ChatComposerProps> = ({
   onSubmit,
   disabled = false,
   token,
 }) => {
-  const [inputValue, setInputValue] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useLocalStorage<LanguageCode>("targetLanguage", "en"); // Default to English
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Custom prompt settings stored in localStorage
+  const [customPrompt, setCustomPrompt] = useLocalStorage<string>(
+    'translation-custom-template', 
+    DEFAULT_TEMPLATE
+  );
+  const [tempPrompt, setTempPrompt] = useState(customPrompt);
+  
+  // Input state - initialize with custom prompt by default
+  const [inputValue, setInputValue] = useState(customPrompt);
 
   const handleSubmit = async () => {
     const text = inputValue.trim();
     if (!text || isLoading || disabled) return;
+    
+    // Extract the actual text to translate (everything after the prompt)
+    const promptText = customPrompt.trim();
+    let textToTranslate = text;
+    
+    // If input starts with the custom prompt, extract the text after it
+    if (text.startsWith(promptText)) {
+      textToTranslate = text.slice(promptText.length).trim();
+      // Remove any separators like newlines or dashes
+      textToTranslate = textToTranslate.replace(/^[\s-]+/, '').trim();
+    }
+    
+    if (!textToTranslate) {
+      setError("Please enter text to translate after the prompt");
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -61,18 +87,25 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
         setError("Using default models (suggestion service unavailable)");
       }
 
-      // Create payload with target language
+      // Create payload with target language and custom prompt
       const selectedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLanguage);
       const targetLanguageName = selectedLang?.name || 'English'; // For prompt readability
       const targetLanguageCode = selectedLanguage || 'en'; // Send language code
+      
+      // Use custom prompt if set, otherwise use default with target language
+      const finalPrompt = customPrompt.trim() 
+        ? `${customPrompt} (Target language: ${targetLanguageName})`
+        : createTranslatePrompt(targetLanguageName);
+      
       const payload: TranslateRequest = {
-        text,
-        prompt: createTranslatePrompt(targetLanguageName),
+        text: textToTranslate,
+        prompt: finalPrompt,
+        template: customPrompt.trim() || undefined,
         target_language: targetLanguageCode,
       };
 
-      // Clear input and submit
-      setInputValue("");
+      // Reset input to just the prompt for next translation
+      setInputValue(customPrompt + "\n\n");
       onSubmit(payload, modelA, modelB, selectionMethod);
     } catch (submitError) {
       console.error("Error submitting translation request:", submitError);
@@ -94,8 +127,17 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
   };
 
   const handleExampleClick = (text: string) => {
-    setInputValue(text);
+    // Add the example text after the custom prompt
+    const promptWithExample = `${customPrompt}\n\n${text}`;
+    setInputValue(promptWithExample);
     textareaRef.current?.focus();
+    
+    // Position cursor after the example text
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.setSelectionRange(promptWithExample.length, promptWithExample.length);
+      }
+    }, 0);
   };
 
   // Auto-resize textarea
@@ -109,8 +151,98 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
     textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
   };
 
+  // Settings handlers
+  const handleSettingsOpen = () => {
+    setTempPrompt(customPrompt);
+    setShowSettings(true);
+  };
+
+  const handleSettingsClose = () => {
+    setShowSettings(false);
+    setTempPrompt(customPrompt); // Reset to saved value
+  };
+
+  const handleSettingsSave = () => {
+    setCustomPrompt(tempPrompt);
+    // Update the input field with new prompt
+    setInputValue(tempPrompt + "\n\n");
+    setShowSettings(false);
+  };
+
+  const handleResetPrompt = () => {
+    setTempPrompt('Translate the following text accurately while preserving meaning and context:');
+  };
+
   return (
     <div className="space-y-4">
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+              <div className="flex items-center space-x-3">
+                <Settings className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
+                  Translation Settings
+                </h2>
+              </div>
+              <button
+                onClick={handleSettingsClose}
+                className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              <div>
+                <label htmlFor="custom-prompt-textarea" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                  Custom Translation Template
+                </label>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+                  This template will be used for input. 
+                </p>
+                <textarea
+                  id="custom-prompt-textarea"
+                  value={tempPrompt}
+                  onChange={(e) => setTempPrompt(e.target.value)}
+                  placeholder="Enter your custom translation prompt..."
+                  className="w-full h-32 px-4 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none"
+                />
+              </div>
+
+              
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between p-6 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-700">
+              <button
+                onClick={handleResetPrompt}
+                className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors"
+              >
+                Reset to Default
+              </button>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={handleSettingsClose}
+                  className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSettingsSave}
+                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition-colors duration-200"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Error display */}
       {error && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
@@ -154,10 +286,10 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="Enter text to translate (Tibetan, English, or other languages)..."
+          placeholder="Your translation prompt will appear here. Add the text to translate below it..."
           className="w-full font-['monlam'] rounded-xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-4 py-3 pr-24 pb-12 text-neutral-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[80px] max-h-[200px]"
           disabled={disabled || isLoading}
-          rows={2}
+          rows={5}
         />
         
         {/* Target Language Selection - Inside textbox bottom left */}
@@ -195,16 +327,29 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       </div>
 
       {/* Instructions */}
-      <div className="text-xs text-neutral-500 dark:text-neutral-400 space-y-1">
-        <p>• Press Enter to translate, Shift+Enter for new line</p>
-        <p>• Select target language in the bottom-left of the input area</p>
-        <p>• Fresh AI model pairs are selected for each translation</p>
-        <p>• Click on any translation to rate it with emoji feedback</p>
-        {isLoading && (
-          <p className="text-primary-600 dark:text-primary-400 font-medium">
-            🔄 Getting fresh model suggestions...
-          </p>
-        )}
+      <div className="flex items-start justify-between">
+        <div className="text-xs text-neutral-500 dark:text-neutral-400 space-y-1 flex-1">
+          <p>• Press Enter to translate, Shift+Enter for new line</p>
+          <p>• Select target language in the bottom-left of the input area</p>
+          <p>• Fresh AI model pairs are selected for each translation</p>
+          <p>• Click on any translation to rate it with emoji feedback</p>
+          {isLoading && (
+            <p className="text-primary-600 dark:text-primary-400 font-medium">
+              🔄 Getting fresh model suggestions...
+            </p>
+          )}
+        </div>
+        
+        {/* Settings Button */}
+        <button
+          onClick={handleSettingsOpen}
+          disabled={disabled || isLoading}
+          className="flex items-center space-x-1 px-3 py-2 text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Translation Settings"
+        >
+          <Settings className="w-4 h-4" />
+          <span>Settings</span>
+        </button>
       </div>
     </div>
   );

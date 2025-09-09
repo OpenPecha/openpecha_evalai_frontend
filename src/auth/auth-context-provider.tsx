@@ -68,6 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       loginWithRedirect({
         authorizationParams: {
           prompt: auto ? "none" : "login",
+          redirect_uri: import.meta.env.VITE_WORKSPACE_URL+"/auth/callback",
         },
       });
     },

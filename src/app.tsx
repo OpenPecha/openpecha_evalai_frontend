@@ -16,28 +16,36 @@ import CreateChallenge from "./pages/CreateChallenge";
 import EditChallenge from "./pages/EditChallenge";
 // CSS imports handled in main.tsx
 import { useAuth } from "./auth/use-auth-hook";
-import { useAuthenticatedUser } from "./hooks/useUserApiAuth";
 import { useTheme } from "./hooks/useTheme";
+import { useTokenExpiration } from "./hooks/useTokenExpiration";
+import { useAuth0 } from "./hooks/useAuth0";
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
-  const { isAuthenticated, isLoading, getToken } = useAuth();
+  const { isAuthenticated, isLoading, getToken ,currentUser} = useAuth();
+  const { loginWithRedirect } = useAuth0();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Initialize theme system at root level
   useTheme();
 
   // Initialize user API auth
-  useAuthenticatedUser();
 
+  useTokenExpiration();
+  
   useEffect(() => {
     if (isAuthenticated) {
       getToken().then((token) => {
         localStorage.setItem("access_token", token!);
       });
     }
-  }, [isAuthenticated, isLoading, getToken]);
+    if (!isLoading && !currentUser) {
+   loginWithRedirect();
+    }
+   
+  }, [isAuthenticated, isLoading]);
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

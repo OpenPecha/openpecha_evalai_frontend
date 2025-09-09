@@ -34,6 +34,7 @@ const Chat = () => {
       id: Date.now().toString(),
       inputText: payload.text,
       targetLanguage: payload.target_language,
+      template: payload.template,
       modelA: {
         id: modelA,
         name: modelA,
@@ -209,6 +210,7 @@ const Chat = () => {
               payload={{
                 text: currentSession.inputText,
                 prompt: DEFAULT_TRANSLATE_PROMPT,
+                template: currentSession.template,
                 target_language: currentSession.targetLanguage,
               }}
               token={token}

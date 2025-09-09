@@ -11,6 +11,7 @@ export interface SuggestResponse {
 export interface TranslateRequest {
   text: string;
   prompt: string;
+  template?: string;
   target_language?: string;
 }
 
@@ -33,6 +34,7 @@ export interface TranslateSession {
   id: string;
   inputText: string;
   targetLanguage?: string;
+  template?: string;
   modelA: {
     id: string;
     name: string;

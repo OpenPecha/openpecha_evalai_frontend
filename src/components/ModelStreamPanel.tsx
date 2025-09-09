@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { StopCircle, CheckCircle, AlertCircle, Loader2, Copy, RefreshCw } from "lucide-react";
+import { StopCircle, CheckCircle, AlertCircle, Loader2, Copy } from "lucide-react";
 
 interface ModelStreamPanelProps {
   modelId: string;
@@ -16,7 +16,6 @@ interface ModelStreamPanelProps {
   hideRating?: boolean; // New prop to hide individual rating buttons
   hoverEffect?: 'shiny' | 'red' | null; // New prop for hover effects
   onCopy?: () => void; // Callback for copy action
-  onRefresh?: () => void; // Callback for refresh action
 }
 
 const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
@@ -34,7 +33,6 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   hideRating = false,
   hoverEffect = null,
   onCopy,
-  onRefresh,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -131,17 +129,6 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
                 title="Copy content"
               >
                 <Copy className="w-4 h-4" />
-              </button>
-            )}
-            
-            {/* Refresh button */}
-            {onRefresh && !isStreaming && (
-              <button
-                onClick={onRefresh}
-                className="p-1 text-neutral-500 hover:text-green-600 dark:text-neutral-400 dark:hover:text-green-400 transition-colors"
-                title="Refresh translation"
-              >
-                <RefreshCw className="w-4 h-4" />
               </button>
             )}
             
