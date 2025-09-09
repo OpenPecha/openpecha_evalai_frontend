@@ -184,7 +184,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
               <div className="flex items-center space-x-3">
                 <Settings className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                  Translation Settings
+                   Settings
                 </h2>
               </div>
               <button
@@ -199,7 +199,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
             <div className="p-6 space-y-4">
               <div>
                 <label htmlFor="custom-prompt-textarea" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  Custom Translation Template
+                  Custom  Template
                 </label>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
                   This template will be used for input. 
@@ -329,10 +329,10 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       {/* Instructions */}
       <div className="flex items-start justify-between">
         <div className="text-xs text-neutral-500 dark:text-neutral-400 space-y-1 flex-1">
-          <p>• Press Enter to translate, Shift+Enter for new line</p>
+          <p>• Press Enter to submit, Shift+Enter for new line</p>
           <p>• Select target language in the bottom-left of the input area</p>
           <p>• Fresh AI model pairs are selected for each translation</p>
-          <p>• Click on any translation to rate it with emoji feedback</p>
+          <p>• Click on any feedback</p>
           {isLoading && (
             <p className="text-primary-600 dark:text-primary-400 font-medium">
               🔄 Getting fresh model suggestions...

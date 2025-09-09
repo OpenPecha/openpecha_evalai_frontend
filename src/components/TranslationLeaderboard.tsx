@@ -80,7 +80,7 @@ const TranslationLeaderboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h2 className="text-sm font-semibold text-neutral-600 dark:text-neutral-100">
-                Translation Arena
+                Arena
               </h2>
               <div className="flex items-center space-x-1">
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-800/20">
@@ -109,7 +109,7 @@ const TranslationLeaderboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h2 className="text-sm font-semibold text-neutral-600 dark:text-neutral-100">
-                Translation Arena
+                Arena
               </h2>
               <div className="flex items-center space-x-1">
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20">
@@ -149,7 +149,7 @@ const TranslationLeaderboard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <h2 className="text-md font-semibold text-neutral-500 dark:text-neutral-100  truncate">
-              Translation Arena
+              Arena
             </h2>
             <div className="group relative">
               <Info className="w-3 h-3 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 cursor-help" />
@@ -222,7 +222,7 @@ const TranslationLeaderboard: React.FC = () => {
           </h3>
           <p className="text-xs text-neutral-600 dark:text-neutral-300 mb-3">
             {scores.length === 0 
-              ? "Vote in the Translation Arena to create rankings!"
+              ? "Vote in the Arena to create rankings!"
               : "Try adjusting your search or filter criteria."
             }
           </p>

@@ -13,7 +13,8 @@ interface DualCompareProps {
   modelB: string;
   payload: TranslateRequest;
   token: string;
-  onComplete?: () => void;
+  onComplete?: (selectedModel?: string) => void;
+  onNewTranslation?: () => void;
 }
 
 const DualCompare: React.FC<DualCompareProps> = ({
@@ -22,9 +23,11 @@ const DualCompare: React.FC<DualCompareProps> = ({
   payload,
   token,
   onComplete,
+  onNewTranslation,
 }) => {
   const { success: showSuccessToast, error: showErrorToast } = useToast();
   const [votedModel, setVotedModel] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [isVoting, setIsVoting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [bothCompleteTime, setBothCompleteTime] = useState<number | null>(null);
@@ -111,8 +114,9 @@ const DualCompare: React.FC<DualCompareProps> = ({
       
       await voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token);
       setVotedModel(votedModelId);
+      setSelectedOption(option);
       showSuccessToast("Thank you!", "Your vote has been recorded.");
-      onComplete?.();
+      onComplete?.(votedModelId);
     } catch (error) {
       console.error("Error submitting vote:", error);
       showErrorToast(
@@ -123,6 +127,11 @@ const DualCompare: React.FC<DualCompareProps> = ({
       setIsVoting(false);
     }
   }, [votedModel, isVoting, token, modelA, modelB, dualStream.modelA.translationOutputId, dualStream.modelB.translationOutputId, bothCompleteTime, showSuccessToast, showErrorToast, onComplete]);
+
+  // Handle new translation
+  const handleNewTranslation = useCallback(() => {
+    onNewTranslation?.();
+  }, [onNewTranslation]);
 
   // Copy content handler
   const handleCopyA = useCallback(async () => {
@@ -208,58 +217,90 @@ const DualCompare: React.FC<DualCompareProps> = ({
       </div>
 
       {/* Centralized Voting Buttons */}
-      {bothComplete && !votedModel && !dualStream.modelA.error && !dualStream.modelB.error && (
+      {bothComplete && !dualStream.modelA.error && !dualStream.modelB.error && (
         <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-6">
           <div className="text-center space-y-4">
             <div className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
-              Which translation is better?
+              {votedModel ? "Thank you for your feedback!" : "Which response is better?"}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Left is Better */}
               <button
-                onClick={() => handleVoteOption('left')}
-                disabled={isVoting}
-                onMouseEnter={() => setHoveredOption('left')}
-                onMouseLeave={() => setHoveredOption(null)}
-                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+                onClick={selectedOption === 'left' ? handleNewTranslation : () => handleVoteOption('left')}
+                disabled={isVoting || (votedModel && selectedOption !== 'left')}
+                onMouseEnter={() => !votedModel && setHoveredOption('left')}
+                onMouseLeave={() => !votedModel && setHoveredOption(null)}
+                className={`${
+                  selectedOption === 'left' 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : (votedModel && selectedOption && selectedOption !== 'left')
+                    ? 'bg-neutral-300 dark:bg-neutral-600' 
+                    : 'bg-neutral-600 hover:bg-neutral-700'
+                } ${
+                  (votedModel && selectedOption && selectedOption !== 'left') ? 'opacity-50' : ''
+                } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
                 <ChevronLeft size={18} />
-                Left is Better
+                {selectedOption === 'left' ? 'New Translation' : 'Left is Better'}
               </button>
               
               {/* It's a Tie */}
               <button
-                onClick={() => handleVoteOption('both')}
-                disabled={isVoting}
-                onMouseEnter={() => setHoveredOption('both')}
-                onMouseLeave={() => setHoveredOption(null)}
-                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+                onClick={selectedOption === 'both' ? handleNewTranslation : () => handleVoteOption('both')}
+                disabled={isVoting || (votedModel && selectedOption !== 'both')}
+                onMouseEnter={() => !votedModel && setHoveredOption('both')}
+                onMouseLeave={() => !votedModel && setHoveredOption(null)}
+                className={`${
+                  selectedOption === 'both' 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : (votedModel && selectedOption && selectedOption !== 'both')
+                    ? 'bg-neutral-300 dark:bg-neutral-600' 
+                    : 'bg-neutral-600 hover:bg-neutral-700'
+                } ${
+                  (votedModel && selectedOption && selectedOption !== 'both') ? 'opacity-50' : ''
+                } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
                 <FaHandshake size={18} />
-                It's a Tie
+                {selectedOption === 'both' ? 'New Translation' : "It's a Tie"}
               </button>
               
               {/* Both are Bad */}
               <button
-                onClick={() => handleVoteOption('none')}
-                disabled={isVoting}
-                onMouseEnter={() => setHoveredOption('none')}
-                onMouseLeave={() => setHoveredOption(null)}
-                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+                onClick={selectedOption === 'none' ? handleNewTranslation : () => handleVoteOption('none')}
+                disabled={isVoting || (votedModel && selectedOption !== 'none')}
+                onMouseEnter={() => !votedModel && setHoveredOption('none')}
+                onMouseLeave={() => !votedModel && setHoveredOption(null)}
+                className={`${
+                  selectedOption === 'none' 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : (votedModel && selectedOption && selectedOption !== 'none')
+                    ? 'bg-neutral-300 dark:bg-neutral-600' 
+                    : 'bg-neutral-600 hover:bg-neutral-700'
+                } ${
+                  (votedModel && selectedOption && selectedOption !== 'none') ? 'opacity-50' : ''
+                } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
                 <AiOutlineStop size={18} />
-                Both are Bad
+                {selectedOption === 'none' ? 'New Translation' : 'Both are Bad'}
               </button>
               
               {/* Right is Better */}
               <button
-                onClick={() => handleVoteOption('right')}
-                disabled={isVoting}
-                onMouseEnter={() => setHoveredOption('right')}
-                onMouseLeave={() => setHoveredOption(null)}
-                className="bg-neutral-600 hover:bg-neutral-700 disabled:bg-neutral-300 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2"
+                onClick={selectedOption === 'right' ? handleNewTranslation : () => handleVoteOption('right')}
+                disabled={isVoting || (votedModel && selectedOption !== 'right')}
+                onMouseEnter={() => !votedModel && setHoveredOption('right')}
+                onMouseLeave={() => !votedModel && setHoveredOption(null)}
+                className={`${
+                  selectedOption === 'right' 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : (votedModel && selectedOption && selectedOption !== 'right')
+                    ? 'bg-neutral-300 dark:bg-neutral-600' 
+                    : 'bg-neutral-600 hover:bg-neutral-700'
+                } ${
+                  (votedModel && selectedOption && selectedOption !== 'right') ? 'opacity-50' : ''
+                } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
-                Right is Better
+                {selectedOption === 'right' ? 'New Translation' : 'Right is Better'}
                 <ChevronRight size={18} />
               </button>
             </div>
@@ -281,13 +322,6 @@ const DualCompare: React.FC<DualCompareProps> = ({
           </p>
         )}
         
-        {votedModel && (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3">
-            <p className="text-sm text-green-800 dark:text-green-300 font-medium">
-              🎉 Thank you for your feedback! Your vote helps improve AI translation quality.
-            </p>
-          </div>
-        )}
 
         {isVoting && (
           <p className="text-sm text-primary-600 dark:text-primary-400">

@@ -63,20 +63,21 @@ const Chat = () => {
   }, []);
 
   // Handle session completion
-  const handleSessionComplete = useCallback(() => {
-    // Session is complete, could add to history or perform other actions
+  const handleSessionComplete = useCallback((selectedModel?: string) => {
+    if (selectedModel && currentSession) {
+      // Update the current session with the selected model
+      const updatedSession = { ...currentSession, selectedModel, voted: true };
+      setSessions(prev => prev.map(s => s.id === currentSession.id ? updatedSession : s));
+      setCurrentSession(updatedSession);
+    }
     console.log("Translation session completed");
-  }, []);
+  }, [currentSession]);
 
   // Start new chat
   const handleNewChat = useCallback(() => {
     setCurrentSession(null);
   }, []);
 
-  // View previous session
-  const handleViewSession = useCallback((session: TranslateSession) => {
-    setCurrentSession(session);
-  }, []);
 
   const hasCurrentSession = currentSession !== null;
   const hasHistory = sessions.length > 0;
@@ -90,7 +91,7 @@ const Chat = () => {
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
-                  AI Translation Arena
+                  AI Arena
                 </h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
                   ✨ Live
@@ -121,17 +122,17 @@ const Chat = () => {
         {!hasCurrentSession ? (
           /* Welcome Screen */
           <div className="h-full flex items-center justify-center p-6">
-            <div className="max-w-4xl mx-auto">
+            <div className="w-full max-w-6xl mx-auto">
               {/* Welcome Section */}
               <div className="text-center mb-8">
                 <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Languages className="w-10 h-10 text-primary-600 dark:text-primary-400" />
                 </div>
                 <h2 className="text-3xl font-bold text-neutral-700 dark:text-neutral-100 mb-4">
-                  AI Translation Arena
+                  AI Arena
                 </h2>
                 <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6">
-                  Compare translations from different AI models and help improve translation quality through your feedback.
+                  Compare different AI models and help improve quality through your feedback.
                 </p>
                 
                 {!isAuthenticated && (
@@ -157,26 +158,39 @@ const Chat = () => {
                   <div className="flex items-center space-x-2 mb-4">
                     <History className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
                     <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                      Recent Translations
+                      Recent AI requests
                     </h3>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {sessions.slice(0, 6).map((session) => (
-                      <button
-                        key={session.id}
-                        onClick={() => handleViewSession(session)}
-                        className="p-4 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200 group"
-                      >
-                        <div className="space-y-2">
-                          <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 group-hover:text-neutral-700 dark:group-hover:text-white transition-colors">
-                            {session.inputText}
-                          </p>
-                          <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
-                            <span>{session.modelA.name} vs {session.modelB.name}</span>
+                        <div
+                          key={session.id}
+                          className="p-4 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg"
+                        >
+                          <div className="space-y-2">
+                            <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2">
+                              {session.inputText}
+                            </p>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-neutral-500 dark:text-neutral-400">
+                                {session.modelA.name} vs {session.modelB.name}
+                              </span>
+                              {session.selectedModel && (
+                                <div className="flex items-center space-x-1">
+                                  <span className="text-neutral-500 dark:text-neutral-400">Winner:</span>
+                                  <span className="font-medium text-green-600 dark:text-green-400">
+                                    {session.selectedModel === 'both' ? 'Tie' :
+                                     session.selectedModel === 'none' ? 'Neither' :
+                                     session.selectedModel === session.modelA.name ? session.modelA.name :
+                                     session.selectedModel === session.modelB.name ? session.modelB.name :
+                                     session.selectedModel}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </button>
                     ))}
                   </div>
                 </div>
@@ -215,6 +229,7 @@ const Chat = () => {
               }}
               token={token}
               onComplete={handleSessionComplete}
+              onNewTranslation={handleNewChat}
             />
           </div>
         )}

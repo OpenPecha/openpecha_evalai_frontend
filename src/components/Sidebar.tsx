@@ -76,7 +76,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   // Navigation configuration
   const navigationItems: NavigationItem[] = [
     {
-      label: "Translation Arena",
+      label: "Arena",
       path: "/chat",
       href: undefined,
       icon: MessageCircle,
