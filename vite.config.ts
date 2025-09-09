@@ -25,14 +25,6 @@ export default defineConfig({
   preview: {
     port: parseInt(process.env.PORT || "10000"),
     host: true,
-    allowedHosts: [
-      "eval.pecha.tools",
-      "eval-api.pecha.tools",
-      "localhost",
-      "127.0.0.1",
-      "0.0.0.0",
-      ".onrender.com",
-      ".render.com",
-    ],
+    allowedHosts: true
   },
 });
