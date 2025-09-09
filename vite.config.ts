@@ -13,17 +13,10 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true, // Listen on all network interfaces
-    allowedHosts: [
-      "eval.pecha.tools",
-      "eval-api.pecha.tools",
-      "localhost",
-      "127.0.0.1",
-      "0.0.0.0",
-      ".onrender.com",
-    ],
+    allowedHosts: true,
     proxy: {
       "/api": {
-        target: "https://eval-api.pecha.tools",
+        target: "https://eval-api.pecha.ai",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
