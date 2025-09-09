@@ -50,8 +50,11 @@ const DualCompare: React.FC<DualCompareProps> = ({
     },
   }), [handleModelAError, handleModelBError, bothCompleteTime, votedModel]);
 
+  // Extract target language from payload or use default
+  const targetLanguage = payload.target_language || 'en';
+  
   // Dual stream hook for both models using same job ID
-  const dualStream = useDualModelStream(modelA, modelB, payload, token, dualStreamOptions);
+  const dualStream = useDualModelStream(modelA, modelB, payload, targetLanguage, token, dualStreamOptions);
 
   // Dummy score handler (not used since hideRating is true)
   const handleScore = useCallback(() => {

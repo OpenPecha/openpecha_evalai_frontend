@@ -30,6 +30,7 @@ export function useDualModelStream(
   modelAId: string,
   modelBId: string,
   payload: TranslateRequest,
+  targetLanguage: string,
   token: string,
   options: UseDualModelStreamOptions = {}
 ): UseDualModelStreamReturn {
@@ -117,6 +118,7 @@ export function useDualModelStream(
       const response = await streamDualTranslate(
         currentModelAId,
         currentModelBId,
+        targetLanguage,
         payload,
         currentToken,
         abortControllerRef.current.signal
@@ -288,7 +290,7 @@ export function useDualModelStream(
       }
       abortControllerRef.current = null;
     }
-  }, [modelAId, modelBId, JSON.stringify(payload), token, options.onModelAError, options.onModelBError, options.onBothComplete]);
+  }, [modelAId, modelBId, JSON.stringify(payload), targetLanguage, token, options.onModelAError, options.onModelBError, options.onBothComplete]);
 
   const isAnyStreaming = modelA.isStreaming || modelB.isStreaming;
   const areBothComplete = modelA.isComplete && modelB.isComplete;

@@ -3,6 +3,7 @@ import { Send, Languages, AlertTriangle } from "lucide-react";
 import { suggestModels } from "../api/translate";
 import { DEFAULT_MODELS, SUPPORTED_LANGUAGES, createTranslatePrompt } from "../types/translate";
 import type { SuggestResponse, TranslateRequest, LanguageCode } from "../types/translate";
+import useLocalStorage from "../hooks/useLocaleStorage";
 
 interface ChatComposerProps {
   onSubmit: (payload: TranslateRequest, modelA: string, modelB: string, selectionMethod?: string) => void;
@@ -23,7 +24,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
   token,
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>("en"); // Default to English
+  const [selectedLanguage, setSelectedLanguage] = useLocalStorage<LanguageCode>("targetLanguage", "en"); // Default to English
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -62,11 +63,12 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
 
       // Create payload with target language
       const selectedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLanguage);
-      const targetLanguageName = selectedLang?.name || 'English'; // Fallback to English
+      const targetLanguageName = selectedLang?.name || 'English'; // For prompt readability
+      const targetLanguageCode = selectedLanguage || 'en'; // Send language code
       const payload: TranslateRequest = {
         text,
         prompt: createTranslatePrompt(targetLanguageName),
-        target_language: targetLanguageName,
+        target_language: targetLanguageCode,
       };
 
       // Clear input and submit

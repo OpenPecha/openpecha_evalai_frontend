@@ -107,6 +107,7 @@ export async function streamTranslate(
 export async function streamDualTranslate(
   modelA: string,
   modelB: string,
+  targetLanguage: string,
   body: TranslateRequest,
   token: string,
   signal: AbortSignal
@@ -120,10 +121,10 @@ export async function streamDualTranslate(
 
     const dualRequest = {
       ...body,
-      models: [modelA, modelB]
+      models: [modelA, modelB],
+      target_language: targetLanguage,
     };
 
-    console.log(`FRONTEND: Calling dual-stream endpoint with models: ${modelA}, ${modelB}`);
 
     const response = await fetch(
       `${API_BASE_URL}/translate/dual-stream`,

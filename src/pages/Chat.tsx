@@ -33,6 +33,7 @@ const Chat = () => {
     const session: TranslateSession = {
       id: Date.now().toString(),
       inputText: payload.text,
+      targetLanguage: payload.target_language,
       modelA: {
         id: modelA,
         name: modelA,
@@ -208,10 +209,10 @@ const Chat = () => {
               payload={{
                 text: currentSession.inputText,
                 prompt: DEFAULT_TRANSLATE_PROMPT,
+                target_language: currentSession.targetLanguage,
               }}
               token={token}
               onComplete={handleSessionComplete}
-              onNewTranslation={handleNewChat}
             />
           </div>
         )}

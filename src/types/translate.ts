@@ -32,6 +32,7 @@ export interface ModelStreamState {
 export interface TranslateSession {
   id: string;
   inputText: string;
+  targetLanguage?: string;
   modelA: {
     id: string;
     name: string;
