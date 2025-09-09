@@ -174,20 +174,28 @@ const Chat = () => {
                             </p>
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-neutral-500 dark:text-neutral-400">
-                                {session.modelA.name} vs {session.modelB.name}
+                                <span className={
+                                  session.selectedModel === session.modelA.name 
+                                    ? 'font-medium text-green-600 dark:text-green-400' 
+                                    : ''
+                                }>
+                                  {session.modelA.name}
+                                </span>
+                                {' vs '}
+                                <span className={
+                                  session.selectedModel === session.modelB.name 
+                                    ? 'font-medium text-green-600 dark:text-green-400' 
+                                    : ''
+                                }>
+                                  {session.modelB.name}
+                                </span>
+                                {session.selectedModel === 'both' && (
+                                  <span className="ml-2 font-medium text-amber-600 dark:text-amber-400">(Tie)</span>
+                                )}
+                                {session.selectedModel === 'none' && (
+                                  <span className="ml-2 font-medium text-red-600 dark:text-red-400">(Neither)</span>
+                                )}
                               </span>
-                              {session.selectedModel && (
-                                <div className="flex items-center space-x-1">
-                                  <span className="text-neutral-500 dark:text-neutral-400">Winner:</span>
-                                  <span className="font-medium text-green-600 dark:text-green-400">
-                                    {session.selectedModel === 'both' ? 'Tie' :
-                                     session.selectedModel === 'none' ? 'Neither' :
-                                     session.selectedModel === session.modelA.name ? session.modelA.name :
-                                     session.selectedModel === session.modelB.name ? session.modelB.name :
-                                     session.selectedModel}
-                                  </span>
-                                </div>
-                              )}
                             </div>
                           </div>
                         </div>
