@@ -66,6 +66,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       const payload: TranslateRequest = {
         text,
         prompt: createTranslatePrompt(targetLanguageName),
+        target_language: targetLanguageName,
       };
 
       // Clear input and submit

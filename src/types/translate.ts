@@ -11,6 +11,7 @@ export interface SuggestResponse {
 export interface TranslateRequest {
   text: string;
   prompt: string;
+  target_language?: string;
 }
 
 export interface VoteRequest {
