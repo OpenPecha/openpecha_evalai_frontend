@@ -43,22 +43,6 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
     const text = inputValue.trim();
     if (!text || isLoading || disabled) return;
     
-    // Extract the actual text to translate (everything after the prompt)
-    const promptText = customPrompt.trim();
-    let textToTranslate = text;
-    
-    // If input starts with the custom prompt, extract the text after it
-    if (text.startsWith(promptText)) {
-      textToTranslate = text.slice(promptText.length).trim();
-      // Remove any separators like newlines or dashes
-      textToTranslate = textToTranslate.replace(/^[\s-]+/, '').trim();
-    }
-    
-    if (!textToTranslate) {
-      setError("Please enter text to translate after the prompt");
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
@@ -98,7 +82,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
         : createTranslatePrompt(targetLanguageName);
       
       const payload: TranslateRequest = {
-        text: textToTranslate,
+        text: text,
         prompt: finalPrompt,
         template: customPrompt.trim() || undefined,
         target_language: targetLanguageCode,
