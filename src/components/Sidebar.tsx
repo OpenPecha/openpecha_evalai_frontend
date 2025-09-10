@@ -21,6 +21,7 @@ import {
 import { useAuth0 } from "../hooks/useAuth0";
 import { useTheme } from "../hooks/useTheme";
 import { useCurrentUser } from "../hooks/useUsers";
+import ToolsButton from "./ToolsButton";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -195,8 +196,8 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
     <div
       className={`${
         isOpen ? "w-64" : "w-16"
-      } bg-white dark:bg-neutral-800 dark:text-neutral-100 shadow-lg border-r border-neutral-200 dark:border-neutral-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col fixed top-0 left-0 z-30 lg:block ${
-        isOpen ? "block" : "hidden"
+      } bg-white dark:bg-neutral-800 dark:text-neutral-100 shadow-lg border-r border-neutral-200 dark:border-neutral-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col  fixed top-0 left-0 z-30 ${
+        !isOpen && "hidden"
       }`}
     >
       {/* Header with Logo and Toggle Button */}
@@ -345,13 +346,25 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
           </div>
         </div>
       )}
-
-      {/* User Section at Bottom */}
+      
+      {/* Bottom Section: Tools and User */}
       <div
-        className={`mt-auto border-t border-neutral-200 dark:border-neutral-700 ${
+        className={`mt-auto  border-t border-neutral-200 dark:border-neutral-700 ${
           isOpen ? "p-4" : "p-2"
         }`}
       >
+        {/* Tools Section */}
+        <div className={`${isOpen ? "mb-4" : "mb-2 flex justify-center"}`}>
+          {isOpen ? (
+              
+              <ToolsButton />
+          ) : (
+            <div className="flex justify-center">
+              <ToolsButton />
+            </div>
+          )}
+        </div>
+
         {isLoading && (
           /* Loading State */
           <div

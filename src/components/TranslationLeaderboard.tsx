@@ -143,7 +143,7 @@ const TranslationLeaderboard: React.FC = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
       {/* Compact Header - Same as other leaderboards */}
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
