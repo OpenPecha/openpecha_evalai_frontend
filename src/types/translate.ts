@@ -20,6 +20,7 @@ export interface VoteRequest {
   translation_output2_id: string;
   winner_choice: "output1" | "output2" | "tie" | "neither";
   response_time_ms: number;
+  comment?: string;
 }
 
 export interface ModelStreamState {
@@ -120,4 +121,28 @@ export interface TranslationModelScore {
 
 export interface TranslationLeaderboardResponse {
   leaderboard: TranslationModelScore[];
+}
+
+export interface UserVoteStats {
+  rank: number;
+  user_id: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  picture?: string;
+  total_votes: number;
+  decisive_votes: number;
+  tie_votes: number;
+  neither_votes: number;
+  average_response_time_ms?: number;
+  first_vote_date?: string;
+  last_vote_date?: string;
+}
+
+export interface UserVoteLeaderboardResponse {
+  total_users_with_votes: number;
+  total_votes_cast: number;
+  leaderboard: UserVoteStats[];
+  error?: string;
 }

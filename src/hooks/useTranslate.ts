@@ -5,6 +5,7 @@ import { translateApi } from "../api/translate";
 export const translateKeys = {
   all: ["translate"] as const,
   leaderboard: () => [...translateKeys.all, "leaderboard"] as const,
+  userVoteLeaderboard: () => [...translateKeys.all, "user-vote-leaderboard"] as const,
   models: () => [...translateKeys.all, "models"] as const,
   suggestions: (query: string) => [...translateKeys.models(), "suggestions", query] as const,
 };
@@ -16,6 +17,18 @@ export const useTranslationLeaderboard = () => {
     queryFn: translateApi.getTranslationLeaderboard,
     staleTime: 2 * 60 * 1000, // 2 minutes - leaderboards update frequently due to voting
     gcTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
+
+// Hook for user vote leaderboard
+export const useUserVoteLeaderboard = () => {
+  return useQuery({
+    queryKey: translateKeys.userVoteLeaderboard(),
+    queryFn: translateApi.getUserVoteLeaderboard,
+    staleTime: 5 * 60 * 1000, // 5 minutes - user vote stats update less frequently
+    gcTime: 10 * 60 * 1000, // 10 minutes
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
@@ -57,9 +70,18 @@ export const useVoteOnModel = () => {
         queryKey: translateKeys.leaderboard(),
       });
       
+      // Invalidate user vote leaderboard since voting affects user vote counts
+      queryClient.invalidateQueries({
+        queryKey: translateKeys.userVoteLeaderboard(),
+      });
+      
       // Force immediate refetch for better UX
       queryClient.refetchQueries({
         queryKey: translateKeys.leaderboard(),
+      });
+      
+      queryClient.refetchQueries({
+        queryKey: translateKeys.userVoteLeaderboard(),
       });
       
       // Also invalidate score endpoint for real-time updates

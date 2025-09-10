@@ -1,4 +1,4 @@
-import type { SuggestResponse, TranslateRequest, VoteRequest, TranslationLeaderboardResponse } from "../types/translate";
+import type { SuggestResponse, TranslateRequest, VoteRequest, TranslationLeaderboardResponse, UserVoteLeaderboardResponse } from "../types/translate";
 import { getAuthHeaders as getCentralAuthHeaders, setAuthTokenGetter } from "../lib/auth";
 
 // API Base URL
@@ -161,7 +161,8 @@ export async function voteModel(
   translationOutput2Id: string,
   winnerChoice: "output1" | "output2" | "tie" | "neither",
   responseTimeMs: number,
-  token: string
+  token: string,
+  comment?: string
 ): Promise<void> {
   try {
     const headers = await getAuthHeaders();
@@ -175,7 +176,8 @@ export async function voteModel(
       translation_output1_id: translationOutput1Id,
       translation_output2_id: translationOutput2Id,
       winner_choice: winnerChoice,
-      response_time_ms: responseTimeMs
+      response_time_ms: responseTimeMs,
+      comment: comment
     };
 
     console.log(`FRONTEND: Voting on outputs: ${translationOutput1Id} vs ${translationOutput2Id}, choice: ${winnerChoice}`);
@@ -233,6 +235,33 @@ export async function getTranslationLeaderboard(): Promise<TranslationLeaderboar
   }
 }
 
+/**
+ * Get user vote leaderboard showing users ranked by their vote count
+ * Public endpoint, no authentication required
+ */
+export async function getUserVoteLeaderboard(): Promise<UserVoteLeaderboardResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/translate/user-vote-leaderboard`, {
+      method: "GET",
+      headers: {
+        "accept": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: UserVoteLeaderboardResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user vote leaderboard:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch user vote leaderboard"
+    );
+  }
+}
+
 // Export the translate API object for consistency with other API modules
 export const translateApi = {
   suggestModels,
@@ -240,4 +269,5 @@ export const translateApi = {
   streamDualTranslate,
   voteModel,
   getTranslationLeaderboard,
+  getUserVoteLeaderboard,
 };

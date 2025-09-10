@@ -31,6 +31,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
   const [isVoting, setIsVoting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [bothCompleteTime, setBothCompleteTime] = useState<number | null>(null);
+  const [comment, setComment] = useState<string>("");
   const hasStartedRef = useRef(false);
 
   // Stable error handlers to prevent infinite re-renders
@@ -112,7 +113,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
           break;
       }
       
-      await voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token);
+      await voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token, comment);
       setVotedModel(votedModelId);
       setSelectedOption(option);
       showSuccessToast("Thank you!", "Your vote has been recorded.");
@@ -126,10 +127,11 @@ const DualCompare: React.FC<DualCompareProps> = ({
     } finally {
       setIsVoting(false);
     }
-  }, [votedModel, isVoting, token, modelA, modelB, dualStream.modelA.translationOutputId, dualStream.modelB.translationOutputId, bothCompleteTime, showSuccessToast, showErrorToast, onComplete]);
+  }, [votedModel, isVoting, token, modelA, modelB, dualStream.modelA.translationOutputId, dualStream.modelB.translationOutputId, bothCompleteTime, comment, showSuccessToast, showErrorToast, onComplete]);
 
   // Handle new translation
   const handleNewTranslation = useCallback(() => {
+    setComment(""); // Clear comment for new translation
     onNewTranslation?.();
   }, [onNewTranslation]);
 
@@ -223,6 +225,25 @@ const DualCompare: React.FC<DualCompareProps> = ({
             <div className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
               {votedModel ? "Thank you for your feedback!" : "Which response is better?"}
             </div>
+            
+            {/* Comment Input Field */}
+            {!votedModel && (
+              <div className="max-w-md mx-auto">
+                <label htmlFor="vote-comment" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">
+                  Add a comment (optional)
+                </label>
+                <textarea
+                  id="vote-comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Why did you choose this option? Any feedback..."
+                  rows={3}
+                  className="w-full px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  disabled={isVoting}
+                />
+              </div>
+            )}
+            
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Left is Better */}
               <button
