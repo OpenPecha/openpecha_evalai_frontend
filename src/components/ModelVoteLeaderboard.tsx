@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Crown, Medal, Award, Bot, RefreshCw, Info, Trophy, Target, TrendingUp } from "lucide-react";
+import { Crown, Medal, Award, Bot, RefreshCw, Info, Trophy, TrendingUp } from "lucide-react";
 import { useModelVoteLeaderboard } from "../hooks/useTranslate";
 
 const ModelVoteLeaderboard: React.FC = () => {
@@ -33,16 +33,6 @@ const ModelVoteLeaderboard: React.FC = () => {
     }
   };
 
-  const getProviderBadge = (provider: string) => {
-    const badges = {
-      google: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400",
-      openai: "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400",
-      anthropic: "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400",
-      "deepseek-v3": "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400",
-    };
-    return badges[provider as keyof typeof badges] || "bg-neutral-100 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300";
-  };
-
   const formatModelName = (modelName: string) => {
     // Shorten long model names for better display
     if (modelName.length > 25) {
@@ -53,7 +43,7 @@ const ModelVoteLeaderboard: React.FC = () => {
 
   // Apply show all filter
   const displayScores = useMemo(() => {
-    return showAll ? modelScores : modelScores.slice(0, 10);
+    return showAll ? modelScores : modelScores.slice(0, 5);
   }, [modelScores, showAll]);
 
   if (loading) {
@@ -140,11 +130,9 @@ const ModelVoteLeaderboard: React.FC = () => {
       <div className="px-4 py-2 bg-neutral-50 dark:bg-neutral-700/50 border-b border-neutral-200 dark:border-neutral-700">
         <div className="flex items-center gap-4 text-xs text-neutral-600 dark:text-neutral-400">
           <div className="flex items-center gap-1">
-            <Trophy className="w-3 h-3" />
             <span>Scoring: Clear Win = 1pt</span>
           </div>
           <div className="flex items-center gap-1">
-            <Target className="w-3 h-3" />
             <span>Tie = 0.5pt</span>
           </div>
           <div className="flex items-center gap-1">
@@ -155,8 +143,8 @@ const ModelVoteLeaderboard: React.FC = () => {
       </div>
 
 
-      {/* Models List */}
-      <div className="p-4">
+      {/* Models Table */}
+      <div className="overflow-x-auto">
         {displayScores.length === 0 ? (
           <div className="text-center py-8">
             <Bot className="w-12 h-12 text-neutral-400 mx-auto mb-3" />
@@ -165,98 +153,87 @@ const ModelVoteLeaderboard: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {displayScores.map((score) => (
-              <div
-                key={`${score.rank}-${score.model_name}`}
-                className="flex items-center justify-between p-3 rounded-lg bg-neutral-50 dark:bg-neutral-700/50 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    {getRankIcon(score.rank)}
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-medium">
-                      <Bot className="w-4 h-4" />
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-neutral-200 dark:border-neutral-700">
+                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Rank
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Model
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Score
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Wins
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Ties
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Win Rate
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
+              {displayScores.map((score) => (
+                <tr 
+                  key={`${score.rank}-${score.model_name}`}
+                  className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors"
+                >
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      {getRankIcon(score.rank)}
                     </div>
-                    
-                    <div>
-                      <div className="font-medium text-neutral-900 dark:text-white text-sm">
-                        {formatModelName(score.model_name)}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getProviderBadge(score.provider)}`}>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <div className="font-medium text-neutral-900 dark:text-white text-sm">
+                          {formatModelName(score.model_name)}
+                        </div>
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">
                           {score.provider}
-                        </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="text-center">
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
                     <div className="font-bold text-lg text-purple-600 dark:text-purple-400">
                       {score.score.toFixed(1)}
                     </div>
-                    <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                      Total Score
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
                     <div className="font-semibold text-green-600 dark:text-green-400">
                       {score.clear_wins}
                     </div>
-                    <div className="text-xs text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
-                      <Trophy className="w-3 h-3" />
-                      Clear Wins
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
                     <div className="font-semibold text-orange-600 dark:text-orange-400">
                       {score.ties}
                     </div>
-                    <div className="text-xs text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
-                      <Target className="w-3 h-3" />
-                      Ties
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
-                    <div className="font-semibold text-blue-600 dark:text-blue-400">
-                      {score.total_comparisons}
-                    </div>
-                    <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                      Total Votes
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
                     <div className="font-semibold text-neutral-600 dark:text-neutral-400">
                       {score.win_rate_percentage.toFixed(1)}%
                     </div>
-                    <div className="text-xs text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
-                      <TrendingUp className="w-3 h-3" />
-                      Win Rate
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
         {/* Show More/Less Button */}
-        {modelScores.length > 10 && (
-          <div className="mt-4 text-center">
+        {modelScores.length > 5 && (
+          <div className="mt-4 text-center border-t border-neutral-200 dark:border-neutral-700 pt-4">
             <button
               onClick={() => setShowAll(!showAll)}
               className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
             >
               {showAll 
-                ? `Show Less (${modelScores.length - 10} more hidden)` 
+                ? `Show Top 5` 
                 : `Show All ${modelScores.length} Models`
               }
             </button>
