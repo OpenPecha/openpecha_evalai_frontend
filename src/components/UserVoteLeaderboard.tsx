@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Crown, Medal, Award, User, RefreshCw, Info } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useUserVoteLeaderboard } from "../hooks/useTranslate";
 
 const UserVoteLeaderboard: React.FC = () => {
+  const { t } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
   // Use react-query hook for data fetching
@@ -45,22 +47,22 @@ const UserVoteLeaderboard: React.FC = () => {
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     
     if (diffInSeconds < 60) {
-      return "Just now";
+      return t('voters.timeAgo.justNow');
     } else if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes}m ago`;
+      return t('voters.timeAgo.minutesAgo', { count: minutes });
     } else if (diffInSeconds < 86400) {
       const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours}h ago`;
+      return t('voters.timeAgo.hoursAgo', { count: hours });
     } else if (diffInSeconds < 2592000) {
       const days = Math.floor(diffInSeconds / 86400);
-      return `${days}d ago`;
+      return t('voters.timeAgo.daysAgo', { count: days });
     } else if (diffInSeconds < 31536000) {
       const months = Math.floor(diffInSeconds / 2592000);
-      return `${months}mo ago`;
+      return t('voters.timeAgo.monthsAgo', { count: months });
     } else {
       const years = Math.floor(diffInSeconds / 31536000);
-      return `${years}y ago`;
+      return t('voters.timeAgo.yearsAgo', { count: years });
     }
   };
 
@@ -81,14 +83,14 @@ const UserVoteLeaderboard: React.FC = () => {
           <div className="flex items-center gap-2">
             <User className="w-5 h-5 text-blue-600" />
             <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-              Top Voters
+              {t('voters.title')}
             </h2>
           </div>
         </div>
         <div className="p-6 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400 text-sm">
-            Loading voter statistics...
+            {t('voters.loadingStats')}
           </p>
         </div>
       </div>
@@ -102,24 +104,24 @@ const UserVoteLeaderboard: React.FC = () => {
           <div className="flex items-center gap-2">
             <User className="w-5 h-5 text-blue-600" />
             <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-              Top Voters
+              {t('voters.title')}
             </h2>
           </div>
         </div>
         <div className="p-6">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <h3 className="text-sm font-medium text-red-800 dark:text-red-400 mb-1">
-              Error Loading Data
+              {t('voters.errorLoading')}
             </h3>
             <p className="text-red-600 dark:text-red-400 text-sm">
-              Failed to load voter leaderboard. Please try again.
+              {t('voters.failedToLoad')}
             </p>
             <button
               onClick={() => fetchLeaderboard()}
               className="mt-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm flex items-center gap-1"
             >
               <RefreshCw className="w-4 h-4" />
-              Retry
+              {t('common.retry')}
             </button>
           </div>
         </div>
@@ -135,7 +137,7 @@ const UserVoteLeaderboard: React.FC = () => {
           <div className="flex items-center gap-2">
             <User className="w-5 h-5 text-blue-600" />
             <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-              Top Voters
+              {t('voters.title')}
             </h2>
             <div className="flex items-center gap-1 text-neutral-500 dark:text-neutral-400">
               <Info className="w-4 h-4" />
@@ -161,7 +163,7 @@ const UserVoteLeaderboard: React.FC = () => {
           <div className="text-center py-8">
             <User className="w-12 h-12 text-neutral-400 mx-auto mb-3" />
             <p className="text-neutral-600 dark:text-neutral-400 mb-2">
-              No voting data available.
+              {t('leaderboards.noVotingData')}
             </p>
           </div>
         ) : (
@@ -169,27 +171,27 @@ const UserVoteLeaderboard: React.FC = () => {
             <thead>
               <tr className="border-b border-neutral-200 dark:border-neutral-700">
                 <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Rank
+                  {t('voters.table.rank')}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  User
+                  {t('voters.table.user')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Votes
+                  {t('voters.table.votes')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Decisive
+                  {t('voters.table.decisive')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Time
+                  {t('voters.table.time')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                 Active
+                  {t('voters.table.active')}
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
-              {displayStats.slice(0,5).map((stat) => (
+              {displayStats.map((stat) => (
                 <tr 
                   key={stat.user_id}
                   className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors"
@@ -256,8 +258,8 @@ const UserVoteLeaderboard: React.FC = () => {
               className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
             >
               {showAll 
-                ? `Show Top 5` 
-                : `Show All ${userStats.length} Voters`
+                ? t('common.showTop', { count: 5 })
+                : t('voters.showAllVoters', { count: userStats.length })
               }
             </button>
           </div>

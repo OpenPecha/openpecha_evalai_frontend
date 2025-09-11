@@ -21,7 +21,9 @@ import {
 import { useAuth0 } from "../hooks/useAuth0";
 import { useTheme } from "../hooks/useTheme";
 import { useCurrentUser } from "../hooks/useUsers";
+import { useTranslation } from "react-i18next";
 import ToolsButton from "./ToolsButton";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -47,6 +49,7 @@ interface UserMenuItem {
 }
 
 const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
+  const { t } = useTranslation();
   const location = useLocation();
   const {
     user: auth0User,
@@ -77,57 +80,57 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   // Navigation configuration
   const navigationItems: NavigationItem[] = [
     {
-      label: "Arena",
+      label: t('navigation.arena'),
       path: "/chat",
       href: undefined,
       icon: MessageCircle,
       isActive: () => isActivePath("/chat"),
       activeClasses: "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400",
-      tooltip: "Chat (Coming Soon)",
+      tooltip: t('navigation.arena'),
       isExternal: false,
     },
     {
-      label: "Challenges",
+      label: t('navigation.challenges'),
       path: "/challenges",
       href: undefined,
       icon: Trophy,
       isActive: () => isActivePath("/challenges"),
       activeClasses: "text-primary-600 bg-primary-50 border-l-4 border-blue-600",
-      tooltip: "Challenges",
+      tooltip: t('navigation.challenges'),
       isExternal: false,
     },
     {
-      label: "Leaderboards",
+      label: t('navigation.leaderboards'),
       path: "/leaderboards",
       href: undefined,
       icon: BarChart3,
       isActive: () => isLeaderboardPath(),
       activeClasses: "text-primary-600 bg-primary-50 border-l-4 border-blue-600",
-      tooltip: "Leaderboards",
+      tooltip: t('navigation.leaderboards'),
       isExternal: false,
     },
     {
-      label: "Documentation",
+      label: t('navigation.documentation'),
       path: undefined,
       href: `${import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"}/documentation`,
       icon: BookOpen,
       isExternal: true,
       isActive: () => false,
       activeClasses: "",
-      tooltip: "API Documentation",
+      tooltip: t('navigation.documentation'),
     },
   ];
 
   // Admin navigation items
   const adminItems: NavigationItem[] = [
     {
-      label: "Create Challenge",
+      label: t('navigation.createChallenge'),
       path: "/admin/create-challenge",
       href: undefined,
       icon: Plus,
       isActive: () => isActivePath("/admin/create-challenge"),
       activeClasses: "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-600 dark:border-green-400",
-      tooltip: "Create Challenge",
+      tooltip: t('navigation.createChallenge'),
       isExternal: false,
     },
   ];
@@ -135,22 +138,22 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   // User menu items for collapsed state
   const userMenuItems: UserMenuItem[] = [
     {
-      label: "Profile",
+      label: t('navigation.profile'),
       path: "/profile",
       icon: User,
-      tooltip: "Profile",
+      tooltip: t('navigation.profile'),
     },
     {
-      label: "My Submissions", 
+      label: t('navigation.mySubmissions'), 
       path: "/my-submissions",
       icon: FileText,
-      tooltip: "My Submissions",
+      tooltip: t('navigation.mySubmissions'),
     },
     {
-      label: "Settings",
+      label: t('navigation.settings'),
       path: "/settings", 
       icon: Settings,
-      tooltip: "Settings",
+      tooltip: t('navigation.settings'),
     },
   ];
 
@@ -182,13 +185,13 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   const getThemeLabel = (themeOption: string) => {
     switch (themeOption) {
       case "light":
-        return "Light";
+        return t('settings.light');
       case "dark":
-        return "Dark";
+        return t('settings.dark');
       case "system":
-        return "System";
+        return t('settings.system');
       default:
-        return "Light";
+        return t('settings.light');
     }
   };
 
@@ -221,7 +224,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               <button
                 onClick={onToggle}
                 className="p-1 text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 rounded-md transition-colors duration-200"
-                title="Collapse sidebar"
+                title={t('sidebar.collapseSidebar')}
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -240,7 +243,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
               <button
                 onClick={onToggle}
                 className="p-1 text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 rounded-md transition-colors duration-200"
-                title="Expand sidebar"
+                title={t('sidebar.expandSidebar')}
               >
                 <ChevronRight className="w-3 h-3" />
               </button>
@@ -253,7 +256,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       <div className="p-4">
         {isOpen && (
           <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-200 uppercase tracking-wider mb-4">
-            Navigation
+            {t('sidebar.navigation')}
           </h2>
         )}
 
@@ -312,7 +315,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
         <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
           {isOpen && (
             <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-200 uppercase tracking-wider mb-4">
-              Admin
+              {t('sidebar.admin')}
             </h2>
           )}
 
@@ -375,7 +378,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
             {isOpen && (
               <span className="text-sm text-neutral-500 dark:text-neutral-200">
-                Loading...
+                {t('common.loading')}
               </span>
             )}
           </div>
@@ -436,7 +439,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                 {/* Theme Selector */}
                 <div className="px-3 py-1">
                   <div className="text-xs font-medium text-neutral-500 dark:text-neutral-200 mb-1">
-                    Theme
+                    {t('sidebar.theme')}
                   </div>
                   <div className="space-y-1">
                     {["light", "dark", "system"].map((themeOption) => (
@@ -465,6 +468,14 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   </div>
                 </div>
 
+                {/* Language Selector */}
+                <div className="px-3 py-1">
+                  <div className="text-xs font-medium text-neutral-500 dark:text-neutral-200 mb-1">
+                    {t('settings.language')}
+                  </div>
+                  <LanguageSwitcher variant="toggle" className="w-full" />
+                </div>
+
                 <div className="h-px bg-neutral-200 dark:bg-neutral-600 mx-3 my-1" />
 
                 <button
@@ -472,7 +483,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   className="flex items-center w-full px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
                 >
                   <LogOut className="w-3 h-3 mr-2" />
-                  Sign out
+                  {t('auth.signOut')}
                 </button>
               </div>
             )}
@@ -505,16 +516,14 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                     setTheme(themes[nextIndex]);
                   }}
                   className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  title={`Current theme: ${getThemeLabel(
-                    theme
-                  )} (click to cycle)`}
+                  title={t('sidebar.currentTheme', { theme: getThemeLabel(theme) })}
                 >
                   {getThemeIcon(theme)}
                 </button>
                 <button
                   onClick={handleLogout}
                   className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                  title="Sign out"
+                  title={t('auth.signOut')}
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -531,9 +540,9 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                 ? "px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                 : "p-2 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg"
             } transition-colors duration-200 font-medium`}
-            title={isOpen ? "" : "Sign In"}
+            title={isOpen ? "" : t('auth.signIn')}
           >
-            {isOpen ? "Sign In" : <User className="w-4 h-4" />}
+            {isOpen ? t('auth.signIn') : <User className="w-4 h-4" />}
           </button>
         )}
       </div>

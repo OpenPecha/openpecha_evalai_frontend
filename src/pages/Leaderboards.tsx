@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Trophy,
   Crown,
@@ -23,6 +24,7 @@ import ModelVoteLeaderboard from "../components/ModelVoteLeaderboard";
 import { useToast } from "../components/use-toast";
 
 const Leaderboards = () => {
+  const { t } = useTranslation();
   // State to track view mode for each leaderboard (challengeId -> view mode)
   const [viewModes, setViewModes] = useState<Record<string, "table" | "chart">>({});
   // State to track which share modal to show
@@ -197,10 +199,10 @@ const Leaderboards = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
-            Leaderboards
+            {t('leaderboards.title')}
           </h1>
           <p className=" dark:text-neutral-400 text-sm">
-            Track the performance of submissions across all challenges and AI translation models
+            {t('leaderboards.subtitle')}
           </p>
         </div>
 
@@ -311,19 +313,19 @@ const Leaderboards = () => {
                             #
                           </th>
                           <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider">
-                            Model
+                            {t('leaderboards.model')}
                           </th>
                           {availableMetrics.slice(0, 2).map((metric) => (
                             <th
                               key={metric}
                               className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider"
                             >
-                              {metric}
+{t(`leaderboards.metrics.${metric}`, metric)}
                             </th>
                           ))}
                           {isAdmin && (
                             <th className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider">
-                              Actions
+                              {t('leaderboards.actions')}
                             </th>
                           )}
                         </tr>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { StopCircle, CheckCircle, AlertCircle, Loader2, Copy } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ModelStreamPanelProps {
   modelId: string;
@@ -34,6 +35,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   hoverEffect = null,
   onCopy,
 }) => {
+  const { t } = useTranslation();
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new content arrives with smooth scrolling
@@ -126,7 +128,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
               <button
                 onClick={onCopy}
                 className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
-                title="Copy content"
+                title={t('translation.copyContent')}
               >
                 <Copy className="w-4 h-4" />
               </button>
@@ -137,7 +139,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
               <button
                 onClick={onStop}
                 className="p-1 text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
-                title="Stop streaming"
+                title={t('translation.stopStreaming')}
               >
                 <StopCircle className="w-4 h-4" />
               </button>
@@ -176,10 +178,10 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
                       <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
                       <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                     </div>
-                    <span>Starting translation...</span>
+                    <span>{t('translation.starting')}</span>
                   </div>
                 ) : (
-                  "Ready to translate"
+                  t('translation.ready')
                 )}
               </div>
             )}
@@ -193,7 +195,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         {isComplete && !error && !voted && !hideRating && (
           <div className="space-y-2">
             <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300 text-center">
-              Rate this translation:
+{t('translation.rateTranslation')}
             </div>
             <div className="flex items-center justify-center space-x-3">
               {[
@@ -221,10 +223,10 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         {voted && (
           <div className="text-center">
             <div className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">
-              Thank you for your feedback!
+{t('translation.thankYouFeedback')}
             </div>
             <div className="text-xs text-green-600 dark:text-green-400">
-              ✓ Vote submitted successfully
+              ✓ {t('translation.voteSubmittedSuccess')}
             </div>
           </div>
         )}

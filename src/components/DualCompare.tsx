@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useDualModelStream } from "../hooks/useDualModelStream";
 import ModelStreamPanel from "./ModelStreamPanel";
 import { voteModel } from "../api/translate";
@@ -25,6 +26,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
   onComplete,
   onNewTranslation,
 }) => {
+  const { t } = useTranslation();
   const { success: showSuccessToast, error: showErrorToast } = useToast();
   const [votedModel, setVotedModel] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
@@ -82,7 +84,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
     const translationOutput2Id = dualStream.modelB.translationOutputId;
     
     if (!translationOutput1Id || !translationOutput2Id) {
-      showErrorToast("Vote Failed", "Translation output IDs not available. Please try again.");
+      showErrorToast(t('translation.errorVoting'), t('messages.tryAgain'));
       return;
     }
 
@@ -116,13 +118,13 @@ const DualCompare: React.FC<DualCompareProps> = ({
       await voteModel(translationOutput1Id, translationOutput2Id, winnerChoice, responseTimeMs, token, comment);
       setVotedModel(votedModelId);
       setSelectedOption(option);
-      showSuccessToast("Thank you!", "Your vote has been recorded.");
+      showSuccessToast(t('arena.thankYou'), t('translation.voteSubmitted'));
       onComplete?.(votedModelId);
     } catch (error) {
       console.error("Error submitting vote:", error);
       showErrorToast(
-        "Vote Failed",
-        error instanceof Error ? error.message : "Failed to submit vote"
+        t('translation.errorVoting'),
+        error instanceof Error ? error.message : t('translation.errorVoting')
       );
     } finally {
       setIsVoting(false);
@@ -140,9 +142,9 @@ const DualCompare: React.FC<DualCompareProps> = ({
     if (dualStream.modelA.data) {
       try {
         await navigator.clipboard.writeText(dualStream.modelA.data);
-        showSuccessToast("Copied!", "Content copied to clipboard");
+        showSuccessToast(t('translation.copied'), t('translation.copied'));
       } catch {
-        showErrorToast("Copy Failed", "Unable to copy to clipboard");
+        showErrorToast(t('translation.copyFailed'), t('translation.unableToCopy'));
       }
     }
   }, [dualStream.modelA.data, showSuccessToast, showErrorToast]);
@@ -151,9 +153,9 @@ const DualCompare: React.FC<DualCompareProps> = ({
     if (dualStream.modelB.data) {
       try {
         await navigator.clipboard.writeText(dualStream.modelB.data);
-        showSuccessToast("Copied!", "Content copied to clipboard");
+        showSuccessToast(t('translation.copied'), t('translation.copied'));
       } catch {
-        showErrorToast("Copy Failed", "Unable to copy to clipboard");
+        showErrorToast(t('translation.copyFailed'), t('translation.unableToCopy'));
       }
     }
   }, [dualStream.modelB.data, showSuccessToast, showErrorToast]);
@@ -176,7 +178,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
         {/* Model A Panel */}
         <ModelStreamPanel
           modelId={modelA}
-          modelLabel="Model A"
+          modelLabel={t('translation.modelA')}
           content={dualStream.modelA.data}
           isStreaming={dualStream.modelA.isStreaming}
           error={dualStream.modelA.error}
@@ -198,7 +200,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
         {/* Model B Panel */}
         <ModelStreamPanel
           modelId={modelB}
-          modelLabel="Model B"
+          modelLabel={t('translation.modelB')}
           content={dualStream.modelB.data}
           isStreaming={dualStream.modelB.isStreaming}
           error={dualStream.modelB.error}
@@ -223,20 +225,20 @@ const DualCompare: React.FC<DualCompareProps> = ({
         <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-6">
           <div className="text-center space-y-4">
             <div className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
-              {votedModel ? "Thank you for your feedback!" : "Which response is better?"}
+              {votedModel ? t('arena.thankYou') : t('arena.whichBetter')}
             </div>
             
             {/* Comment Input Field */}
             {!votedModel && (
               <div className="max-w-md mx-auto">
                 <label htmlFor="vote-comment" className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">
-                  Add a comment (optional)
+                  {t('arena.addComment')}
                 </label>
                 <textarea
                   id="vote-comment"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Why did you choose this option? Any feedback..."
+                  placeholder={t('arena.commentPlaceholder')}
                   rows={3}
                   className="w-full px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   disabled={isVoting}
@@ -262,7 +264,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
                 } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
                 <ChevronLeft size={18} />
-                {selectedOption === 'left' ? 'New Translation' : 'Left is Better'}
+                {selectedOption === 'left' ? t('arena.newTranslation') : t('arena.leftBetter')}
               </button>
               
               {/* It's a Tie */}
@@ -282,7 +284,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
                 } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
                 <FaHandshake size={18} />
-                {selectedOption === 'both' ? 'New Translation' : "It's a Tie"}
+                {selectedOption === 'both' ? t('arena.newTranslation') : t('arena.itsTie')}
               </button>
               
               {/* Both are Bad */}
@@ -302,7 +304,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
                 } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
                 <AiOutlineStop size={18} />
-                {selectedOption === 'none' ? 'New Translation' : 'Both are Bad'}
+                {selectedOption === 'none' ? t('arena.newTranslation') : t('arena.bothBad')}
               </button>
               
               {/* Right is Better */}
@@ -321,7 +323,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
                   (votedModel && selectedOption && selectedOption !== 'right') ? 'opacity-50' : ''
                 } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
               >
-                {selectedOption === 'right' ? 'New Translation' : 'Right is Better'}
+                {selectedOption === 'right' ? t('arena.newTranslation') : t('arena.rightBetter')}
                 <ChevronRight size={18} />
               </button>
             </div>
@@ -333,20 +335,20 @@ const DualCompare: React.FC<DualCompareProps> = ({
       <div className="text-center space-y-2">
         {anyStreaming && (
           <p className="text-sm text-primary-600 dark:text-primary-400">
-            🔄 Streaming responses from both models...
+            🔄 {t('arena.streaming')}
           </p>
         )}
         
         {bothComplete && !votedModel && !dualStream.modelA.error && !dualStream.modelB.error && (
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            ✅ Both translations complete. Choose your preference above to continue.
+            ✅ {t('arena.translationsComplete')}
           </p>
         )}
         
 
         {isVoting && (
           <p className="text-sm text-primary-600 dark:text-primary-400">
-            ⏳ Submitting your vote...
+            ⏳ {t('arena.submittingVote')}
           </p>
         )}
       </div>

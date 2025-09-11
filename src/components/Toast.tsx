@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, XCircle, Info, AlertTriangle, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ToastType } from "./toast-context";
 
 export interface ToastProps {
@@ -19,6 +20,7 @@ const Toast: React.FC<ToastProps> = ({
   duration = 5000,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
 

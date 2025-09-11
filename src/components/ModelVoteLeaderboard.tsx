@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Crown, Medal, Award, Bot, RefreshCw, Info, Trophy, TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useModelVoteLeaderboard } from "../hooks/useTranslate";
 
 const ModelVoteLeaderboard: React.FC = () => {
+  const { t } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
   // Use react-query hook for data fetching
@@ -53,14 +55,14 @@ const ModelVoteLeaderboard: React.FC = () => {
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-purple-600" />
             <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-              Arena
+              {t('arena.title')}
             </h2>
           </div>
         </div>
         <div className="p-6 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400 text-sm">
-            Loading model scores...
+            {t('arena.loadingScores')}
           </p>
         </div>
       </div>
@@ -74,24 +76,24 @@ const ModelVoteLeaderboard: React.FC = () => {
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-purple-600" />
             <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-              Arena
+              {t('arena.title')}
             </h2>
           </div>
         </div>
         <div className="p-6">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <h3 className="text-sm font-medium text-red-800 dark:text-red-400 mb-1">
-              Error Loading Data
+              {t('arena.errorLoading')}
             </h3>
             <p className="text-red-600 dark:text-red-400 text-sm">
-              Failed to load model leaderboard. Please try again.
+              {t('arena.failedToLoad')}
             </p>
             <button
               onClick={() => fetchLeaderboard()}
               className="mt-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm flex items-center gap-1"
             >
               <RefreshCw className="w-4 h-4" />
-              Retry
+              {t('common.retry')}
             </button>
           </div>
         </div>
@@ -107,19 +109,19 @@ const ModelVoteLeaderboard: React.FC = () => {
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-purple-600" />
             <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-             Arena
+              {t('arena.title')}
             </h2>
             <div className="flex items-center gap-1 text-neutral-500 dark:text-neutral-400">
               <Info className="w-4 h-4" />
               <span className="text-xs">
-                {leaderboardData?.total_models_with_data || 0} models • {leaderboardData?.total_votes || 0} total votes • {leaderboardData?.total_score.toFixed(1) || 0} total score
+                {leaderboardData?.total_models_with_data || 0} {t('leaderboards.totalModels')} • {leaderboardData?.total_votes || 0} {t('leaderboards.totalVotes')} • {leaderboardData?.total_score.toFixed(1) || 0} {t('leaderboards.totalScore')}
               </span>
             </div>
           </div>
           <button
             onClick={() => fetchLeaderboard()}
             className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-white transition-colors"
-            title="Refresh leaderboard"
+            title={t('common.refresh')}
           >
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -130,14 +132,14 @@ const ModelVoteLeaderboard: React.FC = () => {
       <div className="px-4 py-2 bg-neutral-50 dark:bg-neutral-700/50 border-b border-neutral-200 dark:border-neutral-700">
         <div className="flex items-center gap-4 text-xs text-neutral-600 dark:text-neutral-400">
           <div className="flex items-center gap-1">
-            <span>Scoring: Clear Win = 1pt</span>
+            <span>{t('arena.scoringInfo.clearWin')}</span>
           </div>
           <div className="flex items-center gap-1">
-            <span>Tie = 0.5pt</span>
+            <span>{t('arena.scoringInfo.tie')}</span>
           </div>
           <div className="flex items-center gap-1">
             <TrendingUp className="w-3 h-3" />
-            <span>Ranked by total score</span>
+            <span>{t('arena.scoringInfo.rankedBy')}</span>
           </div>
         </div>
       </div>
@@ -149,7 +151,7 @@ const ModelVoteLeaderboard: React.FC = () => {
           <div className="text-center py-8">
             <Bot className="w-12 h-12 text-neutral-400 mx-auto mb-3" />
             <p className="text-neutral-600 dark:text-neutral-400 mb-2">
-              No model data available.
+              {t('leaderboards.noModelData')}
             </p>
           </div>
         ) : (
@@ -157,22 +159,22 @@ const ModelVoteLeaderboard: React.FC = () => {
             <thead>
               <tr className="border-b border-neutral-200 dark:border-neutral-700">
                 <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Rank
+                  {t('arena.table.rank')}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Model
+                  {t('arena.table.model')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Score
+                  {t('arena.table.score')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Wins
+                  {t('arena.table.wins')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Ties
+                  {t('arena.table.ties')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                  Win Rate
+                  {t('arena.table.winRate')}
                 </th>
               </tr>
             </thead>
@@ -233,8 +235,8 @@ const ModelVoteLeaderboard: React.FC = () => {
               className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
             >
               {showAll 
-                ? `Show Top 5` 
-                : `Show All ${modelScores.length} Models`
+                ? t('common.showTop', { count: 5 })
+                : t('arena.showAllModels', { count: modelScores.length })
               }
             </button>
           </div>

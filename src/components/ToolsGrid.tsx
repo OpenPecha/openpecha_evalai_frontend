@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ExternalLink, Grid, List, Search, RefreshCw, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useTools } from "../hooks/useTools";
 import type { Tool } from "../api/tools";
 
@@ -9,6 +10,7 @@ interface ToolsGridProps {
 }
 
 const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
@@ -54,10 +56,10 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
-                Pecha Studio Tools
+                {t('tools.title')}
               </h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                {toolsResponse?.count || 0} available tools
+                {t('tools.availableTools', { count: toolsResponse?.count || 0 })}
               </p>
             </div>
           </div>
@@ -65,7 +67,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
             <button
               onClick={() => refetch()}
               className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-white transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700"
-              title="Refresh tools"
+              title={t('tools.refreshTools')}
             >
               <RefreshCw className="w-5 h-5" />
             </button>
@@ -77,7 +79,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
                     ? "bg-white dark:bg-neutral-800 text-blue-600 shadow-sm" 
                     : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-white"
                 }`}
-                title="Grid view"
+                title={t('tools.gridView')}
               >
                 <Grid className="w-4 h-4" />
               </button>
@@ -88,7 +90,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
                     ? "bg-white dark:bg-neutral-800 text-blue-600 shadow-sm" 
                     : "text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-white"
                 }`}
-                title="List view"
+                title={t('tools.listView')}
               >
                 <List className="w-4 h-4" />
               </button>
@@ -108,7 +110,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search tools..."
+              placeholder={t('tools.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 text-sm border border-neutral-300 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -121,31 +123,31 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-neutral-600 dark:text-neutral-400">Loading tools...</span>
+              <span className="ml-3 text-neutral-600 dark:text-neutral-400">{t('tools.loadingTools')}</span>
             </div>
           ) : error ? (
             <div className="text-center py-12">
               <div className="text-red-600 dark:text-red-400 mb-2">
-                Failed to load tools
+                {t('tools.failedToLoad')}
               </div>
               <button
                 onClick={() => refetch()}
                 className="text-blue-600 hover:text-blue-700 text-sm"
               >
-                Try again
+                {t('tools.tryAgain')}
               </button>
             </div>
           ) : filteredTools.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-neutral-600 dark:text-neutral-400 mb-2">
-                {searchQuery ? "No tools found matching your search." : "No tools available."}
+                {searchQuery ? t('tools.noToolsFound') : t('tools.noToolsAvailable')}
               </div>
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
                   className="text-blue-600 hover:text-blue-700 text-sm"
                 >
-                  Clear search
+                  {t('tools.clearSearch')}
                 </button>
               )}
             </div>

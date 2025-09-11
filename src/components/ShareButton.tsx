@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Share2, Copy, Check, ExternalLink } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ShareButtonProps {
   challengeId: string;
@@ -16,6 +17,7 @@ const ShareButton = ({
   autoOpen = false,
   onClose,
 }: ShareButtonProps) => {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(autoOpen);
   const [copied, setCopied] = useState(false);
 

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useAuth0 } from "../hooks/useAuth0";
+import { useTranslation } from "react-i18next";
 import { Shield, LogIn } from "lucide-react";
 
 interface ProtectedRouteProps {
@@ -8,6 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
+  const { t } = useTranslation();
   const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
 
   if (isLoading) {
@@ -15,7 +17,7 @@ const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Checking authentication...</p>
+          <p className="mt-4 text-gray-600">{t('protected.checkingAuth')}</p>
         </div>
       </div>
     );

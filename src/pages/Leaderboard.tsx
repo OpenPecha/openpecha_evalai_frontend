@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
   Medal,
@@ -66,6 +67,7 @@ const getMetricClass = (metric: string) => {
 };
 
 const Leaderboard = () => {
+  const { t } = useTranslation();
   const { challengeId } = useParams<{ challengeId: string }>();
   const [viewMode, setViewMode] = useState<"table" | "chart">("table");
   const [searchQuery, setSearchQuery] = useState("");
@@ -423,7 +425,7 @@ const Leaderboard = () => {
                     </th>
                     {isAdmin && (
                       <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                        Actions
+                        {t('leaderboards.actions')}
                       </th>
                     )}
                   </tr>

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Send, Languages, AlertTriangle, Settings, X, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { suggestModels } from "../api/translate";
 import { DEFAULT_MODELS, SUPPORTED_LANGUAGES, createTranslatePrompt } from "../types/translate";
 import type { SuggestResponse, TranslateRequest, LanguageCode } from "../types/translate";
@@ -23,6 +24,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
   disabled = false,
   token,
 }) => {
+  const { t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useLocalStorage<LanguageCode>("targetLanguage", "en"); // Default to English
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,11 +66,11 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           console.log(`Using suggested models: ${modelA} vs ${modelB} (${selectionMethod})`);
         } else {
           console.warn("Incomplete model suggestion, using defaults:", suggestion);
-          setError("Using default models (suggestion service unavailable)");
+          setError(t('messages.errorOccurred'));
         }
       } catch (suggestionError) {
         console.warn("Failed to get model suggestions, using defaults:", suggestionError);
-        setError("Using default models (suggestion service unavailable)");
+        setError(t('messages.errorOccurred'));
       }
 
       // Create payload with target language and custom prompt
@@ -96,7 +98,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       setError(
         submitError instanceof Error 
           ? submitError.message 
-          : "Failed to submit translation request"
+          : t('messages.errorOccurred')
       );
     } finally {
       setIsLoading(false);
@@ -154,7 +156,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
   };
 
   const handleResetPrompt = () => {
-    setTempPrompt('Translate the following text accurately while preserving meaning and context:');
+    setTempPrompt(DEFAULT_TEMPLATE);
   };
 
   return (
@@ -168,7 +170,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
               <div className="flex items-center space-x-3">
                 <Settings className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                 <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                   Settings
+                  {t('composer.settings')}
                 </h2>
               </div>
               <button
@@ -183,10 +185,10 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
             <div className="p-6 space-y-4">
               <div>
                 <label htmlFor="custom-prompt-textarea" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  Custom  Template
+                  {t('composer.customTemplate')}
                 </label>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
-                  This template will be used for input. 
+                  {t('composer.templateDescription')}
                 </p>
                 <textarea
                   id="custom-prompt-textarea"
@@ -241,7 +243,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       {!inputValue && (
         <div className="space-y-3">
           <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            Try these examples:
+            {t('composer.tryExamples')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {exampleTexts.map((text) => (
@@ -270,7 +272,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="Your translation prompt will appear here. Add the text to translate below it..."
+          placeholder={t('composer.placeholderText')}
           className="w-full font-['monlam'] rounded-xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-4 py-3 pr-24 pb-12 text-neutral-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[80px] max-h-[200px]"
           disabled={disabled || isLoading}
           rows={5}
@@ -285,7 +287,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
             onChange={(e) => setSelectedLanguage(e.target.value as LanguageCode)}
             className="text-xs bg-transparent border-none text-neutral-700 dark:text-neutral-200 focus:outline-none cursor-pointer font-medium"
             disabled={disabled || isLoading}
-            title="Select target language for translation"
+            title={t('composer.to')}
           >
             {SUPPORTED_LANGUAGES.map((language) => (
               <option key={language.code} value={language.code} className="bg-white dark:bg-neutral-700 text-neutral-700 dark:text-white">
@@ -329,10 +331,10 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           onClick={handleSettingsOpen}
           disabled={disabled || isLoading}
           className="flex items-center space-x-1 px-3 py-2 text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Translation Settings"
+          title={t('composer.translationSettings')}
         >
           <Settings className="w-4 h-4" />
-          <span>Settings</span>
+          <span>{t('composer.settings')}</span>
         </button>
       </div>
     </div>

@@ -19,12 +19,14 @@ import { useAuth } from "./auth/use-auth-hook";
 import { useTheme } from "./hooks/useTheme";
 import { useTokenExpiration } from "./hooks/useTokenExpiration";
 import { useAuth0 } from "./hooks/useAuth0";
+import { useTranslation } from "react-i18next";
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
   const { isAuthenticated, isLoading, getToken ,currentUser} = useAuth();
   const { loginWithRedirect } = useAuth0();
+  const { i18n } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Initialize theme system at root level
@@ -33,6 +35,24 @@ const App = () => {
   // Initialize user API auth
 
   useTokenExpiration();
+
+  // Handle font switching based on language
+  useEffect(() => {
+    const body = document.body;
+    
+    if (i18n.language === 'bo') {
+      // Add Tibetan font for Tibetan language
+      body.classList.add('font-[monlam]');
+    } else {
+      // Remove Tibetan font for other languages
+      body.classList.remove('font-[monlam]');
+    }
+    
+    // Cleanup function to remove the class when component unmounts
+    return () => {
+      body.classList.remove('font-monlam');
+    };
+  }, [i18n.language]);
   
   useEffect(() => {
     if (isAuthenticated) {

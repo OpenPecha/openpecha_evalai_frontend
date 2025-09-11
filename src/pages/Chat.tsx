@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Languages, RotateCcw, History } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ChatComposer from "../components/ChatComposer";
 import DualCompare from "../components/DualCompare";
 import { useAuth } from "../auth/use-auth-hook";
@@ -7,6 +8,7 @@ import { DEFAULT_TRANSLATE_PROMPT } from "../types/translate";
 import type { TranslateRequest, TranslateSession } from "../types/translate";
 
 const Chat = () => {
+  const { t } = useTranslation();
   const { isAuthenticated, getToken } = useAuth();
   const [sessions, setSessions] = useState<TranslateSession[]>([]);
   const [currentSession, setCurrentSession] = useState<TranslateSession | null>(null);
@@ -91,14 +93,14 @@ const Chat = () => {
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
-                  AI Arena
+                  {t('arena.title')}
                 </h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
-                  ✨ Live
+                  ✨ {t('arena.live')}
                 </span>
               </div>
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                Compare AI translations and vote for better results
+                {t('arena.compare')}
               </p>
             </div>
           </div>
@@ -129,16 +131,16 @@ const Chat = () => {
                   <Languages className="w-10 h-10 text-primary-600 dark:text-primary-400" />
                 </div>
                 <h2 className="text-3xl font-bold text-neutral-700 dark:text-neutral-100 mb-4">
-                  AI Arena
+                  {t('arena.welcomeTitle')}
                 </h2>
                 <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6">
-                  Compare different AI models and help improve quality through your feedback.
+                  {t('arena.welcomeSubtitle')}
                 </p>
                 
                 {!isAuthenticated && (
                   <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
                     <p className="text-sm text-yellow-800 dark:text-yellow-400">
-                      <strong>Note:</strong> Authentication is recommended for voting and personalized model suggestions.
+                      {t('arena.authNote')}
                     </p>
                   </div>
                 )}
@@ -158,7 +160,7 @@ const Chat = () => {
                   <div className="flex items-center space-x-2 mb-4">
                     <History className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
                     <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                      Recent AI requests
+                      {t('arena.recentRequests')}
                     </h3>
                   </div>
                   
@@ -190,10 +192,10 @@ const Chat = () => {
                                   {session.modelB.name}
                                 </span>
                                 {session.selectedModel === 'both' && (
-                                  <span className="ml-2 font-medium text-amber-600 dark:text-amber-400">(Tie)</span>
+                                  <span className="ml-2 font-medium text-amber-600 dark:text-amber-400">({t('translation.tie')})</span>
                                 )}
                                 {session.selectedModel === 'none' && (
-                                  <span className="ml-2 font-medium text-red-600 dark:text-red-400">(Neither)</span>
+                                  <span className="ml-2 font-medium text-red-600 dark:text-red-400">({t('translation.neither')})</span>
                                 )}
                               </span>
                             </div>
@@ -216,7 +218,7 @@ const Chat = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium text-neutral-700 dark:text-neutral-100 mb-2">
-                    Input Text
+                    {t('arena.inputText')}
                   </h3>
                   <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
                     {currentSession.inputText}

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Trophy,
   Upload,
@@ -13,6 +14,7 @@ import { useChallenges, usePrefetchLeaderboard } from "../hooks/useChallenges";
 import { useCurrentUser } from "../hooks/useUsers";
 
 const Home = () => {
+  const { t } = useTranslation();
   const { data: challengesResponse, isLoading, error } = useChallenges();
   const { data: currentUserData } = useCurrentUser();
   const prefetchLeaderboard = usePrefetchLeaderboard();
@@ -91,18 +93,17 @@ const Home = () => {
         {/* Modern Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-neutral-600 dark:text-neutral-100 mb-2">
-            ML Evaluation Challenges
+            {t('challenges.title')}
           </h1>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
-            Discover and participate in machine learning challenges. Test your
-            models and compete with others.
+            {t('challenges.subtitle')}
           </p>
         </div>
 
         {challenges.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-neutral-500 dark:text-neutral-400 text-lg">
-              No challenges available at the moment.
+              {t('challenges.noChallenges')}
             </p>
           </div>
         ) : (

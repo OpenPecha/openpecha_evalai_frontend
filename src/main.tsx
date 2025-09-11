@@ -5,8 +5,8 @@ import Auth0Provider from "./auth/auth0-provider";
 import { AuthProvider } from "./auth/auth-context-provider";
 import AuthWrapper from "./components/AuthWrapper";
 import "./index.css";
+import "./i18n";
 import App from "./app.tsx";
-
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
