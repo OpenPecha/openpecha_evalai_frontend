@@ -1,4 +1,4 @@
-import type { SuggestResponse, TranslateRequest, VoteRequest, TranslationLeaderboardResponse, UserVoteLeaderboardResponse } from "../types/translate";
+import type { SuggestResponse, TranslateRequest, VoteRequest, TranslationLeaderboardResponse, UserVoteLeaderboardResponse, ModelVoteLeaderboardResponse } from "../types/translate";
 import { getAuthHeaders as getCentralAuthHeaders, setAuthTokenGetter } from "../lib/auth";
 
 // API Base URL
@@ -262,6 +262,34 @@ export async function getUserVoteLeaderboard(): Promise<UserVoteLeaderboardRespo
   }
 }
 
+/**
+ * Get model vote leaderboard showing models ranked by their vote scores
+ * Scores calculated as: clear wins (1 point) + ties (0.5 points)
+ * Public endpoint, no authentication required
+ */
+export async function getModelVoteLeaderboard(): Promise<ModelVoteLeaderboardResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/translate/model-vote-leaderboard`, {
+      method: "GET",
+      headers: {
+        "accept": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: ModelVoteLeaderboardResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching model vote leaderboard:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch model vote leaderboard"
+    );
+  }
+}
+
 // Export the translate API object for consistency with other API modules
 export const translateApi = {
   suggestModels,
@@ -270,4 +298,5 @@ export const translateApi = {
   voteModel,
   getTranslationLeaderboard,
   getUserVoteLeaderboard,
+  getModelVoteLeaderboard,
 };

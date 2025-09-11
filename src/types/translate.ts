@@ -146,3 +146,22 @@ export interface UserVoteLeaderboardResponse {
   leaderboard: UserVoteStats[];
   error?: string;
 }
+
+export interface ModelVoteScore {
+  rank: number;
+  model_name: string;
+  provider: string;
+  score: number;
+  clear_wins: number;
+  ties: number;
+  total_comparisons: number;
+  win_rate_percentage: number;
+}
+
+export interface ModelVoteLeaderboardResponse {
+  total_votes: number;
+  total_models_with_data: number;
+  total_score: number;
+  leaderboard: ModelVoteScore[];
+  error?: string;
+}

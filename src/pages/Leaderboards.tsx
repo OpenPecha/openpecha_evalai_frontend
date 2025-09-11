@@ -18,8 +18,8 @@ import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
 import LeaderboardChart from "../components/LeaderboardChart";
 import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
-import TranslationLeaderboard from "../components/TranslationLeaderboard";
 import UserVoteLeaderboard from "../components/UserVoteLeaderboard";
+import ModelVoteLeaderboard from "../components/ModelVoteLeaderboard";
 import { useToast } from "../components/use-toast";
 
 const Leaderboards = () => {
@@ -206,11 +206,12 @@ const Leaderboards = () => {
 
         {/* Leaderboards - 2 column layout */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Translation Model Leaderboard - First Item */}
-          <TranslationLeaderboard />
+          {/* Arena - First Item */}
+          <ModelVoteLeaderboard />
           
           {/* User Vote Leaderboard - Second Item */}
           <UserVoteLeaderboard />
+          
           {leaderboardsData?.map((leaderboard) => {
             // Get available metrics from first submission
             const availableMetrics =
