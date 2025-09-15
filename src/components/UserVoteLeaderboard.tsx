@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Crown, Medal, Award, User, RefreshCw, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useUserVoteLeaderboard } from "../hooks/useTranslate";
-import { timeFormatSeconds } from "../lib/utils";
+import { formatDurationShort} from "../lib/utils";
 
 const UserVoteLeaderboard: React.FC = () => {
   const { t } = useTranslation();
@@ -237,7 +237,7 @@ const UserVoteLeaderboard: React.FC = () => {
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-center">
                     <div className="font-semibold text-orange-600 dark:text-orange-400">
-                      {stat.average_response_time_ms ? timeFormatSeconds(stat.average_response_time_ms) : "N/A"}
+                      {stat.average_response_time_ms ? formatDurationShort(stat.average_response_time_ms) : "N/A"}
                     </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-center">

@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function timeFormatSeconds(ms: number) {
+export function formatDurationShort(ms: number) {
   if (ms < 1000) {
     return `${ms}ms`;
   }
