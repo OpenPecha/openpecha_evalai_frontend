@@ -211,7 +211,7 @@ const Chat = () => {
           /* Active Translation Session */
           <div className="max-w-7xl mx-auto p-6 space-y-6">
             {/* Input Display */}
-            <div className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-600 p-6">
+            <div className="bg-white dark:bg-neutral-800 rounded-xl border font-[monlam-2] text-lg border-neutral-200 dark:border-neutral-600 p-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Languages className="w-4 h-4 text-white" />

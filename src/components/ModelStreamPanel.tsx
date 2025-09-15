@@ -160,7 +160,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
         ) : (
           <div
             ref={contentRef}
-            className="max-h-96 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
+            className="max-h-96 overflow-y-auto  text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
           >
             {content ? (
               <div className="break-words">

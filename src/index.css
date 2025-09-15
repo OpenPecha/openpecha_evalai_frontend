@@ -188,6 +188,8 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+  --font-monlam: var(--font-monlam);
+  --font-monlam-2: var(--font-monlam-2);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
