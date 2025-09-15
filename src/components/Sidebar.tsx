@@ -80,13 +80,13 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   // Navigation configuration
   const navigationItems: NavigationItem[] = [
     {
-      label: t('navigation.arena'),
+      label: "Arena",
       path: "/chat",
       href: undefined,
       icon: MessageCircle,
       isActive: () => isActivePath("/chat"),
       activeClasses: "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400",
-      tooltip: t('navigation.arena'),
+      tooltip: "Arena",
       isExternal: false,
     },
     {
@@ -199,9 +199,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
     <div
       className={`${
         isOpen ? "w-64" : "w-16"
-      } bg-white dark:bg-neutral-800 dark:text-neutral-100 shadow-lg border-r border-neutral-200 dark:border-neutral-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col  fixed top-0 left-0 z-30 ${
-        !isOpen && "hidden"
-      }`}
+      } bg-white dark:bg-neutral-800 dark:text-neutral-100 shadow-lg border-r border-neutral-200 dark:border-neutral-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col  fixed top-0 left-0 z-30`}
     >
       {/* Header with Logo and Toggle Button */}
       <div
