@@ -208,8 +208,6 @@ const Leaderboards = () => {
 
         {/* Leaderboards - 2 column layout */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Arena - First Item */}
-          <ModelVoteLeaderboard />
           
           {/* User Vote Leaderboard - Second Item */}
           <UserVoteLeaderboard />

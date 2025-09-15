@@ -4,7 +4,9 @@ export interface SuggestResponse {
   model_a: string | null;
   model_b: string | null;
   selection_method?: string | null;
-  total_models_considered?: number | null;
+  source_text?: string | null;
+  used_models?: string[] | null;
+  total_combinations?: number | null;
   note?: string | null;
 }
 

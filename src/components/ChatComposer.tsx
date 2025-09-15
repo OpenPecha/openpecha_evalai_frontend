@@ -56,7 +56,7 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
 
       console.log('Fetching fresh model suggestions for new translation...');
       try {
-        const suggestion: SuggestResponse = await suggestModels(token);
+        const suggestion: SuggestResponse = await suggestModels(token, text);
         
         // Use suggested models if available, otherwise fallback to defaults
         if (suggestion.model_a && suggestion.model_b) {
@@ -64,6 +64,11 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           modelB = suggestion.model_b;
           selectionMethod = suggestion.selection_method || undefined;
           console.log(`Using suggested models: ${modelA} vs ${modelB} (${selectionMethod})`);
+          
+          // Log information about filtered models if any
+          if (suggestion.used_models && suggestion.used_models.length > 0) {
+            console.log(`Excluded ${suggestion.used_models.length} already used models:`, suggestion.used_models);
+          }
         } else {
           console.warn("Incomplete model suggestion, using defaults:", suggestion);
           setError(t('messages.errorOccurred'));

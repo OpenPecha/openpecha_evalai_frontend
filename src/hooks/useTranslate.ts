@@ -48,11 +48,11 @@ export const useModelVoteLeaderboard = () => {
 };
 
 // Hook for model suggestions
-export const useModelSuggestions = (query: string) => {
+export const useModelSuggestions = (sourceText: string, token?: string) => {
   return useQuery({
-    queryKey: translateKeys.suggestions(query),
-    queryFn: () => translateApi.suggestModels(query),
-    enabled: !!query && query.length > 2, // Only fetch if query is meaningful
+    queryKey: translateKeys.suggestions(sourceText),
+    queryFn: () => translateApi.suggestModels(token, sourceText),
+    enabled: !!sourceText && sourceText.length > 2, // Only fetch if source text is meaningful
     staleTime: 5 * 60 * 1000, // 5 minutes - model suggestions don't change often
     gcTime: 10 * 60 * 1000,
   });

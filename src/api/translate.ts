@@ -18,7 +18,7 @@ const getAuthHeaders = async (includeAuth = true): Promise<Record<string, string
  * Get suggested models for translation comparison
  * This endpoint is public and doesn't require authentication
  */
-export async function suggestModels(token?: string): Promise<SuggestResponse> {
+export async function suggestModels(token?: string, sourceText?: string): Promise<SuggestResponse> {
   try {
     const headers: Record<string, string> = {
       "accept": "application/json",
@@ -32,9 +32,14 @@ export async function suggestModels(token?: string): Promise<SuggestResponse> {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    // Add timestamp to prevent caching
+    // Add timestamp to prevent caching and source text for filtering
     const url = new URL(`${API_BASE_URL}/translate/suggest_model`);
     url.searchParams.append('_t', Date.now().toString());
+    
+    // Add source text parameter if provided
+    if (sourceText?.trim()) {
+      url.searchParams.append('source_text', sourceText.trim());
+    }
 
     const response = await fetch(url.toString(), {
       method: "GET",
