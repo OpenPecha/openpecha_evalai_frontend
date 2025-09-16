@@ -20,7 +20,7 @@ import ShareButton from "../components/ShareButton";
 import LeaderboardChart from "../components/LeaderboardChart";
 import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
 import UserVoteLeaderboard from "../components/UserVoteLeaderboard";
-import ModelVoteLeaderboard from "../components/ModelVoteLeaderboard";
+import ModelScoreLeaderboard from "../components/ModelScoreLeaderboard";
 import { useToast } from "../components/use-toast";
 
 const Leaderboards = () => {
@@ -91,31 +91,6 @@ const Leaderboards = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/20";
-      case "upcoming":
-        return "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20";
-      case "completed":
-        return "text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700";
-      default:
-        return "text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "active":
-        return "🟢";
-      case "upcoming":
-        return "🟡";
-      case "completed":
-        return "⚪";
-      default:
-        return "⚪";
-    }
-  };
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -211,6 +186,27 @@ const Leaderboards = () => {
           
           {/* User Vote Leaderboard - Second Item */}
           <UserVoteLeaderboard />
+          
+          {/* Model Arena Score Leaderboard */}
+          <div className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+            <div className="px-4 py-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-md font-semibold text-neutral-500 dark:text-neutral-100">
+                    Model Arena Scores
+                  </h2>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs dark:text-neutral-400">
+                    6 models
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="max-h-96 overflow-hidden">
+              <ModelScoreLeaderboard compact={true} />
+            </div>
+          </div>
           
           {leaderboardsData?.map((leaderboard) => {
             // Get available metrics from first submission
