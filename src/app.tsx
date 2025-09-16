@@ -20,6 +20,7 @@ import { useTheme } from "./hooks/useTheme";
 import { useTokenExpiration } from "./hooks/useTokenExpiration";
 import { useAuth0 } from "./hooks/useAuth0";
 import { useTranslation } from "react-i18next";
+import FeedBucket from "./components/Feedbucket";
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
@@ -31,7 +32,6 @@ const App = () => {
 
   // Initialize theme system at root level
   useTheme();
-
   // Initialize user API auth
 
   useTokenExpiration();
@@ -222,7 +222,9 @@ const App = () => {
             }
           />
         </Routes>
+
       </div>
+      <FeedBucket />
     </ToastProvider>
   );
 };
