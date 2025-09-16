@@ -185,7 +185,6 @@ const Leaderboards = () => {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           
           {/* User Vote Leaderboard - Second Item */}
-          <UserVoteLeaderboard />
           
           {/* Model Arena Score Leaderboard */}
           <div className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
