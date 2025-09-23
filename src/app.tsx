@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import { ToastProvider } from "./components/ToastContainer";
 import Home from "./pages/Home";
-import Chat from "./pages/Chat";
+import Arena from "./pages/Arena";
 import Leaderboard from "./pages/Leaderboard";
 import Leaderboards from "./pages/Leaderboards";
 import LeaderboardEmbed from "./pages/LeaderboardEmbed";
@@ -21,6 +21,7 @@ import { useTokenExpiration } from "./hooks/useTokenExpiration";
 import { useAuth0 } from "./hooks/useAuth0";
 import { useTranslation } from "react-i18next";
 import FeedBucket from "./components/Feedbucket";
+
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
@@ -149,7 +150,7 @@ const App = () => {
                           </div>
                         }
                       />
-                      <Route path="/chat" element={<Chat />} />
+                      <Route path="/arena" element={<Arena />} />
                       <Route
                         path="/leaderboards"
                         element={

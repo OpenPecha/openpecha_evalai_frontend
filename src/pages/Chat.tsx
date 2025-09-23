@@ -1,13 +1,25 @@
 import React, { useState, useCallback } from "react";
-import { Languages, RotateCcw, History } from "lucide-react";
+import { Languages, RotateCcw, History, ArrowLeft, AlertTriangle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ChatComposer from "../components/ChatComposer";
-import DualCompare from "../components/DualCompare";
+// import DualCompare from "../components/DualCompare"; // Commented out - using ModelResponseCompare instead
+import ModelResponseCompare from "../components/ModelResponseCompare";
 import { useAuth } from "../auth/use-auth-hook";
-import { DEFAULT_TRANSLATE_PROMPT } from "../types/translate";
 import type { TranslateRequest, TranslateSession } from "../types/translate";
+import type { PromptTemplate } from "../types/template";
+import type { ArenaChallenge } from "../types/arena_challenge";
 
-const Chat = () => {
+interface ChatProps {
+  selectedTemplate?: PromptTemplate;
+  onBackToTemplates?: () => void;
+  onBackToArena?: () => void;
+  challenge?: ArenaChallenge;
+  judgeOrBattle?: string;
+}
+
+const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBackToArena, challenge, judgeOrBattle }) => {
+  console.log("challenge", challenge);
+  console.log("selectedTemplate", selectedTemplate); 
   const { t } = useTranslation();
   const { isAuthenticated, getToken } = useAuth();
   const [sessions, setSessions] = useState<TranslateSession[]>([]);
@@ -34,9 +46,9 @@ const Chat = () => {
   ) => {
     const session: TranslateSession = {
       id: Date.now().toString(),
-      inputText: payload.text,
-      targetLanguage: payload.target_language,
-      template: payload.template,
+      input_text: payload.input_text,
+      template_id: payload.template_id,
+      challenge_id: payload.challenge_id,
       modelA: {
         id: modelA,
         name: modelA,
@@ -106,6 +118,24 @@ const Chat = () => {
           </div>
           
           <div className="flex items-center space-x-2">
+            {judgeOrBattle === 'judge' && onBackToArena && (
+              <button
+                onClick={onBackToArena}
+                className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Arena</span>
+              </button>
+            )}
+            {selectedTemplate && onBackToTemplates && judgeOrBattle !== 'judge' && !hasCurrentSession && (
+              <button
+                onClick={onBackToTemplates}
+                className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Templates</span>
+              </button>
+            )}
             {hasCurrentSession && (
               <button
                 onClick={handleNewChat}
@@ -123,85 +153,102 @@ const Chat = () => {
       <div className="flex-1 overflow-y-auto">
         {!hasCurrentSession ? (
           /* Welcome Screen */
-          <div className="h-full flex items-center justify-center p-6">
-            <div className="w-full max-w-6xl mx-auto">
+          <div className="min-h-full flex items-center justify-center p-6">
+            <div className="w-full max-w-6xl mx-auto space-y-8">
               {/* Welcome Section */}
-              <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Languages className="w-10 h-10 text-primary-600 dark:text-primary-400" />
-                </div>
-                <h2 className="text-3xl font-bold text-neutral-700 dark:text-neutral-100 mb-4">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-neutral-800 dark:text-neutral-100 mb-3">
                   {t('arena.welcomeTitle')}
                 </h2>
-                <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6">
+                <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6 max-w-2xl mx-auto leading-relaxed">
                   {t('arena.welcomeSubtitle')}
                 </p>
                 
                 {!isAuthenticated && (
-                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
-                    <p className="text-sm text-yellow-800 dark:text-yellow-400">
-                      {t('arena.authNote')}
-                    </p>
+                  <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 mb-8 max-w-2xl mx-auto">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                      <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
+                        {t('arena.authNote')}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* Composer */}
-              <div className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-600 p-6">
-                <ChatComposer
-                  onSubmit={handleTranslateSubmit}
-                  token={token}
-                />
+              <div className="max-w-4xl mx-auto">
+                { challenge && (
+                  <ChatComposer
+                    onSubmit={handleTranslateSubmit}
+                    token={token}
+                    selectedTemplate={selectedTemplate}
+                    challenge={challenge}
+                    judgeOrBattle={judgeOrBattle}
+                  />
+                )}
               </div>
 
               {/* History Section */}
               {hasHistory && (
-                <div className="mt-8">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <History className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
-                    <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                      {t('arena.recentRequests')}
-                    </h3>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {sessions.slice(0, 6).map((session) => (
-                        <div
-                          key={session.id}
-                          className="p-4 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg"
-                        >
-                          <div className="space-y-2">
-                            <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2">
-                              {session.inputText}
-                            </p>
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-neutral-500 dark:text-neutral-400">
-                                <span className={
-                                  session.selectedModel === session.modelA.name 
-                                    ? 'font-medium text-green-600 dark:text-green-400' 
-                                    : ''
-                                }>
-                                  {session.modelA.name}
-                                </span>
-                                {' vs '}
-                                <span className={
-                                  session.selectedModel === session.modelB.name 
-                                    ? 'font-medium text-green-600 dark:text-green-400' 
-                                    : ''
-                                }>
-                                  {session.modelB.name}
-                                </span>
-                                {session.selectedModel === 'both' && (
-                                  <span className="ml-2 font-medium text-amber-600 dark:text-amber-400">({t('translation.tie')})</span>
-                                )}
-                                {session.selectedModel === 'none' && (
-                                  <span className="ml-2 font-medium text-red-600 dark:text-red-400">({t('translation.neither')})</span>
-                                )}
-                              </span>
+                <div className="max-w-6xl mx-auto">
+                  <div className="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-600 overflow-hidden shadow-lg">
+                    <div className="px-6 py-4 bg-neutral-50 dark:bg-neutral-700/50 border-b border-neutral-200 dark:border-neutral-600">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-neutral-600 rounded-lg flex items-center justify-center">
+                          <History className="w-4 h-4 text-white" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
+                          {t('arena.recentRequests')}
+                        </h3>
+                      </div>
+                    </div>
+                    
+                    <div className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {sessions.slice(0, 6).map((session) => (
+                          <div
+                            key={session.id}
+                            className="p-4 bg-neutral-50 dark:bg-neutral-700/30 border border-neutral-200 dark:border-neutral-600 rounded-xl hover:shadow-md transition-all duration-200"
+                          >
+                            <div className="space-y-3">
+                              <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 leading-relaxed">
+                                {session.input_text}
+                              </p>
+                              {/* <div className="flex items-center justify-between text-xs">
+                                <div className="text-neutral-500 dark:text-neutral-400">
+                                  <span className={
+                                    session.selectedModel === session.modelA.name 
+                                      ? 'font-semibold text-green-600 dark:text-green-400' 
+                                      : 'font-medium'
+                                  }>
+                                    {session.modelA.name}
+                                  </span>
+                                  <span className="mx-1 text-neutral-400">vs</span>
+                                  <span className={
+                                    session.selectedModel === session.modelB.name 
+                                      ? 'font-semibold text-green-600 dark:text-green-400' 
+                                      : 'font-medium'
+                                  }>
+                                    {session.modelB.name}
+                                  </span>
+                                </div>
+                              </div> */}
+                              {session.selectedModel === 'both' && (
+                                <div className="inline-flex items-center px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-medium rounded-full">
+                                  {t('translation.tie')}
+                                </div>
+                              )}
+                              {session.selectedModel === 'none' && (
+                                <div className="inline-flex items-center px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-medium rounded-full">
+                                  {t('translation.neither')}
+                                </div>
+                              )}
                             </div>
                           </div>
-                        </div>
-                    ))}
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -221,26 +268,34 @@ const Chat = () => {
                     {t('arena.inputText')}
                   </h3>
                   <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
-                    {currentSession.inputText}
+                    {currentSession.input_text}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Dual Compare */}
-            <DualCompare
+            {/* Model Response Compare - New V2 Component */}
+            <ModelResponseCompare
+              templateId={currentSession.template_id || null}
+              challengeId={currentSession.challenge_id}
+              inputText={currentSession.input_text}
+              onComplete={handleSessionComplete}
+              onNewTranslation={handleNewChat}
+            />
+
+            {/* Dual Compare - Original Component (Commented Out) */}
+            {/* <DualCompare
               modelA={currentSession.modelA.id}
               modelB={currentSession.modelB.id}
               payload={{
-                text: currentSession.inputText,
-                prompt: DEFAULT_TRANSLATE_PROMPT,
-                template: currentSession.template,
-                target_language: currentSession.targetLanguage,
+                input_text: currentSession.input_text,
+                template_id: currentSession.template_id,
+                challenge_id: currentSession.challenge_id,
               }}
               token={token}
               onComplete={handleSessionComplete}
               onNewTranslation={handleNewChat}
-            />
+            /> */}
           </div>
         )}
       </div>

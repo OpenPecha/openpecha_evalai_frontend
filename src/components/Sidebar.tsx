@@ -81,10 +81,10 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
   const navigationItems: NavigationItem[] = [
     {
       label: "Arena",
-      path: "/chat",
+      path: "/arena",
       href: undefined,
       icon: MessageCircle,
-      isActive: () => isActivePath("/chat"),
+      isActive: () => isActivePath("/arena"),
       activeClasses: "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400",
       tooltip: "Arena",
       isExternal: false,

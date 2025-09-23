@@ -11,10 +11,9 @@ export interface SuggestResponse {
 }
 
 export interface TranslateRequest {
-  text: string;
-  prompt: string;
-  template?: string;
-  target_language?: string;
+  template_id?: string;
+  challenge_id: string;
+  input_text: string;
 }
 
 export interface VoteRequest {
@@ -35,9 +34,9 @@ export interface ModelStreamState {
 
 export interface TranslateSession {
   id: string;
-  inputText: string;
-  targetLanguage?: string;
-  template?: string;
+  input_text: string;
+  challenge_id: string;
+  template_id?: string;
   modelA: {
     id: string;
     name: string;

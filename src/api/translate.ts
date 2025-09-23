@@ -305,3 +305,80 @@ export const translateApi = {
   getUserVoteLeaderboard,
   getModelVoteLeaderboard,
 };
+
+
+/**
+ * Translate using v2 API endpoint
+ */
+export async function translateV2(
+  templateId: string | null,
+  challengeId: string,
+  input_text: string,
+): Promise<any> {
+  try {
+    const body = {
+      template_id: templateId || null,
+      challenge_id: challengeId,
+      input_text: input_text,
+    };
+
+    const response = await fetch(`${API_BASE_URL}/translate_v2`, {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error calling translate v2:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to translate v2"
+    );
+  }
+}
+
+/** vote on translation v2 */
+export async function updateBattleWinner(
+  battleResultId: string,
+  id1: string,
+  id2: string,
+  result: string
+): Promise<any> {
+  try {
+    const body = {
+      battle_result_id: battleResultId,
+      id_1: id1,
+      id_2: id2,
+      result: result,
+    };
+
+    const response = await fetch(`${API_BASE_URL}/translate_v2/update_battle_winner`, {
+      method: "PUT",
+      headers: {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating battle winner:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to update battle winner"
+    );
+  }
+}
+

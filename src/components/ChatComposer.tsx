@@ -1,45 +1,37 @@
 import React, { useState, useRef } from "react";
-import { Send, Languages, AlertTriangle, Settings, X, Save } from "lucide-react";
+import { Send, AlertTriangle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { suggestModels } from "../api/translate";
-import { DEFAULT_MODELS, SUPPORTED_LANGUAGES, createTranslatePrompt } from "../types/translate";
-import type { SuggestResponse, TranslateRequest, LanguageCode } from "../types/translate";
-import useLocalStorage from "../hooks/useLocaleStorage";
+import { DEFAULT_MODELS } from "../types/translate";
+import type { SuggestResponse, TranslateRequest } from "../types/translate";
+import type { PromptTemplate } from "../types/template";
+import type { ArenaChallenge } from "../types/arena_challenge";
+import SelectionReviewCard from "./SelectionReviewCard";
 
 interface ChatComposerProps {
   onSubmit: (payload: TranslateRequest, modelA: string, modelB: string, selectionMethod?: string) => void;
   disabled?: boolean;
   token?: string;
+  selectedTemplate?: PromptTemplate;
+  challenge: ArenaChallenge;
+  judgeOrBattle?: string;
 }
-
-const exampleTexts = [
-  "བཀྲ་ཤིས་བདེ་ལེགས། ངའི་མིང་ལ་བསྟན་འཛིན་ཟེར།",
-  "ད་ལྟ་གནམ་གཤིས་ཇི་འདྲ་ཡོད་དམ།",
-  "ང་རང་ཞིང་པ་ཞིག་ཡིན། ང་ནས་འབྲུ་དང་གྲོ་མ་བཟོ་གི་ཡོད།",
-  "སྐུ་ཚེ་རིང་བ་དང་ནད་མེད་ཚེ་དབང་ཐོབ་པར་ཤོག",
-];
-const DEFAULT_TEMPLATE = "Translate the following text accurately while preserving meaning and context:";
 const ChatComposer: React.FC<ChatComposerProps> = ({
   onSubmit,
   disabled = false,
   token,
+  selectedTemplate,
+  challenge,
+  judgeOrBattle,
 }) => {
   const { t } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useLocalStorage<LanguageCode>("targetLanguage", "en"); // Default to English
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
-  // Custom prompt settings stored in localStorage
-  const [customPrompt, setCustomPrompt] = useLocalStorage<string>(
-    'translation-custom-template', 
-    DEFAULT_TEMPLATE
-  );
-  const [tempPrompt, setTempPrompt] = useState(customPrompt);
-  
-  // Input state - initialize with custom prompt by default
-  const [inputValue, setInputValue] = useState(customPrompt);
+  // Input state - initialize with effective template by default
+  const [inputValue, setInputValue] = useState("");
+
 
   const handleSubmit = async () => {
     const text = inputValue.trim();
@@ -77,26 +69,11 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
         console.warn("Failed to get model suggestions, using defaults:", suggestionError);
         setError(t('messages.errorOccurred'));
       }
-
-      // Create payload with target language and custom prompt
-      const selectedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLanguage);
-      const targetLanguageName = selectedLang?.name || 'English'; // For prompt readability
-      const targetLanguageCode = selectedLanguage || 'en'; // Send language code
-      
-      // Use custom prompt if set, otherwise use default with target language
-      const finalPrompt = customPrompt.trim() 
-        ? `${customPrompt} (Target language: ${targetLanguageName})`
-        : createTranslatePrompt(targetLanguageName);
-      
       const payload: TranslateRequest = {
-        text: text,
-        prompt: finalPrompt,
-        template: customPrompt.trim() || undefined,
-        target_language: targetLanguageCode,
+        template_id: selectedTemplate?.id,
+        challenge_id: challenge.id,
+        input_text: text,
       };
-
-      // Reset input to just the prompt for next translation
-      setInputValue(customPrompt + "\n\n");
       onSubmit(payload, modelA, modelB, selectionMethod);
     } catch (submitError) {
       console.error("Error submitting translation request:", submitError);
@@ -117,20 +94,6 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
     }
   };
 
-  const handleExampleClick = (text: string) => {
-    // Add the example text after the custom prompt
-    const promptWithExample = `${customPrompt}\n\n${text}`;
-    setInputValue(promptWithExample);
-    textareaRef.current?.focus();
-    
-    // Position cursor after the example text
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.setSelectionRange(promptWithExample.length, promptWithExample.length);
-      }
-    }, 0);
-  };
-
   // Auto-resize textarea
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -142,205 +105,97 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
     textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
   };
 
-  // Settings handlers
-  const handleSettingsOpen = () => {
-    setTempPrompt(customPrompt);
-    setShowSettings(true);
-  };
-
-  const handleSettingsClose = () => {
-    setShowSettings(false);
-    setTempPrompt(customPrompt); // Reset to saved value
-  };
-
-  const handleSettingsSave = () => {
-    setCustomPrompt(tempPrompt);
-    // Update the input field with new prompt
-    setInputValue(tempPrompt + "\n\n");
-    setShowSettings(false);
-  };
-
-  const handleResetPrompt = () => {
-    setTempPrompt(DEFAULT_TEMPLATE);
-  };
-
   return (
-    <div className="space-y-4">
-      {/* Settings Modal */}
-      {showSettings && (
-        <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-              <div className="flex items-center space-x-3">
-                <Settings className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                  {t('composer.settings')}
-                </h2>
-              </div>
-              <button
-                onClick={handleSettingsClose}
-                className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
-              </button>
-            </div>
+    <div className="space-y-6">
 
-            {/* Content */}
-            <div className="p-6 space-y-4">
-              <div>
-                <label htmlFor="custom-prompt-textarea" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  {t('composer.customTemplate')}
-                </label>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
-                  {t('composer.templateDescription')}
-                </p>
-                <textarea
-                  id="custom-prompt-textarea"
-                  value={tempPrompt}
-                  onChange={(e) => setTempPrompt(e.target.value)}
-                  placeholder="Enter your custom translation prompt..."
-                  className="w-full h-32 px-4 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 text-neutral-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none"
-                />
-              </div>
+      {/* Selection Overview */}
+      {judgeOrBattle === 'battle' && <div className="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-600 overflow-hidden shadow-lg">
+        <SelectionReviewCard challenge={challenge} template={selectedTemplate} />
+      </div>}
 
-              
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between p-6 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-700">
-              <button
-                onClick={handleResetPrompt}
-                className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors"
-              >
-                Reset to Default
-              </button>
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={handleSettingsClose}
-                  className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSettingsSave}
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition-colors duration-200"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>Save</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
       {/* Error display */}
       {error && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-          <div className="flex items-center space-x-2 text-yellow-800 dark:text-yellow-400">
-            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm">{error}</span>
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+          <div className="flex items-center space-x-3 text-yellow-800 dark:text-yellow-400">
+            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm font-medium">{error}</span>
           </div>
         </div>
       )}
 
-      {/* Example texts */}
-      {!inputValue && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            {t('composer.tryExamples')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {exampleTexts.map((text) => (
-              <button
-                key={text}
-                onClick={() => handleExampleClick(text)}
-                className="p-3 text-left bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group"
-                disabled={disabled || isLoading}
-              >
-                <div className="flex items-start space-x-2">
-                  <Languages className="w-4 h-4 text-primary-600 dark:text-primary-400 mt-0.5 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors flex-shrink-0" />
-                  <span className="font-['monlam'] text-sm text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
-                    {text}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Input area */}
+      {/* Central Translation Input */}
       <div className="relative">
-        <textarea
-          ref={textareaRef}
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder={t('composer.placeholderText')}
-          className="w-full font-['monlam'] rounded-xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 px-4 py-3 pr-24 pb-12 text-neutral-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 resize-none min-h-[80px] max-h-[200px]"
-          disabled={disabled || isLoading}
-          rows={5}
-        />
-        
-        {/* Target Language Selection - Inside textbox bottom left */}
-        <div className="absolute left-3 bottom-3 flex items-center space-x-1 bg-neutral-50 dark:bg-neutral-600 px-2 py-1 rounded-md">
-          <span className="text-xs text-neutral-600 dark:text-neutral-300 font-medium">To:</span>
-          <select
-            id="target-language-inline"
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value as LanguageCode)}
-            className="text-xs bg-transparent border-none text-neutral-700 dark:text-neutral-200 focus:outline-none cursor-pointer font-medium"
-            disabled={disabled || isLoading}
-            title={t('composer.to')}
-          >
-            {SUPPORTED_LANGUAGES.map((language) => (
-              <option key={language.code} value={language.code} className="bg-white dark:bg-neutral-700 text-neutral-700 dark:text-white">
-                {language.flag} {language.name}
-              </option>
-            ))}
-          </select>
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-600 shadow-xl overflow-hidden focus-within:border-neutral-300 dark:focus-within:border-neutral-500 transition-all duration-200">
+          {/* Input Header */}
+          <div className="px-6 py-4 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-blue-900/10 dark:to-blue-900/20 border-b border-neutral-200 dark:border-neutral-700">
+            <div className="flex items-center justify-between">
+              {judgeOrBattle === 'judge' && <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
+                Judge the template — it will be auto-selected.</h2>
+                }
+            </div>
+          </div>
+          
+          {/* Input Area */}
+          <div className="p-6">
+            <textarea
+              ref={textareaRef}
+              value={inputValue}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your text here to translate..."
+              className="w-full font-['monlam'] bg-transparent text-neutral-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none resize-none min-h-[120px] max-h-[300px] text-lg leading-relaxed"
+              disabled={isLoading}
+              rows={6}
+            />
+          </div>
+          
+          {/* Action Bar */}
+          <div className="px-6 py-4 bg-neutral-50 dark:bg-neutral-700/50 border-t border-neutral-200 dark:border-neutral-600 flex items-center justify-between">
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {isLoading ? (
+                <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-medium">
+                  <div className="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin" />
+                  Getting fresh model suggestions...
+                </div>
+              ) : (
+                <span>Press Enter to translate • Shift+Enter for new line</span>
+              )}
+            </div>
+            
+            <button
+              onClick={handleSubmit}
+              disabled={!inputValue.trim() || disabled || isLoading}
+              className="flex items-center space-x-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+              title="Translate (Enter)"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Translating...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>Battle</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
-        
-        {/* Translate Button - Bottom right */}
-        <button
-          onClick={handleSubmit}
-          disabled={!inputValue.trim() || disabled || isLoading}
-          className="absolute right-3 bottom-3 w-10 h-10 bg-primary-600 hover:bg-primary-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors duration-200"
-          title="Translate (Enter)"
-        >
-          {isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <Send className="w-5 h-5 text-white" />
-          )}
-        </button>
       </div>
 
       {/* Instructions */}
-      <div className="flex items-start justify-between">
-        <div className="text-xs text-neutral-500 dark:text-neutral-400 space-y-1 flex-1">
-          <p>• Press Enter to submit, Shift+Enter for new line</p>
-          <p>• Select target language in the bottom-left of the input area</p>
-          <p>• Fresh AI model pairs are selected for each translation</p>
-          <p>• Click on any feedback</p>
-          {isLoading && (
-            <p className="text-primary-600 dark:text-primary-400 font-medium">
-              🔄 Getting fresh model suggestions...
-            </p>
-          )}
+      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+        <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+          <div className="flex items-start gap-2">
+            <div className="w-1.5 h-1.5 bg-blue-600 dark:bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+            <p>Fresh AI model pairs are automatically selected for each translation to ensure unbiased comparisons</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <div className="w-1.5 h-1.5 bg-blue-600 dark:bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+            <p>After translation, you'll be able to compare results and provide feedback to improve the models</p>
+          </div>
         </div>
-        
-        {/* Settings Button */}
-        <button
-          onClick={handleSettingsOpen}
-          disabled={disabled || isLoading}
-          className="flex items-center space-x-1 px-3 py-2 text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          title={t('composer.translationSettings')}
-        >
-          <Settings className="w-4 h-4" />
-          <span>{t('composer.settings')}</span>
-        </button>
       </div>
     </div>
   );
