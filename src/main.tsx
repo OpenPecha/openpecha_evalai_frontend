@@ -7,6 +7,7 @@ import AuthWrapper from "./components/AuthWrapper";
 import "./index.css";
 import "./i18n";
 import App from "./app.tsx";
+import { UserbackProvider } from "./context/UserbackProvider.tsx";
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,9 +28,12 @@ createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <AuthWrapper>
+          <UserbackProvider>
+
           <BrowserRouter>
             <App />
           </BrowserRouter>
+          </UserbackProvider>
         </AuthWrapper>
       </QueryClientProvider>
     </AuthProvider>
