@@ -22,6 +22,7 @@ import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
 import UserVoteLeaderboard from "../components/UserVoteLeaderboard";
 import ModelScoreLeaderboard from "../components/ModelScoreLeaderboard";
 import { useToast } from "../components/use-toast";
+import ArenaRanking from "../components/ArenaRanking";
 
 const Leaderboards = () => {
   const { t } = useTranslation();
@@ -187,7 +188,7 @@ const Leaderboards = () => {
           {/* User Vote Leaderboard - Second Item */}
           
           {/* Model Arena Score Leaderboard */}
-          <div className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+          <div className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-auto">
             <div className="px-4 py-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
@@ -202,8 +203,8 @@ const Leaderboards = () => {
                 </div>
               </div>
             </div>
-            <div className="max-h-96 overflow-hidden">
-              <ModelScoreLeaderboard compact={true} />
+            <div className="max-h-96 overflow-auto">
+              <ArenaRanking />
             </div>
           </div>
           

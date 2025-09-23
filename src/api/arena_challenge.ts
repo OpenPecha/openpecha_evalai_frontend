@@ -1,4 +1,5 @@
-import type { ArenaChallenge, ArenaChallengeRequest, ArenaChallengeQuery } from "../types/arena_challenge";
+import {ARENA_RANKINGS, CHALLENGE_RANKINGS} from "../utils/data";
+import type { ArenaChallenge, ArenaChallengeRequest, ArenaChallengeQuery, ArenaRanking } from "../types/arena_challenge";
 
 // API Base URL
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
@@ -76,5 +77,53 @@ export const arenaApi = {
       throw error;
     }
     
+  },
+
+  // Get all the arena challenges rankings
+  getAllArenaRankings: async (): Promise<ArenaRanking[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/arena_ranking/all`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching arena rankings:', error);
+      throw error;
+    }
+  },
+
+  // Get arena ranking by challenge ID with optional ranking type
+  getArenaRankingById: async (challengeId: string, rankingBy?: 'combined' | 'template' | 'model'): Promise<any> => {
+    try {
+      const params = new URLSearchParams();
+      if (rankingBy) {
+        params.append('ranking_by', rankingBy);
+      }
+      
+      const url = `${API_BASE_URL}/arena_ranking/${challengeId}${params.toString() ? `?${params.toString()}` : ''}`;
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching arena ranking:', error);
+      throw error;
+    }
   },
 };
