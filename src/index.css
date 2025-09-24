@@ -271,3 +271,26 @@
 .text-shadow-strong {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 1px 1px rgba(0, 0, 0, 0.8);
 }
+
+/* Width of vertical scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px; /* for horizontal scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Hover effect */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

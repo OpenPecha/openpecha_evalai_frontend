@@ -179,27 +179,19 @@ const Leaderboards = () => {
             {t('leaderboards.subtitle')}
           </p>
         </div>
-
+        <div className="w-full ">
+         <span className="font-semibold flex gap-2">
+          <Trophy  />
+           Model Arena Scores
+          </span>
+              <ArenaRanking />
+         </div>
         {/* Leaderboards - 2 column layout */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           
           {/* User Vote Leaderboard - Second Item */}
           
-          {/* Model Arena Score Leaderboard */}
-          <div className="bg-white relative dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-auto">
-            <div className="px-4 py-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <h2 className="text-md font-semibold text-neutral-500 dark:text-neutral-100">
-                    Model Arena Scores
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div className="max-h-96 overflow-auto">
-              <ArenaRanking />
-            </div>
-          </div>
+        
           
           {leaderboardsData?.map((leaderboard) => {
             // Get available metrics from first submission
@@ -400,6 +392,8 @@ const Leaderboards = () => {
               </div>
             );
           })}
+
+          
         </div>
 
         {leaderboardsData?.length === 0 && (

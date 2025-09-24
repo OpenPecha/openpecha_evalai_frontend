@@ -23,8 +23,9 @@ export interface ArenaChallenge {
 
   export interface ArenaRanking {
     challenge_details: {
+      challenge_id: string;
       challenge_name: string;
-      category_id: string;
+      text_category: string;
       from_language: string;
       to_language: string;
     };
