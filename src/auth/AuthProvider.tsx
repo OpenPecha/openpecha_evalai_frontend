@@ -74,16 +74,11 @@ const AuthContextProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
     } catch (error: unknown) {
       const authError = error as { error?: string };
-      console.log("Silent auth failed, falling back to regular login:", error);
+      console.log("Silent auth failed, user will need to login manually:", error);
       
-      // If silent auth fails, try regular login
-      if (authError.error === "login_required" || authError.error === "consent_required") {
-        loginWithRedirect({
-          authorizationParams: {
-            redirect_uri: `${window.location.origin}/callback`,
-          },
-        });
-      }
+      // Silent auth failed - do NOT automatically redirect
+      // User will need to manually click login button
+      // Just log the error and let the app continue
     }
   }, [loginWithRedirect, silentAuthAttempted]);
 
@@ -105,17 +100,15 @@ const AuthContextProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login({ force: true });
   }, [login]);
 
-  // Auto-attempt silent login when app loads
+  // Auto-attempt silent login when app loads (only once)
   useEffect(() => {
-    // Only attempt silent auth if:
-    // 1. Not currently loading
-    // 2. Not already authenticated
-    // 3. Haven't attempted silent auth yet
-    // 4. No Auth0 errors present
-    if (!isLoading && !isAuthenticated && !silentAuthAttempted && !error) {
-      console.log("Auto-attempting silent authentication...");
-      login(); // This will try silent auth first
+    async function autoLogin(){
+    const token=await getToken()
+    if(token && !isLoading && !isAuthenticated && !silentAuthAttempted && !error){
+      login(); // This will try silent auth only - no fallback to regular login
     }
+  }
+  autoLogin();
   }, [isLoading, isAuthenticated, silentAuthAttempted, error, login]);
 
   const contextValue = useMemo(() => {
