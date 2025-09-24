@@ -234,4 +234,77 @@ const ARENA_RANKINGS = [
     ]
   }
 
-export { ARENA_RANKINGS, CHALLENGE_RANKINGS, SAMPLE_UCCA };
+  const ALL_TEMPLATES = [
+    {
+      "user_detail": {
+        "username": "tenzintsering",
+        "first_name": "",
+        "last_name": "",
+        "email": "tenzintsering@dharmaduta.in",
+        "picture": "https://lh3.googleusercontent.com/a/ACg8ocIhKAZ7wEUzD7L2K032qn8J4F2koD6122VOjp_7K_qFRfA49A=s96-c",
+        "role": "user"
+      },
+      "template_detail": {
+        "id": "b8ddf817-f50e-4e6c-96fb-55d08a369106",
+        "template_name": "new testing template 1",
+        "user_id": "google-oauth2|115815322691436094429",
+        "template": "This is {source} generate ucca",
+        "challenge_id": "3e9aa7a7-6054-414d-a073-09f62698d17b",
+        "text_category": "UCCA",
+        "challenge_name": "My first challenge",
+        "from_language": "Tibetan",
+        "to_language": "English",
+        "created_at": "2025-09-24T12:59:01.397382",
+        "updated_at": "2025-09-24T12:59:01.397388"
+      }
+    },
+    {
+      "user_detail": {
+        "username": "dorjeyangchen",
+        "first_name": "Dorje",
+        "last_name": "Yangchen",
+        "email": "dorje.yangchen@example.com",
+        "picture": "https://randomuser.me/api/portraits/women/65.jpg",
+        "role": "admin"
+      },
+      "template_detail": {
+        "id": "e4218ab4-77ac-4cf5-9cb8-2a24831a5d66",
+        "template_name": "formal translation template",
+        "user_id": "auth0|aa9219384729",
+        "template": "Translate formally: {source}",
+        "challenge_id": "c451ed65-2c9b-4f7a-a2b6-4b736aa6dff1",
+        "text_category": "formal",
+        "challenge_name": "Business Email Translation",
+        "from_language": "French",
+        "to_language": "English",
+        "created_at": "2025-09-20T10:14:55.123456",
+        "updated_at": "2025-09-21T09:03:11.987654"
+      }
+    },
+    {
+      "user_detail": {
+        "username": "karma123",
+        "first_name": "Karma",
+        "last_name": "Tashi",
+        "email": "karma.tashi@example.com",
+        "picture": "https://randomuser.me/api/portraits/men/23.jpg",
+        "role": "user"
+      },
+      "template_detail": {
+        "id": "f1f3c2b5-51f4-4d33-b999-86af94e3b25d",
+        "template_name": "idiom translator",
+        "user_id": "google-oauth2|998877665544",
+        "template": "Interpret and translate idiomatically: {source}",
+        "challenge_id": "a2217c99-004a-40f0-baf6-73c95c91a312",
+        "text_category": "idiom",
+        "challenge_name": "Idioms and Proverbs",
+        "from_language": "Chinese",
+        "to_language": "English",
+        "created_at": "2025-09-22T08:43:30.654321",
+        "updated_at": "2025-09-22T08:43:30.654789"
+      }
+    }
+  ]
+  
+
+export { ARENA_RANKINGS, CHALLENGE_RANKINGS, SAMPLE_UCCA, ALL_TEMPLATES };
