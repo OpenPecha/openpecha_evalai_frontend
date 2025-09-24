@@ -28,6 +28,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       try {
         setLoading(true);
         const data = await arenaApi.getAllArenaRankings();
+        console.log("data arena ranking ::: ", data);
         setRankings(data);
       } catch (err) {
         setError('Failed to fetch arena rankings');
@@ -171,7 +172,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
           {/* Challenge Text */}
           <div className="mb-2 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
             <p className="text-neutral-700 dark:text-neutral-300">
-              "{expandedData.challenge_details.text}"
+              {expandedData.challenge_details.text_category}
             </p>
           </div>
 
@@ -342,7 +343,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
               
               {/* Challenge Text Preview */}
               <div className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 rounded-md">
-                  "{ranking.challenge_details.text}"
+                  {ranking.challenge_details.text_category}
               </div>
             </div>
 
@@ -439,26 +440,6 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
           </p>
         </div>
       )}
-
-      {/* Summary Stats */}
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-        <div className="bg-white dark:bg-neutral-800 rounded-lg p-4 shadow">
-          <div className="text-2xl font-bold text-primary-500">{rankings.length}</div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">Total Challenges</div>
-        </div>
-        <div className="bg-white dark:bg-neutral-800 rounded-lg p-4 shadow">
-          <div className="text-2xl font-bold text-green-500">
-            {rankings.reduce((sum, r) => sum + r.arena_ranking.length, 0)}
-          </div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">Model Entries</div>
-        </div>
-        <div className="bg-white dark:bg-neutral-800 rounded-lg p-4 shadow">
-          <div className="text-2xl font-bold text-yellow-500">
-            {rankings.length > 0 ? Math.max(...rankings.flatMap(r => r.arena_ranking.map(entry => entry.elo_rating))) : 0}
-          </div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">Highest ELO</div>
-        </div>
-      </div>
     </div>
   );
 };
