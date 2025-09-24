@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Plus, FileText, ArrowLeft } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
-import { getPromptTemplates, createPromptTemplateV2 } from "../api/template";
+import { useTemplates, useCreateTemplate } from "../hooks/useTemplates";
 import type { CreateTemplateV2, PromptTemplate } from "../types/template";
 import type { ArenaChallenge } from "../types/arena_challenge";
 import Chat from "../pages/Chat";
@@ -12,48 +12,30 @@ import { TemplateCard } from "../components/TemplateCard";
 
 const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, judgeOrBattle: string }> = ({ backToArena, challenge, judgeOrBattle }) => {
   const { currentUser } = useAuth();
-console.log("challenge template ::: ", challenge);
-  const [personalTemplates, setPersonalTemplates] = useState<PromptTemplate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+  // React Query hooks
+  const { 
+    data: allTemplates = [], 
+    isLoading, 
+    error: templatesError,
+    refetch: refetchTemplates 
+  } = useTemplates(challenge.id, 1);
+  console.log("all templates ::: ", allTemplates);
+  const createTemplateMutation = useCreateTemplate();
+  
+  // Local state
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState<PromptTemplate | null>(null);
+  
+  // Derive error state
+  const error = templatesError?.message || createTemplateMutation.error?.message || null;
 
-  // Load templates on mount
-  useEffect(() => {
-    loadTemplates();
-  }, [currentUser, challenge.id]);
-
-  const loadTemplates = async () => {
-    if (!currentUser || !challenge.id) return;
-    
-    setIsLoading(true);
-    setError(null);
-
-    try {
-        const templates = await getPromptTemplates(currentUser.email?.split("@")[0] || "", challenge.id);
-        setPersonalTemplates(templates);
-    } catch (err) {
-      console.error("Error loading templates:", err);
-      setError("Failed to load templates");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleTemplateClick = async (template: PromptTemplate) => {
-    try {
-      // Fetch full template details
-      // const fullTemplate = await getPromptTemplate(template.id);
-      setSelectedTemplate(template);
-      setShowTemplateModal(true);
-    } catch (err) {
-      console.error("Error fetching template details:", err);
-      setError("Failed to load template details");
-    }
+  const handleTemplateClick = (template: PromptTemplate) => {
+    // No need for async operations here since we already have the template data
+    setSelectedTemplate(template);
+    setShowTemplateModal(true);
   };
 
   const handleSelectTemplate = (template: PromptTemplate) => {
@@ -63,25 +45,24 @@ console.log("challenge template ::: ", challenge);
 
   const handleCreateTemplate = async (templateName: string, templateText: string) => {
     if (!currentUser) return;
-    setIsCreating(true);
-      const body: CreateTemplateV2 = {
-        template_name: templateName,
-        username: currentUser.email?.split("@")[0] || "",
-        template: templateText,
-        challenge_id: challenge.id,
+    
+    const body: CreateTemplateV2 = {
+      template_name: templateName,
+      template: templateText,
+      challenge_id: challenge.id,
+    };
+
+    createTemplateMutation.mutate(body, {
+      onSuccess: (newTemplate) => {
+        // setSelectedTemplate(newTemplate);
+        // setShowTemplateModal(true);
+        setShowCreateModal(false);
+      },
+      onError: (error) => {
+        console.error("Error creating template:", error);
+        // Error is already handled by React Query and displayed via the error state
       }
-    try {
-      const newTemplate = await createPromptTemplateV2(body);
-      setPersonalTemplates(prev => [newTemplate, ...prev]);
-      setSelectedTemplate(newTemplate);
-      setShowTemplateModal(true);
-      setShowCreateModal(false);
-    } catch (err) {
-      console.error("Error creating template:", err);
-      setError("Failed to create template");
-    } finally {
-      setIsCreating(false);
-    }
+    });
   };
 
   const handleBackToTemplates = () => {
@@ -97,8 +78,6 @@ console.log("challenge template ::: ", challenge);
     onBackToArena={backToArena}
     judgeOrBattle={judgeOrBattle} />;
   }
-
-  const currentTemplates = personalTemplates;
 
   return (
     <div className="h-full flex flex-col bg-neutral-50 dark:bg-neutral-900">
@@ -129,7 +108,17 @@ console.log("challenge template ::: ", challenge);
           {/* Error Display */}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
-              <p className="text-sm text-red-800 dark:text-red-400">{error}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-red-800 dark:text-red-400">{error}</p>
+                {templatesError && (
+                  <button
+                    onClick={() => refetchTemplates()}
+                    className="px-3 py-1 text-xs bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-700 transition-colors"
+                  >
+                    Retry
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
@@ -151,7 +140,7 @@ console.log("challenge template ::: ", challenge);
                 <p className="text-neutral-600 dark:text-neutral-400">Loading templates...</p>
               </div>
             </div>
-          ) : currentTemplates.length === 0 ? (
+          ) : allTemplates.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-neutral-400 dark:text-neutral-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-300 mb-2">
@@ -167,8 +156,8 @@ console.log("challenge template ::: ", challenge);
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentTemplates.map((template) => (
-                <TemplateCard key={template.id} template={template} handleTemplateClick={handleTemplateClick} />
+              {allTemplates.map((template) => (
+                <TemplateCard key={template?.template_detail?.id} template={template} handleTemplateClick={handleTemplateClick} />
               ))}
             </div>
           )}
@@ -189,7 +178,7 @@ console.log("challenge template ::: ", challenge);
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onCreate={handleCreateTemplate}
-        isLoading={isCreating}
+        isLoading={createTemplateMutation.isPending}
         challenge={challenge}
       />
     </div>

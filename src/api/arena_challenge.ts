@@ -1,3 +1,4 @@
+import { getAuthHeaders } from "../lib/auth";
 import type { ArenaChallenge, ArenaChallengeRequest, ArenaChallengeQuery, ArenaRanking } from "../types/arena_challenge";
 
 // API Base URL
@@ -7,6 +8,7 @@ export const arenaApi = {
    // Get a specific challenge by query parameters
   getFilteredChallenge: async (query: ArenaChallengeQuery): Promise<ArenaChallenge[]> => {
     try {
+      const headers = await getAuthHeaders("json");
       const params = new URLSearchParams();
       if (query.from_language) params.append('from_language', query.from_language);
       if (query.to_language) params.append('to_language', query.to_language);
@@ -15,9 +17,7 @@ export const arenaApi = {
 
       const response = await fetch(`${API_BASE_URL}/arena_challenge/?${params}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -77,11 +77,10 @@ export const arenaApi = {
   // create a new challenge
   createChallenge: async (challengeData: ArenaChallengeRequest): Promise<ArenaChallenge> => {
     try {
+      const headers = await getAuthHeaders("json");
       const response = await fetch(`${API_BASE_URL}/arena_challenge/create`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(challengeData),
       });
 
