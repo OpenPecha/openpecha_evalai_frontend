@@ -194,11 +194,6 @@ const Leaderboards = () => {
                     Model Arena Scores
                   </h2>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs dark:text-neutral-400">
-                    6 models
-                  </span>
-                </div>
               </div>
             </div>
             <div className="max-h-96 overflow-auto">
