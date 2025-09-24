@@ -1,14 +1,14 @@
 // Arena API types
 export interface ArenaChallenge {
     id: string;
-    text: string;
+    text_category: string;
     from_language: string;
     to_language: string;
     challenge_name: string;
   }
   
   export interface ArenaChallengeRequest {
-    text: string;
+    text_category_id: string;
     from_language: string;
     to_language: string;
     challenge_name: string;
@@ -17,14 +17,14 @@ export interface ArenaChallenge {
   export interface ArenaChallengeQuery {
     from_language: string;
     to_language: string;
-    text: string;
+    text_category_id: string;
     challenge_name: string;
   }
 
   export interface ArenaRanking {
     challenge_details: {
       challenge_name: string;
-      text: string;
+      category_id: string;
       from_language: string;
       to_language: string;
     };

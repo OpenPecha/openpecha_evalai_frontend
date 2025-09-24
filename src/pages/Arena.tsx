@@ -23,15 +23,19 @@ const Arena = () => {
   
   // Create challenge form state
   const [createForm, setCreateForm] = useState<ArenaChallengeRequest>({
-    text: '',
+    text_category_id: '',
     from_language: 'Tibetan',
     to_language: 'English',
     challenge_name: ''
   });
 
+  // Categories state
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+
   // Load challenges on component mount
   useEffect(() => {
     loadChallenges();
+    loadCategories();
   }, []);
 
   // Filter challenges when search text changes
@@ -48,6 +52,7 @@ const Arena = () => {
     try {
       setLoading(true);
       const data = await arenaApi.getChallenges();
+      console.log("data ::: ", data);
       setChallenges(data);
     } catch (error) {
       console.error('Failed to load challenges:', error);
@@ -56,11 +61,20 @@ const Arena = () => {
     }
   };
 
+  const loadCategories = async () => {
+    try {
+      const categoryData = await arenaApi.getCategories();
+      setCategories(categoryData);
+    } catch (error) {
+      console.error('Failed to load categories:', error);
+    }
+  };
+
   const filterChallenges = async () => {
     const filtered = await arenaApi.getFilteredChallenge({
       from_language: "Tibetan",
       to_language: selectedLanguage,
-      text: selectedTextType,
+      text_category_id: selectedTextType,
       challenge_name: selectedChallengeType
     });
     setFilteredChallenges(filtered);
@@ -71,7 +85,7 @@ const Arena = () => {
     const filtered = await arenaApi.getFilteredChallenge({
       from_language: "Tibetan",
       to_language: "",
-      text: "",
+      text_category_id: "",
       challenge_name: searchText
     })
 
@@ -91,7 +105,7 @@ const Arena = () => {
       setChallenges(prev => [newChallenge, ...prev]);
       setShowCreateModal(false);
       setCreateForm({
-        text: '',
+        text_category_id: '',
         from_language: 'Tibetan',
         to_language: 'English',
         challenge_name: ''
@@ -125,7 +139,7 @@ const Arena = () => {
   ]));
 
   const uniqueTextTypes = Array.from(new Set(
-    challenges.map(c => c.text.split(' ')[0]) // Simple text type extraction
+    challenges.map(c => c.text_category) // Get unique category IDs
   ));
 
   const uniqueChallengeTypes = Array.from(new Set(
@@ -200,7 +214,7 @@ const Arena = () => {
               className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Text Types</option>
-              {uniqueTextTypes.map(type => (
+              {uniqueTextTypes.map((type) => (
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
@@ -256,10 +270,10 @@ const Arena = () => {
                 <div className="mb-4">
                   <div className="flex items-center space-x-2 mb-2">
                     <FileText className="w-4 h-4 text-neutral-500" />
-                    <span className="text-sm text-neutral-500 dark:text-neutral-400">Text</span>
+                    <span className="text-sm text-neutral-500 dark:text-neutral-400">Category</span>
                   </div>
                   <p className="text-lg font-semibold text-neutral-900 dark:text-white">
-                    {challenge.text}
+                    {challenge.text_category}
                   </p>
                 </div>
 
@@ -310,7 +324,7 @@ const Arena = () => {
                 </span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
-                {selectedChallenge.text}
+                {selectedChallenge.text_category}
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400">
                 {selectedChallenge.challenge_name}
@@ -383,18 +397,21 @@ const Arena = () => {
                 </div>
               </div>
 
-              {/* Text Input */}
+              {/* Category Selector */}
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  Text
+                  Category
                 </label>
-                <input
-                  type="text"
-                  value={createForm.text}
-                  onChange={(e) => setCreateForm(prev => ({ ...prev, text: e.target.value }))}
-                  placeholder="Enter the text to be translated..."
-                  className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <select
+                  value={createForm.text_category_id}
+                  onChange={(e) => setCreateForm(prev => ({ ...prev, text_category_id: e.target.value }))}
+                  className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select a category...</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>{category.name.toUpperCase()}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Challenge Title */}
@@ -421,7 +438,7 @@ const Arena = () => {
               </button>
               <button
                 onClick={handleCreateChallenge}
-                disabled={!createForm.text || !createForm.challenge_name || !createForm.from_language || !createForm.to_language}
+                disabled={!createForm.text_category_id || !createForm.challenge_name || !createForm.from_language || !createForm.to_language}
                 className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors duration-200"
               >
                 Create Challenge

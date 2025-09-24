@@ -29,11 +29,11 @@ export const TemplateCard = ({ template, handleTemplateClick }: { template: Prom
                 </div>
 
                 {/* Sample text */}
-                {template.text && (
+                {template.text_category && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
                         <div className="flex items-center gap-2">
                             <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{template.text}</span>
+                            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{template.text_category}</span>
                         </div>
                     </div>
                 )}

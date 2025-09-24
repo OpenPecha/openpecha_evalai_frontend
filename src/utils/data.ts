@@ -124,4 +124,114 @@ const ARENA_RANKINGS = [
     }
   ]
 
-export { ARENA_RANKINGS, CHALLENGE_RANKINGS };
+  const SAMPLE_UCCA = {
+    "nodes": [
+      {
+        "id": "1",
+        "name": "དེ་ནས་"
+      },
+      {
+        "id": "2",
+        "name": "ཡང་"
+      },
+      {
+        "id": "3",
+        "name": "བཅོམ་ལྡན་འདས་ཀྱིས་"
+      },
+      {
+        "id": "4",
+        "name": "འཁོར་བཞི་པོ་དེ་དག་"
+      },
+      {
+        "id": "5",
+        "name": "ཡང་དག་པར་"
+      },
+      {
+        "id": "6",
+        "name": "རབ་ཏུ་དགའ་བར་མཛད་པའི་ཕྱིར་"
+      },
+      {
+        "id": "7",
+        "name": "ཡང་"
+      },
+      {
+        "id": "8",
+        "name": "ཤེས་རབ་ཀྱི་ཕ་རོལ་ཏུ་ཕྱིན་པ་འདི་"
+      },
+      {
+        "id": "9",
+        "name": "སྟོན་ཅིང་"
+      },
+      {
+        "id": "10",
+        "name": "དེའི་ཚེ་"
+      },
+      {
+        "id": "11",
+        "name": "ཚིགས་སུ་བཅད་པ་འདི་དག་"
+      },
+      {
+        "id": "12",
+        "name": "བཀའ་སྩལ་ཏོ"
+      }
+    ],
+    "edges": [
+      {
+        "source": "1",
+        "target": "9",
+        "relation": "Time"
+      },
+      {
+        "source": "2",
+        "target": "9",
+        "relation": "Adverbial"
+      },
+      {
+        "source": "3",
+        "target": "9",
+        "relation": "Agent"
+      },
+      {
+        "source": "4",
+        "target": "6",
+        "relation": "Theme"
+      },
+      {
+        "source": "5",
+        "target": "6",
+        "relation": "Adverbial"
+      },
+      {
+        "source": "6",
+        "target": "9",
+        "relation": "Purpose"
+      },
+      {
+        "source": "7",
+        "target": "9",
+        "relation": "Adverbial"
+      },
+      {
+        "source": "8",
+        "target": "9",
+        "relation": "Theme"
+      },
+      {
+        "source": "9",
+        "target": "12",
+        "relation": "Co-Event"
+      },
+      {
+        "source": "10",
+        "target": "12",
+        "relation": "Time"
+      },
+      {
+        "source": "11",
+        "target": "12",
+        "relation": "Theme"
+      }
+    ]
+  }
+
+export { ARENA_RANKINGS, CHALLENGE_RANKINGS, SAMPLE_UCCA };

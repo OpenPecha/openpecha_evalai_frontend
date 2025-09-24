@@ -10,6 +10,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { X, Save, Image, Languages, BookOpen, MessageSquare, FileText } from 'lucide-react';
 import  EditableCanvas  from './EditableConvas';
+import type { ArenaChallenge } from '../types/arena_challenge';
 
 export interface PlaceholderElement {
   id: string; 
@@ -63,10 +64,12 @@ interface TemplateBuilderProps {
   onClose: () => void;
   onCreate: (templateName: string, templateText: string) => void;
   isLoading: boolean;
+  challenge: ArenaChallenge;
 }
 
 // Main Template Builder Component
-const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCreate, isLoading }) => {
+const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCreate, isLoading, challenge }) => {
+  console.log("challenge ::: ", challenge);
   const [templateName, setTemplateName] = useState('');
   const [templateContent, setTemplateContent] = useState('');
   const [placeholders, setPlaceholders] = useState<PlaceholderElement[]>([]);
@@ -182,9 +185,12 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
             <div className="w-72 bg-white dark:bg-neutral-700 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-600 p-6 h-fit">
               <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100 mb-4">Elements</h3>
               <div className="space-y-3">
-                {sidebarElements.map((element) => (
-                  <DraggableItem key={element.type} element={element} />
-                ))}
+                {sidebarElements.map((element) => {
+                  if ((element.type === 'ucca' || element.type === 'gloss') && (challenge.text_category === 'ucca' || challenge.text_category === 'gloss')) {
+                    return null;
+                  }
+                  return <DraggableItem key={element.type} element={element} />
+                })}
               </div>
               <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-600 rounded-lg">
                 <p className="text-sm text-neutral-600 dark:text-neutral-300">

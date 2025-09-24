@@ -21,6 +21,8 @@ import { useTokenExpiration } from "./hooks/useTokenExpiration";
 import { useAuth0 } from "./hooks/useAuth0";
 import { useTranslation } from "react-i18next";
 import FeedBucket from "./components/Feedbucket";
+import JsonViewer from "./components/JsonViewer";
+import { SAMPLE_UCCA } from "./utils/data";
 
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
@@ -213,6 +215,14 @@ const App = () => {
                         element={
                           <div className="p-4 lg:p-6">
                             <EditChallenge />
+                          </div>
+                        }
+                      />
+                      <Route
+                        path="/json-viewer"
+                        element={
+                          <div className="p-4 lg:p-6">
+                            <JsonViewer json={SAMPLE_UCCA} enableClipboard={false}/>
                           </div>
                         }
                       />

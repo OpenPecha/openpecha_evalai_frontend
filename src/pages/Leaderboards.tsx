@@ -19,8 +19,6 @@ import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
 import LeaderboardChart from "../components/LeaderboardChart";
 import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
-import UserVoteLeaderboard from "../components/UserVoteLeaderboard";
-import ModelScoreLeaderboard from "../components/ModelScoreLeaderboard";
 import { useToast } from "../components/use-toast";
 import ArenaRanking from "../components/ArenaRanking";
 

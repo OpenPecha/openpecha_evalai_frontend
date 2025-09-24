@@ -12,7 +12,7 @@ import { TemplateCard } from "../components/TemplateCard";
 
 const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, judgeOrBattle: string }> = ({ backToArena, challenge, judgeOrBattle }) => {
   const { currentUser } = useAuth();
-
+console.log("challenge template ::: ", challenge);
   const [personalTemplates, setPersonalTemplates] = useState<PromptTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -190,6 +190,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
         onClose={() => setShowCreateModal(false)}
         onCreate={handleCreateTemplate}
         isLoading={isCreating}
+        challenge={challenge}
       />
     </div>
   );

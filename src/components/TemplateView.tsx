@@ -1,7 +1,7 @@
 import type { PromptTemplate } from "@/types/template";
 import { FileText, X, Star, Languages, ArrowRight, User, Calendar } from "lucide-react";
 import { formatRelativeTime } from "../utils/date";
-import { getLanguageName } from "../utils/const";
+
 
 interface TemplateViewProps {
     template: PromptTemplate;
@@ -54,13 +54,13 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
             rows={5} />
           </div>
 
-          {template.text && (
+          {template.text_category && (
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Sample Text
               </label>
               <div className="w-full px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-200">
-                {template.text}
+                {template.text_category}
               </div>
             </div>
           )}

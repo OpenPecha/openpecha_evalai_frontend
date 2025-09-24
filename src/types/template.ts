@@ -3,7 +3,7 @@ export interface PromptTemplate {
     template_name: string;
     username: string;
     template: string;
-    text: string;
+    text_category: string;
     from_language: string;
     to_language: string;
     created_at: string;

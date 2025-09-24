@@ -1,4 +1,3 @@
-import {ARENA_RANKINGS, CHALLENGE_RANKINGS} from "../utils/data";
 import type { ArenaChallenge, ArenaChallengeRequest, ArenaChallengeQuery, ArenaRanking } from "../types/arena_challenge";
 
 // API Base URL
@@ -11,7 +10,7 @@ export const arenaApi = {
       const params = new URLSearchParams();
       if (query.from_language) params.append('from_language', query.from_language);
       if (query.to_language) params.append('to_language', query.to_language);
-      if (query.text) params.append('text', query.text);
+      if (query.text_category_id) params.append('text_category_id', query.text_category_id);
       if (query.challenge_name) params.append('challenge_name', query.challenge_name);
 
       const response = await fetch(`${API_BASE_URL}/arena_challenge/?${params}`, {
@@ -37,7 +36,7 @@ export const arenaApi = {
   getChallenges: async (): Promise<ArenaChallenge[]> => {
 
     try {
-      const response = await fetch(`${API_BASE_URL}/arena_challenge`, {
+      const response = await fetch(`${API_BASE_URL}/arena_challenge/all`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -56,6 +55,25 @@ export const arenaApi = {
     
   },
 
+  // get all categories
+  getCategories: async (): Promise<{id: string, name: string}[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/text_category`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+  },
   // create a new challenge
   createChallenge: async (challengeData: ArenaChallengeRequest): Promise<ArenaChallenge> => {
     try {
