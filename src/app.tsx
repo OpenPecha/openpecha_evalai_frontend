@@ -18,7 +18,6 @@ import EditChallenge from "./pages/EditChallenge";
 import { useAuth } from "./auth/use-auth-hook";
 import { useTheme } from "./hooks/useTheme";
 import { useTokenExpiration } from "./hooks/useTokenExpiration";
-import { useAuth0 } from "./hooks/useAuth0";
 import { useTranslation } from "react-i18next";
 import FeedBucket from "./components/Feedbucket";
 import JsonViewer from "./components/JsonViewer";
@@ -28,15 +27,12 @@ const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
 
 const App = () => {
-  const { isAuthenticated, isLoading, getToken ,currentUser} = useAuth();
-  const { loginWithRedirect } = useAuth0();
+  const { isAuthenticated, isLoading, getToken } = useAuth();
   const { i18n } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Initialize theme system at root level
   useTheme();
-  // Initialize user API auth
-
   useTokenExpiration();
 
   // Handle font switching based on language
@@ -56,18 +52,24 @@ const App = () => {
       body.classList.remove('font-monlam');
     };
   }, [i18n.language]);
-  
+
+  // Store token when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       getToken().then((token) => {
-        localStorage.setItem("access_token", token!);
+        if (token) {
+          localStorage.setItem("access_token", token);
+        }
       });
     }
-    if (!isLoading && !currentUser) {
-   loginWithRedirect();
-    }
-   
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, getToken]);
+
+  // Show loading state while auth is initializing
+  if (isLoading) {
+    return <FullScreenLoading message="Loading..." />;
+  }
+  
+
 
 
   const toggleSidebar = () => {
@@ -222,7 +224,7 @@ const App = () => {
                         path="/json-viewer"
                         element={
                           <div className="p-4 lg:p-6">
-                            <JsonViewer json={SAMPLE_UCCA} enableClipboard={false}/>
+                            <JsonViewer json={SAMPLE_UCCA}/>
                           </div>
                         }
                       />
