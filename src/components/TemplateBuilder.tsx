@@ -69,7 +69,7 @@ interface TemplateBuilderProps {
 
 // Main Template Builder Component
 const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCreate, isLoading, challenge }) => {
-  console.log("challenge ::: ", challenge);
+  console.log("challenge template builder ::: ", challenge);
   const [templateName, setTemplateName] = useState('');
   const [templateContent, setTemplateContent] = useState('');
   const [placeholders, setPlaceholders] = useState<PlaceholderElement[]>([]);
@@ -186,7 +186,7 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
               <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100 mb-4">Elements</h3>
               <div className="space-y-3">
                 {sidebarElements.map((element) => {
-                  if ((element.type === 'ucca' || element.type === 'gloss') && (challenge.text_category === 'ucca' || challenge.text_category === 'gloss')) {
+                  if ((element.type === 'ucca' || element.type === 'gloss') && (challenge.text_category.toLowerCase() === 'ucca' || challenge.text_category.toLowerCase() === 'gloss')) {
                     return null;
                   }
                   return <DraggableItem key={element.type} element={element} />
