@@ -257,43 +257,41 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
               </div>
             </div>
           ) : renderTemplatesContent()}
-
-          {/* Pagination Controls */}
-          {!isLoading && filteredTemplates.length > 0 && totalCount > 1 && (
-            <div className="mt-8 flex flex-col items-center space-y-4">
-              {/* Pagination Info */}
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                Showing {filteredTemplates.length} templates on page {currentPage} of {totalCount}
-              </div>
-              
-              {/* Pagination Buttons */}
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  Previous
-                </button>
-                
-                <span className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  Page {currentPage} of {totalCount}
-                </span>
-                
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={!hasMorePages}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Pagination Controls - Fixed at bottom */}
+      {!isLoading && filteredTemplates.length > 0 && totalCount > 1 && (
+        <div className="bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700 px-6 py-3">
+          <div className="max-w-6xl mx-auto flex flex-col items-center space-y-4">
+            
+            {/* Pagination Buttons */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Previous
+              </button>
+              
+              <span className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                Page {currentPage} of {totalCount}
+              </span>
+              
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!hasMorePages}
+                className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modals */}
       {selectedTemplate && (
