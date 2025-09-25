@@ -5,13 +5,14 @@ const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.
 
 export async function getAllTemplates(challenge_id: string, page:number): Promise<TemplateResponse> {
     try {
-        const res = await fetch(`${API_BASE_URL}/template_v2/all?challenge_id=${challenge_id}&page=${page}`, {
+        const res = await fetch(`${API_BASE_URL}/template_v2/all?challenge_id=${challenge_id}&page_number=${page}`, {
             method: 'GET',
             headers: {
               'accept': 'application/json'
             }
           });
         const data = await res.json();
+        console.log("template data ::: ", data);
         return data;
     } catch (error) {
       console.error("Error fetching all templates:", error);
