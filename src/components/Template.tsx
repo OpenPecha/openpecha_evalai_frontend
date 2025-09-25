@@ -31,7 +31,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState<PromptTemplate | null>(null);
-  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(false);
+  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(true);
   
   // Extract templates and pagination info from response
   const allTemplates = templatesResponse?.items || [];
@@ -205,16 +205,6 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                 </div>
                 <div className="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
                   <button
-                    onClick={() => setShowOnlyMyTemplates(false)}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                      !showOnlyMyTemplates
-                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
-                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
-                    }`}
-                  >
-                    All Templates
-                  </button>
-                  <button
                     onClick={() => setShowOnlyMyTemplates(true)}
                     className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                       showOnlyMyTemplates
@@ -223,6 +213,16 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                     }`}
                   >
                     My Templates
+                  </button>
+                  <button
+                    onClick={() => setShowOnlyMyTemplates(false)}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      !showOnlyMyTemplates
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    }`}
+                  >
+                    All Templates
                   </button>
                 </div>
                 
