@@ -2,27 +2,26 @@ import { FileText, Languages, ArrowRight, User, Calendar, Trash2 } from "lucide-
 import { useState } from "react";
 import type { PromptTemplate } from "../types/template";
 import { formatRelativeTime } from "../utils/date";
-import { deleteTemplate } from "../api/template";
 
 export const TemplateCard = ({ 
     template, 
     handleTemplateClick, 
     onDelete,
-    currentUser
+    currentUser,
+    isDeleting = false
 }: { 
     template: PromptTemplate, 
     handleTemplateClick: (template: PromptTemplate) => void,
     onDelete?: (templateId: string) => void,
-    currentUser?: { username?: string; email?: string } | null
+    currentUser?: { username?: string; email?: string } | null,
+    isDeleting?: boolean
 }) => {
-    const [isDeleting, setIsDeleting] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     // Check if current user owns this template
-    console.log("currentUser ::: ", currentUser);
     const isOwner = currentUser?.email === template.user_detail.email;
 
-    const handleDelete = async (e: React.MouseEvent) => {
+    const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent triggering handleTemplateClick
         
         if (!showDeleteConfirm) {
@@ -30,17 +29,9 @@ export const TemplateCard = ({
             return;
         }
 
-        try {
-            setIsDeleting(true);
-            await deleteTemplate(template.template_detail.id);
-            onDelete?.(template.template_detail.id);
-        } catch (error) {
-            console.error("Failed to delete template:", error);
-            // You might want to show a toast notification here
-        } finally {
-            setIsDeleting(false);
-            setShowDeleteConfirm(false);
-        }
+        // Only call the onDelete callback - no direct API call
+        onDelete?.(template.template_detail.id);
+        setShowDeleteConfirm(false);
     };
 
     const handleCancelDelete = (e: React.MouseEvent) => {
@@ -48,7 +39,6 @@ export const TemplateCard = ({
         setShowDeleteConfirm(false);
     };
 
-    console.log("template card ::: ", template);
     
     return (
         <div className="relative">

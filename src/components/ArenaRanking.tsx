@@ -54,7 +54,6 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       const apiRankingBy = rankingBy === 'template' ? 'template' : 
                           rankingBy === 'model' ? 'model' : 'combined';
       const data = await arenaApi.getArenaRankingById(challenge.challenge_id, apiRankingBy);
-      console.log("data ::: ", data);
       setModalData(data);
     } catch (err) {
       console.error('Error fetching expanded challenge data:', err);

@@ -31,7 +31,6 @@ export const UserbackProvider: React.FC<UserbackProviderProps> = ({ children }) 
           }
         };
         const instance = await Userback(usebackId, options);
-        console.log('Userback initialized successfully:', instance);
  
         setUserback(instance);
         

@@ -4,7 +4,7 @@ import { useTranslateV2 } from "../hooks/useTranslateV2";
 import { updateBattleWinner } from "../api/translate";
 import { useToast } from "./use-toast";
 import { ChevronLeft, ChevronRight, Copy, StopCircle, AlertCircle } from "lucide-react";
-import { FaHandshake } from "react-icons/fa";
+import { FaDeaf, FaHandshake } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
 import Markdown from 'react-markdown'
 
@@ -20,6 +20,9 @@ const DEFAULT_STEPS = [
   "Refining wording…",
   "Finalizing translation…",
 ];
+
+
+
 
 // Custom hook for managing translation steps
 const useTranslationSteps = (isLoading: boolean) => {

@@ -69,7 +69,6 @@ interface TemplateBuilderProps {
 
 // Main Template Builder Component
 const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCreate, isLoading, challenge }) => {
-  console.log("challenge template builder ::: ", challenge);
   const [templateName, setTemplateName] = useState('');
   const [templateContent, setTemplateContent] = useState('');
   const [placeholders, setPlaceholders] = useState<PlaceholderElement[]>([]);

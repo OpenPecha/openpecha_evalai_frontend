@@ -10,6 +10,7 @@ import TemplateBuilder from "../components/TemplateBuilder";
 import { TemplateCard } from "../components/TemplateCard";
 
 
+const PageNumber = 1;
 const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, judgeOrBattle: string }> = ({ backToArena, challenge, judgeOrBattle }) => {
   const { currentUser } = useAuth();
   
@@ -19,9 +20,9 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
     isLoading, 
     error: templatesError,
     refetch: refetchTemplates 
-  } = useTemplates(challenge.id, 1);
+  } = useTemplates(challenge.id, PageNumber);
   const createTemplateMutation = useCreateTemplate();
-  const deleteTemplateMutation = useDeleteTemplate(challenge.id);
+  const deleteTemplateMutation = useDeleteTemplate();
   
   // Local state
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
@@ -30,7 +31,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const [activeTemplate, setActiveTemplate] = useState<PromptTemplate | null>(null);
   
   // Derive error state
-  const error = templatesError?.message || createTemplateMutation.error?.message || null;
+  const error = templatesError?.message || createTemplateMutation.error?.message || deleteTemplateMutation.error?.message || null;
 
   const handleTemplateClick = (template: PromptTemplate) => {
     // No need for async operations here since we already have the template data
@@ -67,14 +68,9 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
     setActiveTemplate(null);
   };
 
-  const handleDeleteTemplate = async (templateId: string) => {
+  const handleDeleteTemplate = (templateId: string) => {
     console.log('Deleting template:', templateId, 'for challenge:', challenge.id);
-    try {
-      await deleteTemplateMutation.mutateAsync(templateId);
-      console.log('Delete mutation completed successfully');
-    } catch (error) {
-      console.error('Failed to delete template:', error);
-    }
+    deleteTemplateMutation.mutate(templateId);
   };
 
   const renderTemplatesContent = () => {    
@@ -105,6 +101,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
             handleTemplateClick={handleTemplateClick}
             onDelete={handleDeleteTemplate}
             currentUser={currentUser}
+            isDeleting={deleteTemplateMutation.isPending}
           />
         ))}
       </div>

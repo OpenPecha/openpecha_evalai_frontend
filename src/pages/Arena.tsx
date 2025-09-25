@@ -52,7 +52,6 @@ const Arena = () => {
     try {
       setLoading(true);
       const data = await arenaApi.getChallenges();
-      console.log("data ::: ", data);
       setChallenges(data);
     } catch (error) {
       console.error('Failed to load challenges:', error);
