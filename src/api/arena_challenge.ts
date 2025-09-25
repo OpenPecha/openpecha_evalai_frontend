@@ -1,12 +1,12 @@
 import { getAuthHeaders } from "../lib/auth";
-import type { ArenaChallenge, ArenaChallengeRequest, ArenaChallengeQuery, ArenaRanking } from "../types/arena_challenge";
+import type { ArenaChallenge, ArenaChallengeRequest, ArenaChallengeQuery, ArenaRanking, ArenaChallengeResponse } from "../types/arena_challenge";
 
 // API Base URL
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
 export const arenaApi = {
-   // Get a specific challenge by query parameters
-  getFilteredChallenge: async (query: ArenaChallengeQuery): Promise<ArenaChallenge[]> => {
+   // Get challenges with filtering, search, and pagination
+  getChallengesWithPagination: async (query: ArenaChallengeQuery & { page_number?: number }): Promise<ArenaChallengeResponse> => {
     try {
       const headers = await getAuthHeaders("json");
       const params = new URLSearchParams();
@@ -14,6 +14,7 @@ export const arenaApi = {
       if (query.to_language) params.append('to_language', query.to_language);
       if (query.text_category_id) params.append('text_category_id', query.text_category_id);
       if (query.challenge_name) params.append('challenge_name', query.challenge_name);
+      if (query.page_number) params.append('page_number', query.page_number.toString());
 
       const response = await fetch(`${API_BASE_URL}/arena_challenge/?${params}`, {
         method: 'GET',
@@ -26,10 +27,15 @@ export const arenaApi = {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching challenge:', error);
+      console.error('Error fetching challenges:', error);
       throw error;
     }
-    
+  },
+
+   // Get a specific challenge by query parameters (legacy - keeping for backward compatibility)
+  getFilteredChallenge: async (query: ArenaChallengeQuery): Promise<ArenaChallenge[]> => {
+    const response = await arenaApi.getChallengesWithPagination(query);
+    return response.items;
   },
 
   // get all challenges
@@ -124,7 +130,8 @@ export const arenaApi = {
         params.append('ranking_by', rankingBy);
       }
       
-      const url = `${API_BASE_URL}/arena_ranking/${challengeId}${params.toString() ? `?${params.toString()}` : ''}`;
+      const queryString = params.toString();
+      const url = `${API_BASE_URL}/arena_ranking/${challengeId}${queryString ? `?${queryString}` : ''}`;
       
       const response = await fetch(url, {
         method: 'GET',

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Search, Filter, Plus, Languages, FileText, Trophy, Eye, Zap } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Filter, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { arenaApi } from '../api/arena_challenge';
 import { LANGUAGES } from '../utils/const';
 import type { ArenaChallenge, ArenaChallengeRequest } from '../types/arena_challenge';
@@ -7,15 +7,19 @@ import Template from '../components/Template';
 
 const Arena = () => {
   const [challenges, setChallenges] = useState<ArenaChallenge[]>([]);
-  const [filteredChallenges, setFilteredChallenges] = useState<ArenaChallenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [activeChallenge, setActiveChallenge] = useState<ArenaChallenge | null>(null);
   const [judgeOrBattle, setJudgeOrBattle] = useState<string>('');
+  
   // Filter states
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [selectedTextType, setSelectedTextType] = useState<string>('');
-  const [selectedChallengeType, setSelectedChallengeType] = useState<string>('');
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [hasMorePages, setHasMorePages] = useState<boolean>(true);
   
   // Modal states
   const [selectedChallenge, setSelectedChallenge] = useState<ArenaChallenge | null>(null);
@@ -32,33 +36,41 @@ const Arena = () => {
   // Categories state
   const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
 
-  // Load challenges on component mount
-  useEffect(() => {
-    loadChallenges();
-    loadCategories();
-  }, []);
-
-  // Filter challenges when search text changes
-  useEffect(() => {
-    searchChallenges();
-  }, [searchText]);
-
-  // Filter challenges when filters change
-  useEffect(() => {
-    filterChallenges();
-  }, [challenges, selectedLanguage, selectedTextType, selectedChallengeType]);
-
-  const loadChallenges = async () => {
+  const loadChallenges = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await arenaApi.getChallenges();
-      setChallenges(data);
+      const response = await arenaApi.getChallengesWithPagination({
+        from_language: "Tibetan",
+        to_language: selectedLanguage || "",
+        text_category_id: selectedTextType || "",
+        challenge_name: searchText || "",
+        page_number: currentPage
+      });
+      
+      setChallenges(response.items);
+      setTotalPages(response.total_count); // total_count is the number of pages
+      
+      // Check if there are more pages
+      setHasMorePages(currentPage < response.total_count);
     } catch (error) {
       console.error('Failed to load challenges:', error);
+      setChallenges([]);
+      setTotalPages(0);
+      setHasMorePages(false);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchText, selectedLanguage, selectedTextType]);
+
+  // Load challenges on component mount
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  // Load challenges when page, search, or filters change
+  useEffect(() => {
+    loadChallenges();
+  }, [loadChallenges]);
 
   const loadCategories = async () => {
     try {
@@ -69,39 +81,16 @@ const Arena = () => {
     }
   };
 
-  const filterChallenges = async () => {
-    const filtered = await arenaApi.getFilteredChallenge({
-      from_language: "Tibetan",
-      to_language: selectedLanguage,
-      text_category_id: selectedTextType,
-      challenge_name: selectedChallengeType
-    });
-    setFilteredChallenges(filtered);
-  };
-
-
-  const searchChallenges = async () => {
-    const filtered = await arenaApi.getFilteredChallenge({
-      from_language: "Tibetan",
-      to_language: "",
-      text_category_id: "",
-      challenge_name: searchText
-    })
-
-    setFilteredChallenges(filtered);
-  };
-
   const handleCreateChallenge = async () => {
     try {
         console.log("createForm ::: ", createForm);
       const newChallenge = await arenaApi.createChallenge(createForm);
       setSelectedLanguage("");
       setSelectedTextType("");
-      setSelectedChallengeType("");
       setSearchText("");
+      setCurrentPage(1);
       setSelectedChallenge(newChallenge);
       console.log("newChallenge ::: ", newChallenge);
-      setChallenges(prev => [newChallenge, ...prev]);
       setShowCreateModal(false);
       setCreateForm({
         text_category_id: '',
@@ -109,6 +98,8 @@ const Arena = () => {
         to_language: 'English',
         challenge_name: ''
       });
+      // Reload challenges to show the new one
+      await loadChallenges();
     } catch (error) {
       console.error('Failed to create challenge:', error);
     }
@@ -117,8 +108,13 @@ const Arena = () => {
   const clearFilters = () => {
     setSelectedLanguage('');
     setSelectedTextType('');
-    setSelectedChallengeType('');
     setSearchText('');
+    setCurrentPage(1); // Reset to first page when clearing filters
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleJudgeOrBattle = (judgeOrBattle: string) => {
@@ -131,19 +127,10 @@ const Arena = () => {
     setSelectedChallenge(null);
   };
 
-  // Get unique values for filter options
+  // Get unique values for filter options from categories
   const uniqueLanguages = Array.from(new Set([
-    ...challenges.map(c => c.from_language),
-    ...challenges.map(c => c.to_language)
+    ...LANGUAGES.map(lang => lang.name)
   ]));
-
-  const uniqueTextTypes = Array.from(new Set(
-    challenges.map(c => c.text_category) // Get unique category IDs
-  ));
-
-  const uniqueChallengeTypes = Array.from(new Set(
-    challenges.map(c => c.challenge_name)
-  ));
 
   if (activeChallenge) {
     return <Template backToArena={backToArena} challenge={activeChallenge} judgeOrBattle={judgeOrBattle}/>;
@@ -182,7 +169,10 @@ const Arena = () => {
               type="text"
               placeholder="Search challenges..."
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setCurrentPage(1); // Reset to first page when search changes
+              }}
               className="w-full pl-10 pr-4 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -197,7 +187,10 @@ const Arena = () => {
             {/* Language Filter */}
             <select
               value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
+              onChange={(e) => {
+                setSelectedLanguage(e.target.value);
+                setCurrentPage(1); // Reset to first page when filter changes
+              }}
               className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Languages</option>
@@ -209,19 +202,22 @@ const Arena = () => {
             {/* Text Type Filter */}
             <select
               value={selectedTextType}
-              onChange={(e) => setSelectedTextType(e.target.value)}
+              onChange={(e) => {
+                setSelectedTextType(e.target.value);
+                setCurrentPage(1); // Reset to first page when filter changes
+              }}
               className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Text Types</option>
-              {uniqueTextTypes.map((type) => (
-                <option key={type} value={type}>{type}</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>{category.name.toUpperCase()}</option>
               ))}
             </select>
 
           
 
             {/* Clear Filters */}
-            {(selectedLanguage || selectedTextType || selectedChallengeType || searchText) && (
+            {(selectedLanguage || selectedTextType || searchText) && (
               <button
                 onClick={clearFilters}
                 className="px-3 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors duration-200"
@@ -240,7 +236,7 @@ const Arena = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChallenges.map((challenge) => (
+            {challenges.map((challenge) => (
               <div
                 key={challenge.id}
                 onClick={() => setSelectedChallenge(challenge)}
@@ -257,10 +253,6 @@ const Arena = () => {
                 </div>
 
                 <div className="mb-4">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <FileText className="w-4 h-4 text-neutral-500" />
-                    <span className="text-sm text-neutral-500 dark:text-neutral-400">Category</span>
-                  </div>
                   <p className="text-lg font-semibold text-neutral-900 dark:text-white">
                     {challenge.text_category}
                   </p>
@@ -276,7 +268,7 @@ const Arena = () => {
           </div>
         )}
 
-        {!loading && filteredChallenges.length === 0 && (
+        {!loading && challenges.length === 0 && (
           <div className="text-center py-12">
             <Trophy className="w-12 h-12 text-neutral-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-neutral-900 dark:text-white mb-2">
@@ -285,6 +277,41 @@ const Arena = () => {
             <p className="text-neutral-600 dark:text-neutral-400">
               Try adjusting your filters or create a new challenge.
             </p>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {!loading && challenges.length > 0 && totalPages > 1 && (
+          <div className="mt-8 flex flex-col items-center space-y-4">
+            {/* Pagination Info */}
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              Showing {challenges.length} challenges on page {currentPage} of {totalPages}
+            </div>
+            
+            {/* Pagination Buttons */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Previous
+              </button>
+              
+              <span className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                Page {currentPage} of {totalPages}
+              </span>
+              
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!hasMorePages}
+                className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </button>
+            </div>
           </div>
         )}
       </div>

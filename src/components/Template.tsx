@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Plus, ArrowLeft } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Plus, ArrowLeft, Filter } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
 import { useTemplates, useCreateTemplate, useDeleteTemplate } from "../hooks/useTemplates";
 import type { CreateTemplateV2, PromptTemplate } from "../types/template";
@@ -29,9 +29,24 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState<PromptTemplate | null>(null);
+  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(false);
   
   // Derive error state
   const error = templatesError?.message || createTemplateMutation.error?.message || deleteTemplateMutation.error?.message || null;
+
+  // Filter templates based on ownership
+  const filteredTemplates = useMemo(() => {
+    // Ensure allTemplates is always an array
+    const templates = allTemplates || [];
+    
+    if (!showOnlyMyTemplates || !currentUser) {
+      return templates;
+    }
+    
+    return templates.filter(template => 
+      template.user_detail.email === currentUser.email
+    );
+  }, [allTemplates, showOnlyMyTemplates, currentUser]);
 
   const handleTemplateClick = (template: PromptTemplate) => {
     // No need for async operations here since we already have the template data
@@ -74,13 +89,19 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   };
 
   const renderTemplatesContent = () => {    
-    if (allTemplates.length === 0) {
+    if (filteredTemplates.length === 0) {
       return (
         <div className="text-center py-12">
           <div className="w-16 h-16 text-neutral-400 dark:text-neutral-600 mx-auto mb-4">📄</div>
           <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-            No templates found
+            {showOnlyMyTemplates ? "No personal templates found" : "No templates found"}
           </h3>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            {showOnlyMyTemplates 
+              ? "You haven't created any templates yet."
+              : "No templates are available for this challenge."
+            }
+          </p>
           <button
             onClick={() => setShowCreateModal(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200 mx-auto"
@@ -94,7 +115,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {allTemplates.map((template) => (
+        {filteredTemplates.map((template) => (
           <TemplateCard 
             key={template?.template_detail?.id} 
             template={template} 
@@ -161,7 +182,52 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
             </div>
           )}
 
-            <div className="mb-6">
+          {/* Filter and Actions Section */}
+          <div className="mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Filter Toggle */}
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Filter className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+                  <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                    Show:
+                  </span>
+                </div>
+                <div className="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
+                  <button
+                    onClick={() => setShowOnlyMyTemplates(false)}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      !showOnlyMyTemplates
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    }`}
+                  >
+                    All Templates
+                  </button>
+                  <button
+                    onClick={() => setShowOnlyMyTemplates(true)}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      showOnlyMyTemplates
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    }`}
+                  >
+                    My Templates
+                  </button>
+                </div>
+                
+                {/* Template Count */}
+                <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                  {filteredTemplates.length} {filteredTemplates.length === 1 ? 'template' : 'templates'}
+                  {showOnlyMyTemplates && allTemplates && allTemplates.length > filteredTemplates.length && (
+                    <span className="ml-1">
+                      ({allTemplates.length} total)
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Create Button */}
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200"
@@ -170,6 +236,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                 <span>Create New Template</span>
               </button>
             </div>
+          </div>
 
           {/* Templates Grid */}
           {isLoading ? (

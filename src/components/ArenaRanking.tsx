@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Trophy, Medal, Award, Search, X, ChevronDown } from "lucide-react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { BiExpandAlt } from "react-icons/bi";
@@ -143,7 +143,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
 
   return (
-    <div className="max-w-full mx-auto mb-2 pt-2 pb-4 flex w-full overflow-x-scroll flex-col">
+    <div className="max-w-full mx-auto mb-2 pt-2 pb-4 flex w-full  flex-col">
   <input
     type="text"
     placeholder="Search challenges..."
@@ -154,15 +154,14 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
  
 
       {/* Arena Rankings Grid */}
-      <div className="flex gap-6 ">
-
+      <div className="flex gap-6 pb-3 overflow-x-auto scrollbar-none hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600 scroll-smooth">
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+            className="bg-white min-w-[320px] flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
           >
             {/* Challenge Header */}
-            <div className=" from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
+            <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate">
                   {ranking.challenge_details.challenge_name}
@@ -196,7 +195,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
             {/* Rankings Table */}
             <div className="py-2">
               <div className="overflow-hidden">
-                <div className="max-h-64 overflow-y-scroll overflow-x-hidden scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600">
+                <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600">
                   <table className="min-w-full">
                     <thead className="sticky top-0 bg-white dark:bg-neutral-800 z-10">
                       <tr className="border-b border-neutral-200 dark:border-neutral-700">
@@ -272,7 +271,6 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
             </div> */}
           </div>
         ))}
-        
       </div>
 
       {/* Empty State */}

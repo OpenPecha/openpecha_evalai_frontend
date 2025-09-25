@@ -5,6 +5,12 @@ export interface ArenaChallenge {
     from_language: string;
     to_language: string;
     challenge_name: string;
+    user_id?: string;
+  }
+
+  export interface ArenaChallengeResponse {
+    total_count: number; // Number of pages, not total items
+    items: ArenaChallenge[];
   }
   
   export interface ArenaChallengeRequest {
