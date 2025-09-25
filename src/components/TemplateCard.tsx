@@ -1,6 +1,6 @@
 import { FileText, Languages, ArrowRight, User, Calendar, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { PromptTemplate } from "../types/template";
+import type { TemplateDetail } from "../types/template";
 import { formatRelativeTime } from "../utils/date";
 
 export const TemplateCard = ({ 
@@ -10,8 +10,8 @@ export const TemplateCard = ({
     currentUser,
     isDeleting = false
 }: { 
-    template: PromptTemplate, 
-    handleTemplateClick: (template: PromptTemplate) => void,
+    template: TemplateDetail, 
+    handleTemplateClick: (template: TemplateDetail) => void,
     onDelete?: (templateId: string) => void,
     currentUser?: { username?: string; email?: string } | null,
     isDeleting?: boolean
@@ -57,18 +57,17 @@ export const TemplateCard = ({
                         <div className="flex items-center gap-2 flex-shrink-0">
                             <FileText className="w-5 h-5 text-neutral-400 dark:text-neutral-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors" />
                             {onDelete && isOwner && (
-                                <button
+                                <div
                                     onClick={handleDelete}
-                                    disabled={isDeleting}
-                                    className={`p-1 rounded-md transition-colors ${
+                                    className={`p-1 rounded-md transition-colors cursor-pointer ${
                                         showDeleteConfirm
                                             ? 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400'
                                             : 'text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:text-neutral-500 dark:hover:text-red-400 dark:hover:bg-red-900/20'
-                                    }`}
+                                    } ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}
                                     title={showDeleteConfirm ? "Click again to confirm deletion" : "Delete template"}
                                 >
                                     <Trash2 className={`w-4 h-4 ${isDeleting ? 'animate-pulse' : ''}`} />
-                                </button>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -80,19 +79,18 @@ export const TemplateCard = ({
                                 Are you sure you want to delete "<strong>{template.template_name}</strong>"?
                             </p>
                             <div className="flex gap-2">
-                                <button
+                                <div
                                     onClick={handleDelete}
-                                    disabled={isDeleting}
-                                    className="px-3 py-1 text-xs bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+                                    className={`px-3 py-1 text-xs bg-red-600 text-white rounded-md hover:bg-red-700 cursor-pointer ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}
                                 >
                                     {isDeleting ? 'Deleting...' : 'Delete'}
-                                </button>
-                                <button
+                                </div>
+                                <div
                                     onClick={handleCancelDelete}
                                     className="px-3 py-1 text-xs bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600"
                                 >
                                     Cancel
-                                </button>
+                                </div>
                             </div>
                         </div>
                     )}

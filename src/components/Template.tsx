@@ -85,7 +85,16 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
 
   const handleDeleteTemplate = (templateId: string) => {
     console.log('Deleting template:', templateId, 'for challenge:', challenge.id);
-    deleteTemplateMutation.mutate(templateId);
+    deleteTemplateMutation.mutate(templateId, {
+      onSuccess: () => {
+        if (allTemplates.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        }
+      },
+      onError: (error) => {
+        console.error("Error deleting template:", error);
+      }
+    });
   };
 
   const renderTemplatesContent = () => {    
