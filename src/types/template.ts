@@ -19,16 +19,13 @@ export interface TemplateDetail {
   to_language: string;
   created_at: string;
   updated_at: string;
+  created_by: string;
 }
 
-export interface PromptTemplate {
-  user_detail: UserDetail;
-  template_detail: TemplateDetail;
-}
 
 export interface TemplateResponse {
   total_count: number;
-  items: PromptTemplate[];
+  items: TemplateDetail[];
 }
 
 export interface Template {

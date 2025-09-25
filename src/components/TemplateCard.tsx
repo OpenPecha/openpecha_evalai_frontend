@@ -19,7 +19,7 @@ export const TemplateCard = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     // Check if current user owns this template
-    const isOwner = currentUser?.email === template.user_detail.email;
+    const isOwner = currentUser?.email?.split('@')[0] === template.created_by;
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent triggering handleTemplateClick
@@ -30,7 +30,7 @@ export const TemplateCard = ({
         }
 
         // Only call the onDelete callback - no direct API call
-        onDelete?.(template.template_detail.id);
+        onDelete?.(template.id);
         setShowDeleteConfirm(false);
     };
 
@@ -43,7 +43,7 @@ export const TemplateCard = ({
     return (
         <div className="relative">
             <button
-                key={template.template_detail.id}
+                key={template.id}
                 onClick={() => handleTemplateClick(template)}
                 className="w-full p-6 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-xl hover:border-primary-300 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 group"
                 disabled={isDeleting}
@@ -52,7 +52,7 @@ export const TemplateCard = ({
                     {/* Header with title, icon, and delete button */}
                     <div className="flex items-start justify-between">
                         <h3 className="font-semibold text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight flex-1 pr-2">
-                            {template.template_detail.template_name}
+                            {template.template_name}
                         </h3>
                         <div className="flex items-center gap-2 flex-shrink-0">
                             <FileText className="w-5 h-5 text-neutral-400 dark:text-neutral-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors" />
@@ -77,7 +77,7 @@ export const TemplateCard = ({
                     {showDeleteConfirm && (
                         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
                             <p className="text-sm text-red-700 dark:text-red-300 mb-2">
-                                Are you sure you want to delete "<strong>{template.template_detail.template_name}</strong>"?
+                                Are you sure you want to delete "<strong>{template.template_name}</strong>"?
                             </p>
                             <div className="flex gap-2">
                                 <button
@@ -102,17 +102,17 @@ export const TemplateCard = ({
                         <textarea
                             className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-3 font-mono w-full outline-none foucs:ring-0"
                             readOnly={true}
-                            value={template.template_detail.template || 'No template content'}
+                            value={template.template || 'No template content'}
                             rows={5}
                         />
                     </div>
 
                     {/* Sample text */}
-                    {template.template_detail.text_category && (
+                    {template.text_category && (
                         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
                             <div className="flex items-center gap-2">
                                 <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{template.template_detail.text_category}</span>
+                                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{template.text_category}</span>
                             </div>
                         </div>
                     )}
@@ -122,14 +122,14 @@ export const TemplateCard = ({
                         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
                             <Languages className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                             <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                                {template.template_detail.from_language}
+                                {template.from_language}
                             </span>
                         </div>
                         <ArrowRight className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                         <div className="flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full">
                             <Languages className="w-3 h-3 text-purple-600 dark:text-purple-400" />
                             <span className="text-xs font-medium text-purple-700 dark:text-purple-300">
-                                {template.template_detail.to_language}
+                                {template.to_language}
                             </span>
                         </div>
                     </div>
@@ -138,11 +138,11 @@ export const TemplateCard = ({
                     <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200 dark:border-neutral-600">
                         <div className="flex items-center space-x-1 text-neutral-500 dark:text-neutral-400">
                             <User className="w-3 h-3" />
-                            <span>{template.user_detail.username}</span>
+                            <span>{template.created_by}</span>
                         </div>
                         <div className="flex items-center space-x-1 text-neutral-500 dark:text-neutral-400">
                             <Calendar className="w-3 h-3" />
-                            <span>{formatRelativeTime(template.template_detail.updated_at || template.template_detail.created_at)}</span>
+                            <span>{formatRelativeTime(template.updated_at || template.created_at)}</span>
                         </div>
                     </div>
                 </div>

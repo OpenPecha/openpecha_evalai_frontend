@@ -3,22 +3,33 @@ import { getAuthHeaders } from "../lib/auth";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
-export async function getAllTemplates(challenge_id: string, page:number): Promise<TemplateResponse> {
-    try {
-        const res = await fetch(`${API_BASE_URL}/template_v2/all?challenge_id=${challenge_id}&page_number=${page}`, {
-            method: 'GET',
-            headers: {
-              'accept': 'application/json'
-            }
-          });
-        const data = await res.json();
-        console.log("template data ::: ", data);
-        return data;
-    } catch (error) {
-      console.error("Error fetching all templates:", error);
-      throw error;
+export async function getAllTemplates(challenge_id: string, page: number, creator_id?: string): Promise<TemplateResponse> {
+  try {
+    const headers = await getAuthHeaders("json");
+    const params = new URLSearchParams({
+      challenge_id,
+      page_number: page.toString()
+    });
+    
+    if (creator_id) {
+      params.append('creator_id', creator_id);
     }
+    const response = await fetch(`${API_BASE_URL}/arena/template?${params.toString()}`, {
+      method: 'GET',
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching all templates:", error);
+    throw error;
   }
+}
 
 
   // GET: single template by ID
@@ -40,42 +51,13 @@ export async function getPromptTemplate(id: string): Promise<PromptTemplate> {
   }
 }
 
-// POST: create new template
-export async function createPromptTemplate(
-    username: string,
-    templateName: string,
-    promptText: string
-  ): Promise<PromptTemplate> {
-    console.log('Creating template for user:', username);
-    console.log('Template name:', templateName);
-    console.log('Prompt text:', promptText);
-    try {
-      const res = await fetch(`${API_BASE_URL}/templates/create`, {
-        method: 'POST',
-        headers: {
-          "Content-Type": 'application/json'
-        },
-        body: JSON.stringify({
-          template_name: templateName,
-          username: username,
-          template_text: promptText
-        })
-      });
-  
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      console.error("Error creating prompt template:", error);
-      throw error;
-    }
-  }
 
 
 // POST: create new template v2
-  export async function createPromptTemplateV2(body: CreateTemplateV2) {
+  export async function createPromptTemplate(body: CreateTemplateV2) {
     try {
       const headers = await getAuthHeaders("json");
-      const res = await fetch(`${API_BASE_URL}/template_v2/create`, {
+      const res = await fetch(`${API_BASE_URL}/arena/template/`, {
         method: "POST",
         headers,
         body: JSON.stringify(body),
@@ -98,7 +80,7 @@ export async function createPromptTemplate(
 export async function deleteTemplate(id: string): Promise<void> {
   try {
     const headers = await getAuthHeaders("json");
-    const res = await fetch(`${API_BASE_URL}/template_v2/delete/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/arena/template/${id}`, {
       method: "DELETE",
       headers,
     });

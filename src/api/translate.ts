@@ -322,7 +322,7 @@ export async function translateV2(
       input_text: input_text,
     };
 
-    const response = await fetch(`${API_BASE_URL}/translate_v2`, {
+    const response = await fetch(`${API_BASE_URL}/arena/translate/`, {
       method: "POST",
       headers: {
         "accept": "application/json",

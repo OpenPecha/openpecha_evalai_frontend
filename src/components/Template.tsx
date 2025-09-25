@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Plus, ArrowLeft, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
 import { useTemplates, useCreateTemplate, useDeleteTemplate } from "../hooks/useTemplates";
-import type { CreateTemplateV2, PromptTemplate } from "../types/template";
+import type { CreateTemplateV2, TemplateDetail } from "../types/template";
 import type { ArenaChallenge } from "../types/arena_challenge";
 import Chat from "../pages/Chat";
 import TemplateView from "../components/TemplateView";
@@ -16,22 +16,22 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   
+  // Local state
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateDetail | null>(null);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<TemplateDetail | null>(null);
+  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(true);
   // React Query hooks
   const { 
     data: templatesResponse, 
     isLoading, 
     error: templatesError,
     refetch: refetchTemplates 
-  } = useTemplates(challenge.id, currentPage);
+  } = useTemplates(challenge.id, currentPage, showOnlyMyTemplates ? currentUser?.id : undefined);
+  
   const createTemplateMutation = useCreateTemplate();
   const deleteTemplateMutation = useDeleteTemplate();
-  
-  // Local state
-  const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
-  const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<PromptTemplate | null>(null);
-  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(true);
   
   // Extract templates and pagination info from response
   const allTemplates = templatesResponse?.items || [];
@@ -41,16 +41,6 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   // Derive error state
   const error = templatesError?.message || createTemplateMutation.error?.message || deleteTemplateMutation.error?.message || null;
 
-  // Filter templates based on ownership
-  const filteredTemplates = useMemo(() => {
-    if (!showOnlyMyTemplates || !currentUser) {
-      return allTemplates;
-    }
-    
-    return allTemplates.filter(template => 
-      template.user_detail.email === currentUser.email
-    );
-  }, [allTemplates, showOnlyMyTemplates, currentUser]);
 
   // Handle page changes
   const handlePageChange = (page: number) => {
@@ -58,13 +48,13 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleTemplateClick = (template: PromptTemplate) => {
+  const handleTemplateClick = (template: TemplateDetail) => {
     // No need for async operations here since we already have the template data
     setSelectedTemplate(template);
     setShowTemplateModal(true);
   };
 
-  const handleSelectTemplate = (template: PromptTemplate) => {
+  const handleSelectTemplate = (template: TemplateDetail) => {
     setActiveTemplate(template);
     setShowTemplateModal(false);
   };
@@ -99,7 +89,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   };
 
   const renderTemplatesContent = () => {    
-    if (filteredTemplates.length === 0) {
+    if (allTemplates.length === 0) {
       return (
         <div className="text-center py-12">
           <div className="w-16 h-16 text-neutral-400 dark:text-neutral-600 mx-auto mb-4">📄</div>
@@ -125,9 +115,9 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.map((template) => (
+        {allTemplates.map((template) => (
           <TemplateCard 
-            key={template?.template_detail?.id} 
+            key={template?.id} 
             template={template} 
             handleTemplateClick={handleTemplateClick}
             onDelete={handleDeleteTemplate}
@@ -205,7 +195,10 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                 </div>
                 <div className="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
                   <button
-                    onClick={() => setShowOnlyMyTemplates(true)}
+                    onClick={() => {
+                      setShowOnlyMyTemplates(true);
+                      setCurrentPage(1);
+                    }}
                     className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                       showOnlyMyTemplates
                         ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
@@ -215,7 +208,10 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                     My Templates
                   </button>
                   <button
-                    onClick={() => setShowOnlyMyTemplates(false)}
+                    onClick={() => {
+                      setShowOnlyMyTemplates(false);
+                      setCurrentPage(1);
+                    }}
                     className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                       !showOnlyMyTemplates
                         ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
@@ -224,16 +220,6 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                   >
                     All Templates
                   </button>
-                </div>
-                
-                {/* Template Count */}
-                <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                  {filteredTemplates.length} {filteredTemplates.length === 1 ? 'template' : 'templates'}
-                  {showOnlyMyTemplates && allTemplates.length > filteredTemplates.length && (
-                    <span className="ml-1">
-                      ({allTemplates.length} total)
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -261,7 +247,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
       </div>
 
       {/* Pagination Controls - Fixed at bottom */}
-      {!isLoading && filteredTemplates.length > 0 && totalCount > 1 && (
+      {!isLoading && allTemplates.length > 0 && totalCount > 1 && (
         <div className="bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700 px-6 py-3">
           <div className="max-w-6xl mx-auto flex flex-col items-center space-y-4">
             

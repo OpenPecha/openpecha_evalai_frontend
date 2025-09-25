@@ -40,7 +40,7 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
               Template Name
             </label>
             <div className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-200 font-semibold">
-              {template.template_detail.template_name}
+              {template.template_name}
             </div>
           </div>
 
@@ -50,17 +50,17 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
             </label>
             <textarea className="w-full h-48 px-4 py-3 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-200 overflow-y-auto font-mono text-sm leading-relaxed" 
             readOnly={true} 
-            value={template.template_detail.template ||'No template content'} 
+            value={template.template ||'No template content'} 
             rows={5} />
           </div>
 
-          {template.template_detail.text_category && (
+          {template.text_category && (
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Sample Text
               </label>
               <div className="w-full px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-200">
-                {template.template_detail.text_category}
+                {template.text_category}
               </div>
             </div>
           )}
@@ -74,14 +74,14 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
               <div className="flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
                 <Languages className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                  {template.template_detail.from_language}
+                  {template.from_language}
                 </span>
               </div>
               <ArrowRight className="w-5 h-5 text-neutral-400 dark:text-neutral-500" />
               <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <Languages className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                 <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                  {template.template_detail.to_language}
+                  {template.to_language}
                 </span>
               </div>
             </div>
@@ -91,11 +91,11 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
             <div className="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
               <User className="w-4 h-4" />
-              <span>Created by: {template.user_detail.username}</span>
+              <span>Created by: {template.created_by}</span>
             </div>
             <div className="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
               <Calendar className="w-4 h-4" />
-              <span>Updated: {formatRelativeTime(template.template_detail.updated_at || template.template_detail.created_at)}</span>
+              <span>Updated: {formatRelativeTime(template.updated_at || template.created_at)}</span>
             </div>
           </div>
         </div>

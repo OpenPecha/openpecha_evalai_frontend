@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getAllTemplates, getPromptTemplate, createPromptTemplateV2, deleteTemplate } from '../api/template';
+import { getAllTemplates, getPromptTemplate, createPromptTemplate, deleteTemplate } from '../api/template';
 import type { CreateTemplateV2 } from '../types/template';
 
 const templatekey=["templates"]
 
 // Hook to fetch all templates for a challenge
-export function useTemplates(challengeId: string, page: number = 1) {
+export function useTemplates(challengeId: string, page: number = 1, creator_id?: string) {
   return useQuery({
-    queryKey: [...templatekey, challengeId, page],
-    queryFn: () => getAllTemplates(challengeId, page),
+    queryKey: [...templatekey, challengeId, page, creator_id],
+    queryFn: () => getAllTemplates(challengeId, page, creator_id),
     enabled: !!challengeId, // Only run query if challengeId is provided
   });
 }
@@ -29,7 +29,7 @@ export function useCreateTemplate() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (templateData: CreateTemplateV2) => createPromptTemplateV2(templateData),
+    mutationFn: (templateData: CreateTemplateV2) => createPromptTemplate(templateData),
     onSuccess: () => {
       // Invalidate and refetch templates list for this challenge
       queryClient.invalidateQueries({

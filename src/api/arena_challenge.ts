@@ -16,7 +16,7 @@ export const arenaApi = {
       if (query.challenge_name) params.append('challenge_name', query.challenge_name);
       if (query.page_number) params.append('page_number', query.page_number.toString());
 
-      const response = await fetch(`${API_BASE_URL}/arena_challenge/?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/arena/challenge/?${params}`, {
         method: 'GET',
         headers,
       });
@@ -42,7 +42,7 @@ export const arenaApi = {
   getChallenges: async (): Promise<ArenaChallenge[]> => {
 
     try {
-      const response = await fetch(`${API_BASE_URL}/arena_challenge/all`, {
+      const response = await fetch(`${API_BASE_URL}/arena/challenge/all`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export const arenaApi = {
   // get all categories
   getCategories: async (): Promise<{id: string, name: string}[]> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/text_category`, {
+      const response = await fetch(`${API_BASE_URL}/arena/category`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export const arenaApi = {
   createChallenge: async (challengeData: ArenaChallengeRequest): Promise<ArenaChallenge> => {
     try {
       const headers = await getAuthHeaders("json");
-      const response = await fetch(`${API_BASE_URL}/arena_challenge/create`, {
+      const response = await fetch(`${API_BASE_URL}/arena/challenge/`, {
         method: 'POST',
         headers,
         body: JSON.stringify(challengeData),
@@ -105,7 +105,7 @@ export const arenaApi = {
   // Get all the arena challenges rankings
   getAllArenaRankings: async (): Promise<ArenaRanking[]> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/arena_ranking/all`, {
+      const response = await fetch(`${API_BASE_URL}/arena/ranking/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
