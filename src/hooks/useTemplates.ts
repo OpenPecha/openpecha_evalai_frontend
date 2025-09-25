@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getAllTemplates, getPromptTemplate, createPromptTemplateV2 } from '../api/template';
+import { getAllTemplates, getPromptTemplate, createPromptTemplateV2, deleteTemplate } from '../api/template';
 import type { CreateTemplateV2, PromptTemplate } from '../types/template';
 
 // Query Keys
@@ -45,15 +45,6 @@ export function useCreateTemplate() {
         queryKey: templateKeys.list(variables.challenge_id, 1),
       });
 
-      // Optimistically add the new template to the cache
-      queryClient.setQueryData(
-        templateKeys.list(variables.challenge_id, 1),
-        (old: PromptTemplate[] | undefined) => {
-          if (!old) return [newTemplate];
-          return [newTemplate, ...old];
-        }
-      );
-
       // Cache the individual template
       if (newTemplate?.template_detail?.id) {
         queryClient.setQueryData(
@@ -64,6 +55,58 @@ export function useCreateTemplate() {
     },
     onError: (error) => {
       console.error('Error creating template:', error);
+    },
+  });
+}
+
+// Hook to delete a template
+export function useDeleteTemplate(challengeId?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (templateId: string) => deleteTemplate(templateId),
+    onSuccess: (_, deletedTemplateId) => {
+      console.log('Template deleted successfully, invalidating cache...');
+      
+      // Remove the deleted template from detail cache
+      queryClient.removeQueries({
+        queryKey: templateKeys.detail(deletedTemplateId),
+      });
+
+      // If we have challengeId, be specific about invalidation
+      if (challengeId) {
+        console.log('Invalidating templates for challenge:', challengeId);
+        
+        // First, manually update the cached data to remove the deleted template immediately
+        queryClient.setQueryData(
+          templateKeys.list(challengeId, 1),
+          (oldData: PromptTemplate[] | undefined) => {
+            if (Array.isArray(oldData)) {
+              console.log('Removing template from cached data:', deletedTemplateId);
+              const updatedData = oldData.filter((template: PromptTemplate) => 
+                template?.template_detail?.id !== deletedTemplateId
+              );
+              console.log('Updated cached data, removed template. New count:', updatedData.length);
+              return updatedData;
+            }
+            return oldData;
+          }
+        );
+        
+        // Then invalidate to trigger a fresh fetch (in case there are server-side changes)
+        queryClient.invalidateQueries({
+          queryKey: templateKeys.list(challengeId, 1),
+        });
+      } else {
+        // Fallback: invalidate ALL template queries
+        console.log('No challengeId provided, invalidating all template queries');
+        queryClient.invalidateQueries({
+          queryKey: templateKeys.all,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error('Error deleting template:', error);
     },
   });
 }

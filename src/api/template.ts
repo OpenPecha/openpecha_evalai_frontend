@@ -1,5 +1,4 @@
 import type { CreateTemplateV2, PromptTemplate } from "@/types/template";
-import { ALL_TEMPLATES } from "../utils/data";
 import { getAuthHeaders } from "../lib/auth";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
@@ -93,4 +92,23 @@ export async function createPromptTemplate(
     throw error;
     }
   }
+
+// DELETE: delete template v2
+export async function deleteTemplate(id: string): Promise<void> {
+  try {
+    const headers = await getAuthHeaders("json");
+    const res = await fetch(`${API_BASE_URL}/template_v2/delete/${id}`, {
+      method: "DELETE",
+      headers,
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => res.statusText);
+      throw new Error(`Failed to delete template: ${res.status} ${errorText}`);
+    }
+  } catch (error) {
+    console.error("Error deleting template:", error);
+    throw error;
+  }
+}
 

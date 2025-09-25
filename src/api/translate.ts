@@ -359,12 +359,12 @@ export async function updateBattleWinner(
       result: result,
     };
 
+
+    const headers = await getAuthHeaders(true);
+
     const response = await fetch(`${API_BASE_URL}/translate_v2/update_battle_winner`, {
       method: "PUT",
-      headers: {
-        "accept": "application/json",
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(body),
     });
 

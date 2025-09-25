@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Plus, FileText, ArrowLeft } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
-import { useTemplates, useCreateTemplate } from "../hooks/useTemplates";
+import { useTemplates, useCreateTemplate, useDeleteTemplate } from "../hooks/useTemplates";
 import type { CreateTemplateV2, PromptTemplate } from "../types/template";
 import type { ArenaChallenge } from "../types/arena_challenge";
 import Chat from "../pages/Chat";
@@ -20,8 +20,8 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
     error: templatesError,
     refetch: refetchTemplates 
   } = useTemplates(challenge.id, 1);
-  console.log("all templates ::: ", allTemplates);
   const createTemplateMutation = useCreateTemplate();
+  const deleteTemplateMutation = useDeleteTemplate(challenge.id);
   
   // Local state
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
@@ -53,9 +53,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
     };
 
     createTemplateMutation.mutate(body, {
-      onSuccess: (newTemplate) => {
-        // setSelectedTemplate(newTemplate);
-        // setShowTemplateModal(true);
+      onSuccess: () => {
         setShowCreateModal(false);
       },
       onError: (error) => {
@@ -67,6 +65,50 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
 
   const handleBackToTemplates = () => {
     setActiveTemplate(null);
+  };
+
+  const handleDeleteTemplate = async (templateId: string) => {
+    console.log('Deleting template:', templateId, 'for challenge:', challenge.id);
+    try {
+      await deleteTemplateMutation.mutateAsync(templateId);
+      console.log('Delete mutation completed successfully');
+    } catch (error) {
+      console.error('Failed to delete template:', error);
+    }
+  };
+
+  const renderTemplatesContent = () => {    
+    if (allTemplates.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 text-neutral-400 dark:text-neutral-600 mx-auto mb-4">📄</div>
+          <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+            No templates found
+          </h3>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200 mx-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Your First Template</span>
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {allTemplates.map((template) => (
+          <TemplateCard 
+            key={template?.template_detail?.id} 
+            template={template} 
+            handleTemplateClick={handleTemplateClick}
+            onDelete={handleDeleteTemplate}
+            currentUser={currentUser}
+          />
+        ))}
+      </div>
+    );
   };
 
   // If a template is selected, show the Chat component
@@ -140,27 +182,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                 <p className="text-neutral-600 dark:text-neutral-400">Loading templates...</p>
               </div>
             </div>
-          ) : allTemplates.length === 0 ? (
-            <div className="text-center py-12">
-              <FileText className="w-16 h-16 text-neutral-400 dark:text-neutral-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                No templates found
-              </h3>
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200 mx-auto"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Create Your First Template</span>
-                </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allTemplates.map((template) => (
-                <TemplateCard key={template?.template_detail?.id} template={template} handleTemplateClick={handleTemplateClick} />
-              ))}
-            </div>
-          )}
+          ) : renderTemplatesContent()}
         </div>
       </div>
 

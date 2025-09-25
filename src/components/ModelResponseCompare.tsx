@@ -6,6 +6,8 @@ import { useToast } from "./use-toast";
 import { ChevronLeft, ChevronRight, Copy, StopCircle, AlertCircle } from "lucide-react";
 import { FaHandshake } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
+import Markdown from 'react-markdown'
+
 
 const DEFAULT_STEPS = [
   "Analyzing text…",
@@ -191,6 +193,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="flex items-center space-x-2">
                 <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
                   {(selectedOption && state.data) ? state.data.model_1 : t('translation.modelA')}
+                  <TemplateName templateName={state.data?.template_1_name} />
                 </h3>
                 {(selectedOption === 'left' || selectedOption === 'both') && (
                   <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
@@ -237,7 +240,9 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth">
                 {state.data?.translation_1?.translation ? (
                   <div className="break-words">
+                    <Markdown>
                     {state.data.translation_1.translation}
+                      </Markdown>
                   </div>
                 ) : (
                   <div className="text-neutral-400 dark:text-neutral-500 italic">
@@ -281,6 +286,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="flex items-center space-x-2">
                 <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
                   {(selectedOption && state.data) ? state.data.model_2 : t('translation.modelB')}
+                  <TemplateName templateName={state.data?.template_2_name} />
                 </h3>
                 {(selectedOption === 'right' || selectedOption === 'both') && (
                   <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
@@ -327,7 +333,9 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth">
                 {state.data?.translation_2?.translation ? (
                   <div className="break-words">
+                    <Markdown>
                     {state.data.translation_2.translation}
+                      </Markdown>
                   </div>
                 ) : (
                   <div className="text-neutral-400 dark:text-neutral-500 italic">
@@ -502,3 +510,14 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
 };
 
 export default ModelResponseCompare;
+
+
+
+function TemplateName({ templateName }: { templateName: string | undefined }) {
+  return (
+    <span className="text-xs text-neutral-500 dark:text-neutral-400 ml-4">
+      {templateName}
+    </span>
+  );
+}
+

@@ -4,6 +4,8 @@ import { translateV2 } from "../api/translate";
 export interface TranslateV2Response {
   battle_result_id: string;
   id_1: string;
+  template_1_name: string;
+  template_2_name: string;
   translation_1: {
     combo_key: string;
     translation: string;
