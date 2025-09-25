@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Plus, ArrowLeft, Filter } from "lucide-react";
+import { Plus, ArrowLeft, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
 import { useTemplates, useCreateTemplate, useDeleteTemplate } from "../hooks/useTemplates";
 import type { CreateTemplateV2, PromptTemplate } from "../types/template";
@@ -10,17 +10,19 @@ import TemplateBuilder from "../components/TemplateBuilder";
 import { TemplateCard } from "../components/TemplateCard";
 
 
-const PageNumber = 1;
 const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, judgeOrBattle: string }> = ({ backToArena, challenge, judgeOrBattle }) => {
   const { currentUser } = useAuth();
   
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  
   // React Query hooks
   const { 
-    data: allTemplates = [], 
+    data: templatesResponse, 
     isLoading, 
     error: templatesError,
     refetch: refetchTemplates 
-  } = useTemplates(challenge.id, PageNumber);
+  } = useTemplates(challenge.id, currentPage);
   const createTemplateMutation = useCreateTemplate();
   const deleteTemplateMutation = useDeleteTemplate();
   
@@ -31,22 +33,30 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const [activeTemplate, setActiveTemplate] = useState<PromptTemplate | null>(null);
   const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(false);
   
+  // Extract templates and pagination info from response
+  const allTemplates = templatesResponse?.items || [];
+  const totalCount = templatesResponse?.total_count || 0;
+  const hasMorePages = currentPage < totalCount;
+  
   // Derive error state
   const error = templatesError?.message || createTemplateMutation.error?.message || deleteTemplateMutation.error?.message || null;
 
   // Filter templates based on ownership
   const filteredTemplates = useMemo(() => {
-    // Ensure allTemplates is always an array
-    const templates = allTemplates || [];
-    
     if (!showOnlyMyTemplates || !currentUser) {
-      return templates;
+      return allTemplates;
     }
     
-    return templates.filter(template => 
+    return allTemplates.filter(template => 
       template.user_detail.email === currentUser.email
     );
   }, [allTemplates, showOnlyMyTemplates, currentUser]);
+
+  // Handle page changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleTemplateClick = (template: PromptTemplate) => {
     // No need for async operations here since we already have the template data
@@ -219,7 +229,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
                 {/* Template Count */}
                 <div className="text-sm text-neutral-500 dark:text-neutral-400">
                   {filteredTemplates.length} {filteredTemplates.length === 1 ? 'template' : 'templates'}
-                  {showOnlyMyTemplates && allTemplates && allTemplates.length > filteredTemplates.length && (
+                  {showOnlyMyTemplates && allTemplates.length > filteredTemplates.length && (
                     <span className="ml-1">
                       ({allTemplates.length} total)
                     </span>
@@ -247,6 +257,41 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
               </div>
             </div>
           ) : renderTemplatesContent()}
+
+          {/* Pagination Controls */}
+          {!isLoading && filteredTemplates.length > 0 && totalCount > 1 && (
+            <div className="mt-8 flex flex-col items-center space-y-4">
+              {/* Pagination Info */}
+              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                Showing {filteredTemplates.length} templates on page {currentPage} of {totalCount}
+              </div>
+              
+              {/* Pagination Buttons */}
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  Previous
+                </button>
+                
+                <span className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  Page {currentPage} of {totalCount}
+                </span>
+                
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={!hasMorePages}
+                  className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,9 +1,9 @@
-import type { CreateTemplateV2, PromptTemplate } from "@/types/template";
+import type { CreateTemplateV2, PromptTemplate, TemplateResponse } from "@/types/template";
 import { getAuthHeaders } from "../lib/auth";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
-export async function getAllTemplates(challenge_id: string, page:number): Promise<PromptTemplate[]> {
+export async function getAllTemplates(challenge_id: string, page:number): Promise<TemplateResponse> {
     try {
         const res = await fetch(`${API_BASE_URL}/template_v2/all?challenge_id=${challenge_id}&page=${page}`, {
             method: 'GET',

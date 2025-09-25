@@ -7,7 +7,7 @@ const templatekey=["templates"]
 // Hook to fetch all templates for a challenge
 export function useTemplates(challengeId: string, page: number = 1) {
   return useQuery({
-    queryKey: templatekey,
+    queryKey: [...templatekey, challengeId, page],
     queryFn: () => getAllTemplates(challengeId, page),
     enabled: !!challengeId, // Only run query if challengeId is provided
   });
@@ -33,7 +33,7 @@ export function useCreateTemplate() {
     onSuccess: () => {
       // Invalidate and refetch templates list for this challenge
       queryClient.invalidateQueries({
-        queryKey:templatekey
+        queryKey: templatekey
       });
     },
     onError: (error) => {

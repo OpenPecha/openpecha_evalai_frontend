@@ -26,6 +26,11 @@ export interface PromptTemplate {
   template_detail: TemplateDetail;
 }
 
+export interface TemplateResponse {
+  total_count: number;
+  items: PromptTemplate[];
+}
+
 export interface Template {
     id: string;
     template_name: string;
