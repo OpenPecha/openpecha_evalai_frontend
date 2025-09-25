@@ -362,7 +362,7 @@ export async function updateBattleWinner(
 
     const headers = await getAuthHeaders(true);
 
-    const response = await fetch(`${API_BASE_URL}/translate_v2/update_battle_winner`, {
+    const response = await fetch(`${API_BASE_URL}/arena/translate/battle_winner`, {
       method: "PUT",
       headers,
       body: JSON.stringify(body),
