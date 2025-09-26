@@ -18,12 +18,15 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-          <div className="flex items-center space-x-3">
+        <div className="flex w-full items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+          <div className="flex items-center  w-full">
             <FileText className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-            <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
+            <div className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
               Template Details
-            </h2>
+            </div>
+              <span className="  rounded-lg text-blue-800 dark:text-blue-200">
+                {template?.text_category}
+              </span>
           </div>
           <button
             onClick={onClose}
@@ -34,7 +37,7 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-2">
           <div>
             <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
               Template Name
@@ -54,22 +57,11 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
             rows={5} />
           </div>
 
-          {template.text_category && (
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                Sample Text
-              </label>
-              <div className="w-full px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-200">
-                {template.text_category}
-              </div>
-            </div>
-          )}
+         
 
           {/* Language translation indicator */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-              Translation Direction
-            </label>
+          <div className="flex items-center  gap-4">
+        
             <div className="flex items-center justify-center gap-4 py-3">
               <div className="flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
                 <Languages className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -101,7 +93,7 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end space-x-3 p-6 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-700">
+        <div className="flex items-center justify-end space-x-3 p-6 border-t border-neutral-200 dark:border-neutral-700 ">
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
