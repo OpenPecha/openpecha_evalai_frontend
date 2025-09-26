@@ -99,7 +99,7 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
   
   // UI state
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState(0);
+  const [selectedTextRange, setSelectedTextRange] = useState<{start: number, end: number}>({ start: 0, end: 0 });
   const [hasChanges, setHasChanges] = useState(false);
 
   // Initialize form with template data when modal opens or template changes
@@ -149,8 +149,8 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
         const placeholderText = `{${elementType}}`;
         // Insert at cursor position
         setTemplateContent(prev => {
-          const before = prev.slice(0, cursorPosition);
-          const after = prev.slice(cursorPosition);
+          const before = prev.slice(0, selectedTextRange.start);
+          const after = prev.slice(selectedTextRange.end);
           return before + placeholderText + after;
         });
       }
@@ -293,7 +293,7 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
                   content={templateContent}
                   onContentChange={setTemplateContent}
                   isOver={isOver}
-                  setCursorPosition={setCursorPosition}
+                  setSelectedTextRange={setSelectedTextRange}
                   isPreviewMode={isPreviewMode}
                   onTogglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
                 />
