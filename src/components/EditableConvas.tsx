@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { FileText, Image, Languages, BookOpen, MessageSquare, X } from 'lucide-react';
+import { FileText, Image, Languages, BookOpen, MessageSquare, X, Eye, Edit3 } from 'lucide-react';
 import type { PlaceholderElement } from '../components/TemplateBuilder';
 
 
@@ -11,36 +11,26 @@ const EditableCanvas: React.FC<{
     placeholders: PlaceholderElement[];
     onRemovePlaceholder: (id: string) => void;
     isOver: boolean;
-  }> = ({ content, onContentChange, placeholders, onRemovePlaceholder, isOver }) => {
-    const [isEditing, setIsEditing] = useState(false);
+    isPreviewMode: boolean;
+    onTogglePreviewMode: () => void;
+  }> = ({ content, onContentChange, placeholders, onRemovePlaceholder, isOver, isPreviewMode, onTogglePreviewMode }) => {
     const [cursorPosition, setCursorPosition] = useState(0);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
-    const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   
     const { setNodeRef } = useDroppable({
       id: 'canvas',
+      disabled: isPreviewMode, // Only allow drops in edit mode
     });
   
-    // Auto-switch to preview mode after user stops typing
+    // Handle content changes
     const handleContentChange = (newContent: string) => {
       onContentChange(newContent);
-      
-      // Clear existing timeout
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-      
-      // Set new timeout to switch to preview mode
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsEditing(false);
-      }, 2000); // Switch to preview mode 2 seconds after stopping typing
     };
   
-    // Handle clicking to edit
+    // Handle clicking to edit (only works when not in preview mode)
     const handleContentClick = () => {
-      if (!isEditing) {
-        setIsEditing(true);
+      if (!isPreviewMode) {
         setTimeout(() => {
           textareaRef.current?.focus();
           textareaRef.current?.setSelectionRange(cursorPosition, cursorPosition);
@@ -48,27 +38,7 @@ const EditableCanvas: React.FC<{
       }
     };
   
-    // Handle textarea focus and blur
-    const handleTextareaFocus = () => {
-      setIsEditing(true);
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-    };
-  
-    const handleTextareaBlur = () => {
-      // Small delay before switching to preview to allow for quick refocus
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsEditing(false);
-      }, 500);
-    };
-  
     const handleKeyDown = (_e: React.KeyboardEvent) => {
-      // Keep edit mode active on any key press
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-      
       // Update cursor position
       if (textareaRef.current) {
         setTimeout(() => {
@@ -76,10 +46,18 @@ const EditableCanvas: React.FC<{
         }, 0);
       }
     };
+
+    // Handle textarea blur
+    const handleTextareaBlur = () => {
+      // Save cursor position when losing focus
+      if (textareaRef.current) {
+        setCursorPosition(textareaRef.current.selectionStart || 0);
+      }
+    };
   
     // Render content with placeholders
     const renderContentWithPlaceholders = () => {
-      if (isEditing) return null;
+      if (!isPreviewMode) return null;
   
       const parts = content.split(/(\{(?:source|ucca|sanskrit|gloss|commentaries)\})/);
       const elements: React.ReactNode[] = [];
@@ -116,32 +94,22 @@ const EditableCanvas: React.FC<{
       return elements;
     };
   
-    // Clean up timeout on unmount
-    useEffect(() => {
-      return () => {
-        if (typingTimeoutRef.current) {
-          clearTimeout(typingTimeoutRef.current);
-        }
-      };
-    }, []);
-  
     return (
       <div
         ref={setNodeRef}
         className={`relative min-h-96 border-2 border-dashed rounded-lg p-6 transition-all duration-200 ${
           isOver 
             ? 'border-primary-500/60 bg-neutral-100/30 dark:bg-neutral-600/30' 
-            : isEditing
+            : !isPreviewMode
             ? 'border-primary-500/40 dark:border-neutral-400 bg-neutral-50/10 dark:bg-neutral-600/10'
             : 'border-neutral-300 dark:border-neutral-600 hover:border-primary-500/50'
         }`}
       >
-        {isEditing ? (
+        {!isPreviewMode ? (
           <textarea
             ref={textareaRef}
             value={content}
             onChange={(e) => handleContentChange(e.target.value)}
-            onFocus={handleTextareaFocus}
             onBlur={handleTextareaBlur}
             onKeyDown={handleKeyDown}
             className="w-full h-full min-h-96 resize-none outline-none bg-transparent font-mono text-sm leading-relaxed text-neutral-700 dark:text-neutral-100"
@@ -164,17 +132,40 @@ const EditableCanvas: React.FC<{
           </div>
         )}
         
-        {isOver && (
+        {isOver && !isPreviewMode && (
           <div className="absolute inset-0 bg-neutral-100/20 dark:bg-neutral-600/20 rounded-lg flex items-center justify-center pointer-events-none">
             <div className="text-primary-600 dark:text-primary-400 font-medium">Drop here to add placeholder</div>
           </div>
         )}
         
-        {isEditing && (
-          <div className="absolute top-2 right-2 bg-primary-600 text-white px-2 py-1 rounded text-xs">
-            Editing Mode
+        {isOver && isPreviewMode && (
+          <div className="absolute inset-0 bg-red-100/20 dark:bg-red-600/20 rounded-lg flex items-center justify-center pointer-events-none">
+            <div className="text-red-600 dark:text-red-400 font-medium">Switch to Edit mode to add elements</div>
           </div>
         )}
+        
+        {/* Toggle Button */}
+        <button
+          onClick={onTogglePreviewMode}
+          className={`absolute top-3 right-3 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 shadow-lg ${
+            !isPreviewMode
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-primary-600 hover:bg-primary-700 text-white'
+          }`}
+        >
+          {isPreviewMode ? (
+            <>
+              <Edit3 size={14} />
+              Edit
+            </>
+          ) : (
+            <>
+            <Eye size={14} />
+            Preview
+              
+            </>
+          )}
+        </button>
       </div>
     );
   };
