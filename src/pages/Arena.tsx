@@ -140,7 +140,7 @@ const Arena = () => {
     <div className="h-full flex flex-col bg-neutral-50 dark:bg-neutral-900">
       {/* Header */}
       <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Arena</h1>
@@ -161,9 +161,9 @@ const Arena = () => {
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
+        <div className="mb-8   flex item-center  gap-2 justify-between">
           {/* Search Bar */}
-          <div className="relative">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
             <input
               type="text"
@@ -178,12 +178,8 @@ const Arena = () => {
           </div>
 
           {/* Filter Bar */}
-          <div className="flex flex-wrap gap-4 items-center">
-            <div className="flex items-center text-neutral-700 dark:text-neutral-300">
-              <Filter className="w-4 h-4 mr-2" />
-              <span className="font-medium">Filters:</span>
-            </div>
-
+          <div className="flex  h-full  flex-wrap gap-4 items-center">
+          
             {/* Language Filter */}
             <select
               value={selectedLanguage}
@@ -191,9 +187,9 @@ const Arena = () => {
                 setSelectedLanguage(e.target.value);
                 setCurrentPage(1); // Reset to first page when filter changes
               }}
-              className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-3  border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="">All Languages</option>
+              <option value="">To Languages</option>
               {uniqueLanguages.map(lang => (
                 <option key={lang} value={lang}>{lang}</option>
               ))}
@@ -206,7 +202,7 @@ const Arena = () => {
                 setSelectedTextType(e.target.value);
                 setCurrentPage(1); // Reset to first page when filter changes
               }}
-              className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Text Types</option>
               {categories.map((category) => (
