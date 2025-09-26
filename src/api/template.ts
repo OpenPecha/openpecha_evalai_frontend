@@ -1,5 +1,6 @@
-import type { CreateTemplateV2, PromptTemplate, TemplateResponse } from "@/types/template";
+import type { CreateTemplateV2, TemplateResponse } from "@/types/template";
 import { getAuthHeaders } from "../lib/auth";
+import { removeEmojisFromContent } from "../utils/emojiUtils";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
@@ -33,7 +34,7 @@ export async function getAllTemplates(challenge_id: string, page: number, creato
 
 
   // GET: single template by ID
-export async function getPromptTemplate(id: string): Promise<PromptTemplate> {
+export async function getPromptTemplate(id: string): Promise<any> {
   try {
     const res = await fetch(`${API_BASE_URL}/templates/${id}`, {
       method: 'GET',
@@ -57,10 +58,17 @@ export async function getPromptTemplate(id: string): Promise<PromptTemplate> {
   export async function createPromptTemplate(body: CreateTemplateV2) {
     try {
       const headers = await getAuthHeaders("json");
+      
+      // Ensure template content is clean (no emojis) before sending to backend
+      const cleanBody = {
+        ...body,
+        template: removeEmojisFromContent(body.template)
+      };
+      
       const res = await fetch(`${API_BASE_URL}/arena/template/`, {
         method: "POST",
         headers,
-        body: JSON.stringify(body),
+        body: JSON.stringify(cleanBody),
       });
     
       if (!res.ok) {
@@ -79,10 +87,17 @@ export async function getPromptTemplate(id: string): Promise<PromptTemplate> {
 export async function updateTemplate(id: string, body: CreateTemplateV2): Promise<any> {
   try {
     const headers = await getAuthHeaders("json");
+    
+    // Ensure template content is clean (no emojis) before sending to backend
+    const cleanBody = {
+      ...body,
+      template: removeEmojisFromContent(body.template)
+    };
+    
     const res = await fetch(`${API_BASE_URL}/arena/template/${id}`, {
       method: "PUT",
       headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify(cleanBody),
     });
 
     if (!res.ok) {

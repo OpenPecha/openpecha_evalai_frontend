@@ -12,6 +12,12 @@ import { X, Save, Image, Languages, BookOpen, MessageSquare, FileText, Edit } fr
 import EditableCanvas from './EditableConvas';
 import type { TemplateDetail } from '../types/template';
 import type { ArenaChallenge } from '../types/arena_challenge';
+import { 
+  createEmojiPlaceholder, 
+  removeEmojisFromContent, 
+  normalizeContentForEditing,
+  type ElementType
+} from '../utils/emojiUtils';
 
 export interface PlaceholderElement {
   id: string; 
@@ -106,7 +112,8 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
   useEffect(() => {
     if (isOpen && template) {
       setTemplateName(template.template_name);
-      setTemplateContent(template.template);
+      // Normalize content for editing mode to show emojis
+      setTemplateContent(normalizeContentForEditing(template.template));
       setHasChanges(false);
     }
   }, [isOpen, template]);
@@ -115,7 +122,9 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
   useEffect(() => {
     if (template) {
       const nameChanged = templateName !== template.template_name;
-      const contentChanged = templateContent !== template.template;
+      // Compare clean content (without emojis) to detect real changes
+      const cleanCurrentContent = removeEmojisFromContent(templateContent);
+      const contentChanged = cleanCurrentContent !== template.template;
       setHasChanges(nameChanged || contentChanged);
     }
   }, [templateName, templateContent, template]);
@@ -143,10 +152,11 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
     setIsOver(false);
 
     if (over && over.id === 'canvas') {
-      const elementType = active.data.current?.type;
+      const elementType = active.data.current?.type as ElementType;
 
       if (elementType) {
-        const placeholderText = `{${elementType}}`;
+        // Create emoji placeholder for editing mode
+        const placeholderText = createEmojiPlaceholder(elementType);
         // Insert at cursor position
         setTemplateContent(prev => {
           const before = prev.slice(0, selectedTextRange.start);
@@ -162,7 +172,9 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
    */
   const handleUpdate = () => {
     if (templateName.trim() && templateContent.trim() && hasChanges) {
-      onUpdate(templateName.trim(), templateContent.trim());
+      // Remove emojis before sending to backend
+      const cleanContent = removeEmojisFromContent(templateContent.trim());
+      onUpdate(templateName.trim(), cleanContent);
     }
   };
 

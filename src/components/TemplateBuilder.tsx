@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -11,6 +11,12 @@ import { CSS } from '@dnd-kit/utilities';
 import { X, Save, Image, Languages, BookOpen, MessageSquare, FileText } from 'lucide-react';
 import  EditableCanvas  from './EditableConvas';
 import type { ArenaChallenge } from '../types/arena_challenge';
+import { 
+  createEmojiPlaceholder, 
+  removeEmojisFromContent, 
+  normalizeContentForEditing,
+  type ElementType
+} from '../utils/emojiUtils';
 
 export interface PlaceholderElement {
   id: string; 
@@ -76,6 +82,14 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [selectedTextRange, setSelectedTextRange] = useState<{start: number, end: number}>({ start: 0, end: 0 });
 
+  // Initialize template content with proper emoji formatting when modal opens
+  useEffect(() => {
+    if (isOpen && !templateContent) {
+      // Start with normalized content for editing
+      setTemplateContent(normalizeContentForEditing(''));
+    }
+  }, [isOpen, templateContent]);
+
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
   };
@@ -90,10 +104,11 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
     setIsOver(false);
 
     if (over && over.id === 'canvas') {
-      const elementType = active.data.current?.type;
+      const elementType = active.data.current?.type as ElementType;
 
       if (elementType) {
-        const placeholderText = `{${elementType}}`;
+        // Create emoji placeholder for editing mode
+        const placeholderText = createEmojiPlaceholder(elementType);
         // Insert at cursor position
         setTemplateContent(prev => {
           const before = prev.slice(0, selectedTextRange.start);
@@ -107,7 +122,9 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
 
   const handleCreate = () => {
     if (templateName.trim() && templateContent.trim()) {
-      onCreate(templateName.trim(), templateContent.trim());
+      // Remove emojis before sending to backend
+      const cleanContent = removeEmojisFromContent(templateContent.trim());
+      onCreate(templateName.trim(), cleanContent);
     }
   };
 
