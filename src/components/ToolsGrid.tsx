@@ -158,79 +158,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
                 : "space-y-3"
             }>
               {filteredTools.map((tool) => (
-                <button
-                  key={tool.id}
-                  onClick={() => handleToolClick(tool)}
-                  onKeyDown={(e) => handleKeyDown(e, tool)}
-                  className={`
-                    group cursor-pointer transition-all duration-200 rounded-xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 relative
-                    ${viewMode === "grid" 
-                      ? "p-4 text-center hover:bg-neutral-50 dark:hover:bg-neutral-700/50 hover:scale-105" 
-                      : "p-3 flex items-center gap-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/50"
-                    }
-                  `}
-                >
-                  {/* Tool Icon */}
-                  <div className={`
-                    ${viewMode === "grid" ? "w-16 h-16 mx-auto mb-3" : "w-12 h-12 flex-shrink-0"}
-                    bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-700 dark:to-neutral-600 
-                    rounded-xl flex items-center justify-center overflow-hidden
-                    group-hover:shadow-md transition-shadow
-                  `}>
-                    {tool.icon ? (
-                      <img 
-                        src={tool.icon} 
-                        alt={tool.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // Fallback to text if image fails to load
-                          e.currentTarget.style.display = 'none';
-                          const parent = e.currentTarget.parentElement;
-                          if (parent) {
-                            parent.innerHTML = `<span class="text-lg font-semibold text-neutral-600 dark:text-neutral-300">${tool.name.charAt(0)}</span>`;
-                          }
-                        }}
-                      />
-                    ) : (
-                      <span className="text-lg font-semibold text-neutral-600 dark:text-neutral-300">
-                        {tool.name.charAt(0)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Tool Info */}
-                  <div className={viewMode === "grid" ? "text-center" : "flex-1 min-w-0"}>
-                    <h3 className={`
-                      font-medium text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors
-                      ${viewMode === "grid" ? "text-sm mb-1" : "text-base mb-1"}
-                    `}>
-                      {tool.name}
-                    </h3>
-                    <p className={`
-                      text-neutral-600 dark:text-neutral-400 
-                      ${viewMode === "grid" ? "text-xs line-clamp-2" : "text-sm line-clamp-1"}
-                    `}>
-                      {tool.description}
-                    </p>
-                    {viewMode === "list" && (
-                      <div className="flex items-center gap-2 mt-1">
-                        {tool.category && (
-                          <span className="text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
-                            {tool.category}
-                          </span>
-                        )}
-                        <ExternalLink className="w-3 h-3 text-neutral-400" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* External link indicator for grid view */}
-                  {viewMode === "grid" && (
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ExternalLink className="w-3 h-3 text-neutral-400" />
-                    </div>
-                  )}
-                </button>
+                <ToolCard key={tool.id} tool={tool} viewMode={viewMode} handleToolClick={handleToolClick} handleKeyDown={handleKeyDown} />
               ))}
             </div>
           )}
@@ -241,3 +169,80 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
 };
 
 export default ToolsGrid;
+
+
+function ToolCard({ tool, viewMode, handleToolClick, handleKeyDown }: { tool: Tool, viewMode: "grid" | "list", handleToolClick: (tool: Tool) => void, handleKeyDown: (event: React.KeyboardEvent, tool: Tool) => void }) {
+ 
+  const isComingSoon = tool.name.toLowerCase().includes("coming soon");
+ 
+  return     <button
+  key={tool.id}
+  onClick={() => handleToolClick(tool)}
+  onKeyDown={(e) => handleKeyDown(e, tool)}
+  disabled={isComingSoon}
+  className={`
+    group cursor-pointer transition-all duration-200 rounded-xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 relative
+    ${viewMode === "grid" 
+      ? "p-4 text-center hover:bg-neutral-50 dark:hover:bg-neutral-700/50 hover:scale-105" 
+      : "p-3 flex items-center gap-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/50"
+    }
+  `}
+>
+  {/* Tool Icon */}
+  <div className={`
+    ${viewMode === "grid" ? "w-16 h-16 mx-auto mb-3" : "w-12 h-12 flex-shrink-0"}
+    bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-700 dark:to-neutral-600 
+    rounded-xl flex items-center justify-center overflow-hidden
+    group-hover:shadow-md transition-shadow
+  `}>
+    {tool.icon ? (
+      <img 
+        src={tool.icon} 
+        alt={tool.name}
+        className="w-full h-full object-cover"
+        onError={(e) => {
+          // Fallback to text if image fails to load
+          e.currentTarget.style.display = 'none';
+          const parent = e.currentTarget.parentElement;
+          if (parent) {
+            parent.innerHTML = `<span class="text-lg font-semibold text-neutral-600 dark:text-neutral-300">${tool.name.charAt(0)}</span>`;
+          }
+        }}
+      />
+    ) : (
+      <span className="text-lg font-semibold text-neutral-600 dark:text-neutral-300">
+        {tool.name.charAt(0)}
+      </span>
+    )}
+  </div>
+
+  {/* Tool Info */}
+  <div className={viewMode === "grid" ? "text-center" : "flex-1 min-w-0"}>
+    <span className={`
+      font-medium text-neutral-900 truncate  dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors
+      ${viewMode === "grid" ? "text-sm mb-1" : "text-base mb-1"}
+      ${isComingSoon && "text-neutral-400 dark:text-neutral-600"}
+    `}
+    style={{color: isComingSoon ? "var(--color-neutral-400)" :undefined}}>
+      {tool.name?.replace("- coming soon", "")}
+    </span>
+    {viewMode === "list" && (
+      <div className="flex items-center gap-2 mt-1">
+        {tool.category && (
+          <span className="text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
+            {tool.category}
+          </span>
+        )}
+        <ExternalLink className="w-3 h-3 text-neutral-400" />
+      </div>
+    )}
+  </div>
+
+  {/* External link indicator for grid view */}
+  {viewMode === "grid" && (
+    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <ExternalLink className="w-3 h-3 text-neutral-400" />
+    </div>
+  )}
+</button>
+}
