@@ -147,7 +147,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
   <input
     type="text"
     placeholder="Search challenges..."
-    className="w-[50%] pl-10 pr-4 py-2 my-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-300 dark:focus:ring-primary-600 transition"
+    className="w-[50%] pl-4 pr-4 py-2 my-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-300 dark:focus:ring-primary-600 transition"
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
   />
@@ -158,7 +158,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
-            className="bg-white min-w-[320px] flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+            className="bg-white min-w-[400px] flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
           >
             {/* Challenge Header */}
             <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
@@ -232,14 +232,14 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
                           {/* Template Name */}
                           <td className="px-3 py-3">
-                            <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-24">
+                            <div title={entry.template_name} className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-24">
                               {entry.template_name}
                             </div>
                           </td>
 
                           {/* Model Name */}
                           <td className="px-3 py-3">
-                            <div className={`text-sm font-semibold truncate max-w-20 ${getModelColor(entry.model_name)}`}>
+                            <div title={entry.model_name} className={`text-sm font-semibold truncate max-w-20 ${getModelColor(entry.model_name)}`}>
                               {entry.model_name}
                             </div>
                           </td>
