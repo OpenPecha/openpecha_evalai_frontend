@@ -275,7 +275,7 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
                 
                 <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-600 rounded-lg">
                   <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                    <strong>Smart Editing:</strong> Click to edit, automatically switches to preview when you stop typing.
+                    <strong>Smart Editing:</strong> Toggle between edit and preview mode to see the changes.
                   </p>
                 </div>
               </div>
@@ -285,7 +285,7 @@ const TemplateEditModal: React.FC<TemplateEditModalProps> = ({
                 <div className="mb-4">
                   <h2 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100 mb-2">Template Canvas</h2>
                   <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                    Click anywhere to edit. All formatting (tabs, spaces, newlines) is preserved.
+                    Toggle between edit and preview mode to see the changes.
                   </p>
                 </div>
 

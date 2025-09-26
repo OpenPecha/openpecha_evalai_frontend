@@ -9,10 +9,10 @@ const EditableCanvas: React.FC<{
     content: string;
     onContentChange: (content: string) => void;
     isOver: boolean;
-    setCursorPosition: (position: number) => void;
+    setSelectedTextRange: (range: {start: number, end: number}) => void;
     isPreviewMode: boolean;
     onTogglePreviewMode: () => void;
-  }> = ({ content, onContentChange, isOver, setCursorPosition, isPreviewMode, onTogglePreviewMode }) => {
+  }> = ({ content, onContentChange, isOver, setSelectedTextRange, isPreviewMode, onTogglePreviewMode }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
   
@@ -82,8 +82,8 @@ const EditableCanvas: React.FC<{
           <textarea
             ref={textareaRef}
             value={content}
-            onSelect={() => setCursorPosition(textareaRef.current?.selectionStart || 0)}
-            onClick={() => setCursorPosition(textareaRef.current?.selectionStart || 0)}
+            onSelect={() => setSelectedTextRange({start: textareaRef.current?.selectionStart || 0, end: textareaRef.current?.selectionEnd || 0})}
+            onClick={() => setSelectedTextRange({start: textareaRef.current?.selectionStart || 0, end: textareaRef.current?.selectionEnd || 0})}
             onChange={(e) => handleContentChange(e.target.value)}
             className="w-full h-full min-h-96 resize-none outline-none bg-transparent font-mono text-sm leading-relaxed text-neutral-700 dark:text-neutral-100"
             placeholder="Start typing your template here..."
@@ -98,7 +98,7 @@ const EditableCanvas: React.FC<{
               renderContentWithPlaceholders()
             ) : (
               <div className="text-neutral-500 dark:text-neutral-400 italic">
-                Click here to start typing or drag elements from the sidebar...
+                Toggle between edit and preview mode to see the changes.
               </div>
             )}
           </div>
