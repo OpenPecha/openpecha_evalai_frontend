@@ -43,6 +43,7 @@ export interface Template {
   }
   
   export type CreateTemplateV2 = {
+    id?: string; // Optional for create operations, required for update operations
     template_name: string;
     template: string;
     challenge_id: string;

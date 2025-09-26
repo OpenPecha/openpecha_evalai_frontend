@@ -1,4 +1,4 @@
-import { FileText, Languages, ArrowRight, User, Calendar, Trash2 } from "lucide-react";
+import { Languages, ArrowRight, User, Calendar, Trash2, Edit } from "lucide-react";
 import { useState } from "react";
 import type { TemplateDetail } from "../types/template";
 import { formatRelativeTime } from "../utils/date";
@@ -7,12 +7,14 @@ export const TemplateCard = ({
     template, 
     handleTemplateClick, 
     onDelete,
+    onEdit,
     currentUser,
     isDeleting = false
 }: { 
     template: TemplateDetail, 
     handleTemplateClick: (template: TemplateDetail) => void,
     onDelete?: (templateId: string) => void,
+    onEdit?: (template: TemplateDetail) => void,
     currentUser?: { username?: string; email?: string } | null,
     isDeleting?: boolean
 }) => {
@@ -37,6 +39,11 @@ export const TemplateCard = ({
     const handleCancelDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
         setShowDeleteConfirm(false);
+    };
+
+    const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent triggering handleTemplateClick
+        onEdit?.(template);
     };
 
     
@@ -64,6 +71,15 @@ export const TemplateCard = ({
                     )}
                     </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
+                            {onEdit && isOwner && (
+                                <div
+                                    onClick={handleEdit}
+                                    className="p-1 rounded-md transition-colors cursor-pointer text-neutral-400 hover:text-blue-500 hover:bg-blue-50 dark:text-neutral-500 dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
+                                    title="Edit template"
+                                >
+                                    <Edit className="w-4 h-4" />
+                                </div>
+                            )}
                             {onDelete && isOwner && (
                                 <div
                                     onClick={handleDelete}

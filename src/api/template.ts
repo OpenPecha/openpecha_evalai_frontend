@@ -75,6 +75,29 @@ export async function getPromptTemplate(id: string): Promise<PromptTemplate> {
     throw error;
     }
   }
+// PUT: update template v2
+export async function updateTemplate(id: string, body: CreateTemplateV2): Promise<any> {
+  try {
+    const headers = await getAuthHeaders("json");
+    const res = await fetch(`${API_BASE_URL}/arena/template/${id}`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => res.statusText);
+      throw new Error(`Failed to update template: ${res.status} ${errorText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating template:", error);
+    throw error;
+  }
+}
+
 
 // DELETE: delete template v2
 export async function deleteTemplate(id: string): Promise<void> {

@@ -1,17 +1,28 @@
-import type { PromptTemplate } from "@/types/template";
-import { FileText, X, Star, Languages, ArrowRight, User, Calendar } from "lucide-react";
+import type { TemplateDetail } from "../types/template";
+import { FileText, X, Languages, ArrowRight, User, Calendar, Edit } from "lucide-react";
 import { formatRelativeTime } from "../utils/date";
 
 
 interface TemplateViewProps {
-    template: PromptTemplate;
+    template: TemplateDetail;
     isOpen: boolean;
     onClose: () => void;
-    onSelect: (template: PromptTemplate) => void;
+    onSelect: (template: TemplateDetail) => void;
+    onEdit?: (template: TemplateDetail) => void;
+    currentUser?: { username?: string; email?: string } | null;
   }
 
-const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, onSelect }) => {
+const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, onSelect, onEdit, currentUser }) => {
     console.log('selected Template:', template);
+  
+  // Check if current user owns this template
+  const isOwner = currentUser?.email?.split('@')[0] === template.created_by;
+
+  const handleEdit = () => {
+    onEdit?.(template);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -96,6 +107,15 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
             </div>
           </div>
           <div className="flex items-center space-x-3">
+          {onEdit && isOwner && (
+            <button
+              onClick={handleEdit}
+              className="flex items-center space-x-2 px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 border border-blue-300 dark:border-blue-600 rounded-lg transition-colors"
+            >
+              <Edit className="w-4 h-4" />
+              <span>Edit</span>
+            </button>
+          )}
 
           <button
             onClick={onClose}

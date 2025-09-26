@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getAllTemplates, getPromptTemplate, createPromptTemplate, deleteTemplate } from '../api/template';
+import { getAllTemplates, getPromptTemplate, createPromptTemplate, deleteTemplate, updateTemplate } from '../api/template';
 import type { CreateTemplateV2 } from '../types/template';
 
 const templatekey=["templates"]
@@ -38,6 +38,23 @@ export function useCreateTemplate() {
     },
     onError: (error) => {
       console.error('Error creating template:', error);
+    },
+  });
+}
+
+// Hook to update a template
+export function useUpdateTemplate() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (templateData: CreateTemplateV2) => updateTemplate(templateData.id, templateData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: templatekey
+      });
+    },
+    onError: (error) => {
+      console.error('Error updating template:', error);
     },
   });
 }

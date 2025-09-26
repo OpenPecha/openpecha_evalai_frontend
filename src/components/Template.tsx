@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Plus, ArrowLeft, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
-import { useTemplates, useCreateTemplate, useDeleteTemplate } from "../hooks/useTemplates";
+import { useTemplates, useCreateTemplate, useDeleteTemplate, useUpdateTemplate } from "../hooks/useTemplates";
 import type { CreateTemplateV2, TemplateDetail } from "../types/template";
 import type { ArenaChallenge } from "../types/arena_challenge";
 import Chat from "../pages/Chat";
 import TemplateView from "../components/TemplateView";
 import TemplateBuilder from "../components/TemplateBuilder";
+import TemplateEditModal from "../components/TemplateEditModal";
 import { TemplateCard } from "../components/TemplateCard";
 
 
@@ -20,6 +21,8 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateDetail | null>(null);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState<TemplateDetail | null>(null);
   const [activeTemplate, setActiveTemplate] = useState<TemplateDetail | null>(null);
   const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(true);
   // React Query hooks
@@ -31,6 +34,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   } = useTemplates(challenge.id, currentPage, showOnlyMyTemplates ? currentUser?.id : undefined);
   
   const createTemplateMutation = useCreateTemplate();
+  const updateTemplateMutation = useUpdateTemplate();
   const deleteTemplateMutation = useDeleteTemplate();
   
   // Extract templates and pagination info from response
@@ -39,7 +43,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const hasMorePages = currentPage < totalCount;
   
   // Derive error state
-  const error = templatesError?.message || createTemplateMutation.error?.message || deleteTemplateMutation.error?.message || null;
+  const error = templatesError?.message || createTemplateMutation.error?.message || updateTemplateMutation.error?.message || deleteTemplateMutation.error?.message || null;
 
 
   // Handle page changes
@@ -81,6 +85,33 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
 
   const handleBackToTemplates = () => {
     setActiveTemplate(null);
+  };
+
+  const handleEditTemplate = (template: TemplateDetail) => {
+    setEditingTemplate(template);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateTemplate = async (templateName: string, templateText: string) => {
+    if (!editingTemplate) return;
+    
+    const body: CreateTemplateV2 = {
+      id: editingTemplate.id,
+      template_name: templateName,
+      template: templateText,
+      challenge_id: challenge.id,
+    };
+
+    updateTemplateMutation.mutate(body, {
+      onSuccess: () => {
+        setShowEditModal(false);
+        setEditingTemplate(null);
+      },
+      onError: (error) => {
+        console.error("Error updating template:", error);
+        // Error is already handled by React Query and displayed via the error state
+      }
+    });
   };
 
   const handleDeleteTemplate = (templateId: string) => {
@@ -129,6 +160,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
             key={template?.id} 
             template={template} 
             handleTemplateClick={handleTemplateClick}
+            onEdit={handleEditTemplate}
             onDelete={handleDeleteTemplate}
             currentUser={currentUser}
             isDeleting={deleteTemplateMutation.isPending}
@@ -295,6 +327,8 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
           isOpen={showTemplateModal}
           onClose={() => setShowTemplateModal(false)}
           onSelect={handleSelectTemplate}
+          onEdit={handleEditTemplate}
+          currentUser={currentUser}
         />
       )}
       
@@ -305,6 +339,20 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
         isLoading={createTemplateMutation.isPending}
         challenge={challenge}
       />
+
+      {editingTemplate && (
+        <TemplateEditModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingTemplate(null);
+          }}
+          onUpdate={handleUpdateTemplate}
+          isLoading={updateTemplateMutation.isPending}
+          template={editingTemplate}
+          challenge={challenge}
+        />
+      )}
     </div>
   );
 };
