@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -71,10 +71,10 @@ interface TemplateBuilderProps {
 const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCreate, isLoading, challenge }) => {
   const [templateName, setTemplateName] = useState('');
   const [templateContent, setTemplateContent] = useState('');
-  const [placeholders, setPlaceholders] = useState<PlaceholderElement[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isOver, setIsOver] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState(0);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -91,31 +91,19 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
 
     if (over && over.id === 'canvas') {
       const elementType = active.data.current?.type;
-      const elementLabel = active.data.current?.label;
 
       if (elementType) {
-        const newPlaceholder: PlaceholderElement = {
-          id: Date.now().toString(),
-          type: elementType,
-          label: elementLabel,
-          position: templateContent.length,
-        };
-
         const placeholderText = `{${elementType}}`;
-        setTemplateContent(prev => prev + `\n${placeholderText}`);
-        setPlaceholders(prev => [...prev, newPlaceholder]);
+        // Insert at cursor position
+        setTemplateContent(prev => {
+          const before = prev.slice(0, cursorPosition);
+          const after = prev.slice(cursorPosition);
+          return before + placeholderText + after;
+        });
+        
       }
     }
   };
-
-  const removePlaceholder = useCallback((placeholderId: string) => {
-    const placeholder = placeholders.find(p => p.id === placeholderId);
-    if (!placeholder) return;
-
-    const placeholderText = `{${placeholder.type}}`;
-    setTemplateContent(prev => prev.replace(placeholderText, ''));
-    setPlaceholders(prev => prev.filter(p => p.id !== placeholderId));
-  }, [placeholders]);
 
   const handleCreate = () => {
     if (templateName.trim() && templateContent.trim()) {
@@ -126,7 +114,6 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
   const handleClose = () => {
     setTemplateName('');
     setTemplateContent('');
-    setPlaceholders([]);
     setIsPreviewMode(false);
     onClose();
   };
@@ -196,7 +183,7 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
               
               <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-600 rounded-lg">
                 <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                  <strong>Mode Toggle:</strong> Use the toggle button in the top-right corner of the canvas to switch between edit and preview modes. You can only drag elements in edit mode.
+                  <strong>Smart Editing:</strong> Click to edit, automatically switches to preview when you stop typing.
                 </p>
               </div>
             </div>
@@ -206,19 +193,15 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
               <div className="mb-4">
                 <h2 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100 mb-2">Template Canvas</h2>
                 <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                  {isPreviewMode 
-                    ? "Preview mode: See how your template looks with placeholders. Switch to edit mode to add more elements."
-                    : "Edit mode: Type your template content and drag elements from the sidebar to add them here."
-                  }
+                  Click anywhere to edit. All formatting (tabs, spaces, newlines) is preserved.
                 </p>
               </div>
 
               <EditableCanvas
                 content={templateContent}
                 onContentChange={setTemplateContent}
-                placeholders={placeholders}
-                onRemovePlaceholder={removePlaceholder}
                 isOver={isOver}
+                setCursorPosition={setCursorPosition}
                 isPreviewMode={isPreviewMode}
                 onTogglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
               />
