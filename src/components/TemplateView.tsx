@@ -24,7 +24,7 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
             <div className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
               Template Details
             </div>
-              <span className="  rounded-lg text-blue-800 dark:text-blue-200">
+              <span className=" ml-2 rounded-lg text-blue-800 dark:text-blue-200">
                 {template?.text_category}
               </span>
           </div>
