@@ -19,7 +19,6 @@ import { useAuth } from "./auth/use-auth-hook";
 import { useTheme } from "./hooks/useTheme";
 import { useTokenExpiration } from "./hooks/useTokenExpiration";
 import { useTranslation } from "react-i18next";
-import FeedBucket from "./components/Feedbucket";
 import JsonViewer from "./components/JsonViewer";
 import { SAMPLE_UCCA } from "./utils/data";
 
@@ -237,7 +236,6 @@ const App = () => {
         </Routes>
 
       </div>
-      <FeedBucket />
     </ToastProvider>
   );
 };
