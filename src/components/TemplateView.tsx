@@ -79,33 +79,37 @@ const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, 
             </div>
           </div>
 
-          {/* Metadata */}
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+        
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center space-x-3 p-2  justify-between ">
+            {/* Metadata */}
+          <div className="flex items-center gap-4 pt-4 ">
             <div className="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
               <User className="w-4 h-4" />
-              <span>Created by: {template.created_by}</span>
+              <span>{template.created_by}</span>
             </div>
             <div className="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
               <Calendar className="w-4 h-4" />
               <span>Updated: {formatRelativeTime(template.updated_at || template.created_at)}</span>
             </div>
           </div>
-        </div>
+          <div className="flex items-center space-x-3">
 
-        {/* Footer */}
-        <div className="flex items-center justify-end space-x-3 p-6 border-t border-neutral-200 dark:border-neutral-700 ">
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
-          >
+            >
             Cancel
           </button>
           <button
             onClick={() => onSelect(template)}
             className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition-colors duration-200"
-          >
+            >
             Select
           </button>
+            </div>
         </div>
       </div>
     </div>
