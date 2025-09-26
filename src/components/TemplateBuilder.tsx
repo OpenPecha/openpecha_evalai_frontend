@@ -74,6 +74,7 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
   const [placeholders, setPlaceholders] = useState<PlaceholderElement[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isOver, setIsOver] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -126,6 +127,7 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
     setTemplateName('');
     setTemplateContent('');
     setPlaceholders([]);
+    setIsPreviewMode(false);
     onClose();
   };
 
@@ -191,9 +193,10 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
                   return <DraggableItem key={element.type} element={element} />
                 })}
               </div>
+              
               <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-600 rounded-lg">
                 <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                  <strong>Smart Editing:</strong> Click to edit, automatically switches to preview when you stop typing.
+                  <strong>Mode Toggle:</strong> Use the toggle button in the top-right corner of the canvas to switch between edit and preview modes. You can only drag elements in edit mode.
                 </p>
               </div>
             </div>
@@ -203,7 +206,10 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
               <div className="mb-4">
                 <h2 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100 mb-2">Template Canvas</h2>
                 <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                  Click anywhere to edit. All formatting (tabs, spaces, newlines) is preserved.
+                  {isPreviewMode 
+                    ? "Preview mode: See how your template looks with placeholders. Switch to edit mode to add more elements."
+                    : "Edit mode: Type your template content and drag elements from the sidebar to add them here."
+                  }
                 </p>
               </div>
 
@@ -213,6 +219,8 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
                 placeholders={placeholders}
                 onRemovePlaceholder={removePlaceholder}
                 isOver={isOver}
+                isPreviewMode={isPreviewMode}
+                onTogglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
               />
             </div>
           </div>
