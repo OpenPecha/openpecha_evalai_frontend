@@ -274,13 +274,13 @@
 
 /* Width of vertical scrollbar */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px; /* for horizontal scrollbar */
+  width: 5px;
+  height: 5px; /* for horizontal scrollbar */
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
   border-radius: 10px;
 }
 
