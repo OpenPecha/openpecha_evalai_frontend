@@ -4,9 +4,10 @@ import { useTranslateV2 } from "../hooks/useTranslateV2";
 import { updateBattleWinner } from "../api/translate";
 import { useToast } from "./use-toast";
 import { ChevronLeft, ChevronRight, Copy, StopCircle, AlertCircle } from "lucide-react";
-import { FaDeaf, FaHandshake } from "react-icons/fa";
+import { FaHandshake } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
 import Markdown from 'react-markdown'
+import FontSizeControl from './FontSizeControl';
 
 
 const DEFAULT_STEPS = [
@@ -72,6 +73,8 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
   const [selectedOption, setSelectedOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [isVoting, setIsVoting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
+  const [leftFontSize, setLeftFontSize] = useState(16);
+  const [rightFontSize, setRightFontSize] = useState(16);
   
   // Dynamic translation steps
   const { currentStep, currentStepIndex, totalSteps } = useTranslationSteps(state.isLoading);
@@ -196,7 +199,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="flex items-center space-x-2">
                 <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
                   {(selectedOption && state.data) ? state.data.model_1 : t('translation.modelA')}
-                  <TemplateName templateName={state.data?.template_1_name} />
+                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_1_name} />}
                 </h3>
                 {(selectedOption === 'left' || selectedOption === 'both') && (
                   <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
@@ -204,6 +207,12 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               </div>
               
               <div className="flex items-center space-x-2">
+                {/* Font size control */}
+                <FontSizeControl
+                  fontSize={leftFontSize}
+                  onFontSizeChange={setLeftFontSize}
+                  className="mr-2"
+                />
                 
                 {/* Copy button */}
                 {state.data?.translation_1?.translation && (
@@ -240,7 +249,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth">
+              <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${leftFontSize}px` }}>
                 {state.data?.translation_1?.translation ? (
                   <div className="break-words">
                     <Markdown>
@@ -289,7 +298,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="flex items-center space-x-2">
                 <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
                   {(selectedOption && state.data) ? state.data.model_2 : t('translation.modelB')}
-                  <TemplateName templateName={state.data?.template_2_name} />
+                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_2_name} />}
                 </h3>
                 {(selectedOption === 'right' || selectedOption === 'both') && (
                   <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
@@ -297,6 +306,12 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               </div>
               
               <div className="flex items-center space-x-2">
+                {/* Font size control */}
+                <FontSizeControl
+                  fontSize={rightFontSize}
+                  onFontSizeChange={setRightFontSize}
+                  className="mr-2"
+                />
                 
                 {/* Copy button */}
                 {state.data?.translation_2?.translation && (
@@ -333,7 +348,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth">
+              <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${rightFontSize}px` }}>
                 {state.data?.translation_2?.translation ? (
                   <div className="break-words">
                     <Markdown>

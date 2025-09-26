@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StopCircle, CheckCircle, AlertCircle, Loader2, Copy } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import FontSizeControl from './FontSizeControl';
 
 interface ModelStreamPanelProps {
   modelId: string;
@@ -17,6 +18,8 @@ interface ModelStreamPanelProps {
   hideRating?: boolean; // New prop to hide individual rating buttons
   hoverEffect?: 'shiny' | 'red' | null; // New prop for hover effects
   onCopy?: () => void; // Callback for copy action
+  fontSize?: number; // Font size for content
+  onFontSizeChange?: (size: number) => void; // Font size change callback
 }
 
 const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
@@ -34,9 +37,16 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
   hideRating = false,
   hoverEffect = null,
   onCopy,
+  fontSize = 16,
+  onFontSizeChange,
 }) => {
   const { t } = useTranslation();
   const contentRef = useRef<HTMLDivElement>(null);
+  const [internalFontSize, setInternalFontSize] = useState(fontSize);
+
+  // Use internal font size if no external control is provided
+  const currentFontSize = onFontSizeChange ? fontSize : internalFontSize;
+  const handleFontSizeChange = onFontSizeChange || setInternalFontSize;
 
   // Auto-scroll to bottom when new content arrives with smooth scrolling
   useEffect(() => {
@@ -115,6 +125,13 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
           </div>
           
           <div className="flex items-center space-x-2">
+            {/* Font size control */}
+            <FontSizeControl
+              fontSize={currentFontSize}
+              onFontSizeChange={handleFontSizeChange}
+              className="mr-2"
+            />
+            
             {/* Streaming indicator */}
             {isStreaming && (
               <div className="flex items-center space-x-1 text-primary-600 dark:text-primary-400">
@@ -161,6 +178,7 @@ const ModelStreamPanel: React.FC<ModelStreamPanelProps> = ({
           <div
             ref={contentRef}
             className="max-h-96 overflow-y-auto  text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth"
+            style={{ fontSize: `${currentFontSize}px` }}
           >
             {content ? (
               <div className="break-words">

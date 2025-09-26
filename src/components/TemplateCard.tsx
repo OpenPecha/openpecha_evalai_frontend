@@ -51,9 +51,9 @@ export const TemplateCard = ({
                 <div className="space-y-3">
                     {/* Header with title, icon, and delete button */}
                     <div className="flex items-start justify-between">
-                     <div className="flex">
+                     <div className="flex flex-col">
 
-                        <h3 className="font-semibold text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight flex-1 pr-2">
+                        <h3 className="font-semibold w-full truncate text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight flex-1 pr-2">
                             {template.template_name}
                         </h3>
                           {/* Sample text */}

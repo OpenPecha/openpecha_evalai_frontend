@@ -131,7 +131,7 @@ export const arenaApi = {
       }
       
       const queryString = params.toString();
-      const url = `${API_BASE_URL}/arena_ranking/${challengeId}${queryString ? `?${queryString}` : ''}`;
+      const url = `${API_BASE_URL}/arena/ranking/${challengeId}${queryString ? `?${queryString}` : ''}`;
       
       const response = await fetch(url, {
         method: 'GET',
