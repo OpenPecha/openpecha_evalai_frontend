@@ -200,10 +200,8 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       >
         {isOpen ? (
           <>
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-secondary-500 rounded-lg flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-white" />
-              </div>
+            <Link to="/" className="flex items-center space-x-3 flex-col">
+               <img src="/favicon.ico" alt="Buddhist AI Arena" className="w-14 h-14" />
               <span className="text-xl font-bold text-neutral-700 dark:text-neutral-100">
                 {import.meta.env.VITE_APP_NAME || "Buddhist AI Arena"}
               </span>
@@ -224,9 +222,8 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
           <div className="flex flex-col items-center space-y-2">
             <Link
               to="/"
-              className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center"
             >
-              <Trophy className="w-5 h-5 text-white" />
+                            <img src="/favicon.ico" alt="Buddhist AI Arena" className="w-8 h-8" />
             </Link>
             {onToggle && (
               <button
