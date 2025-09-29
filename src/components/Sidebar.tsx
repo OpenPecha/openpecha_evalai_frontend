@@ -205,7 +205,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                 <Trophy className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold text-neutral-700 dark:text-neutral-100">
-                {import.meta.env.VITE_APP_NAME || "Evaluate"}
+                {import.meta.env.VITE_APP_NAME || "Buddhist AI Arena"}
               </span>
             </Link>
             {/* Toggle button */}
