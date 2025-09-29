@@ -104,7 +104,7 @@ const Home = () => {
           </p>
         </div>
         <div>
-          <a href={documentation_link} target="_blank" rel="noopener noreferrer" className="bg-neutral-700 hover:bg-neutral-600 hover:text-white px-4 py-2 rounded-md">
+          <a href={documentation_link} target="_blank" rel="noopener noreferrer" className="bg-white  dark:text-neutral-100 dark:bg-neutral-700  dark:hover:bg-neutral-600 hover:bg-neutral-600 hover:text-white px-4 py-2 rounded-md">
             {t('navigation.documentation')}
           </a>
         </div>
