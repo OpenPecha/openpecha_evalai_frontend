@@ -87,10 +87,14 @@ const Home = () => {
     );
   }
 
+
+  const documentation_link=`${import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"}/documentation`
   return (
     <div className="py-0">
       <div className="max-w-7xl mx-auto px-4">
         {/* Modern Header */}
+        <div className="flex justify-between items-center">
+
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-neutral-600 dark:text-neutral-100 mb-2">
             {t('challenges.title')}
@@ -98,6 +102,12 @@ const Home = () => {
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
             {t('challenges.subtitle')}
           </p>
+        </div>
+        <div>
+          <a href={documentation_link} target="_blank" rel="noopener noreferrer" className="bg-neutral-700 hover:bg-neutral-600 hover:text-white px-4 py-2 rounded-md">
+            {t('navigation.documentation')}
+          </a>
+        </div>
         </div>
 
         {challenges.length === 0 ? (

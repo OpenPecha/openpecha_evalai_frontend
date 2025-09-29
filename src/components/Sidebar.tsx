@@ -108,17 +108,8 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
       activeClasses: "text-primary-600 bg-primary-50 border-l-4 border-blue-600",
       tooltip: t('navigation.leaderboards'),
       isExternal: false,
-    },
-    {
-      label: t('navigation.documentation'),
-      path: undefined,
-      href: `${import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"}/documentation`,
-      icon: BookOpen,
-      isExternal: true,
-      isActive: () => false,
-      activeClasses: "",
-      tooltip: t('navigation.documentation'),
-    },
+    }
+  
   ];
 
   // Admin navigation items
