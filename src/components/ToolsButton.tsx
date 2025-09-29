@@ -15,9 +15,6 @@ const ToolsButton: React.FC = () => {
         title={t('tools.title')}
       >
         <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-semibold">P</span>
-                </div>
                 <span className="font-medium text-neutral-700 dark:text-neutral-100">
                   {t('sidebar.pechaTools')}
                 </span>

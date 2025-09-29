@@ -254,7 +254,7 @@
     "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
   },
   "tools": {
-    "title": "Pecha Studio Tools",
+    "title": "Buddhist AI Tools",
     "availableTools": "{{count}} available tools",
     "searchPlaceholder": "Search tools...",
     "loadingTools": "Loading tools...",
