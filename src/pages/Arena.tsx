@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { arenaApi } from '../api/arena_challenge';
 import { LANGUAGES } from '../utils/const';
 import type { ArenaChallenge, ArenaChallengeRequest } from '../types/arena_challenge';
@@ -13,7 +13,8 @@ const Arena = () => {
   const [judgeOrBattle, setJudgeOrBattle] = useState<string>('');
   
   // Filter states
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [selectedFromLanguage, setSelectedFromLanguage] = useState<string>('');
+  const [selectedToLanguage, setSelectedToLanguage] = useState<string>('');
   const [selectedTextType, setSelectedTextType] = useState<string>('');
   
   // Pagination states
@@ -28,8 +29,8 @@ const Arena = () => {
   // Create challenge form state
   const [createForm, setCreateForm] = useState<ArenaChallengeRequest>({
     text_category_id: '',
-    from_language: 'Tibetan',
-    to_language: 'English',
+    from_language: '',
+    to_language: '',
     challenge_name: ''
   });
 
@@ -40,8 +41,8 @@ const Arena = () => {
     try {
       setLoading(true);
       const response = await arenaApi.getChallengesWithPagination({
-        from_language: "Tibetan",
-        to_language: selectedLanguage || "",
+        from_language: selectedFromLanguage || "",
+        to_language: selectedToLanguage || "",
         text_category_id: selectedTextType || "",
         challenge_name: searchText || "",
         page_number: currentPage
@@ -60,7 +61,7 @@ const Arena = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchText, selectedLanguage, selectedTextType]);
+  }, [currentPage, searchText, selectedFromLanguage, selectedToLanguage, selectedTextType]);
 
   // Load challenges on component mount
   useEffect(() => {
@@ -85,7 +86,8 @@ const Arena = () => {
     try {
         console.log("createForm ::: ", createForm);
       const newChallenge = await arenaApi.createChallenge(createForm);
-      setSelectedLanguage("");
+      setSelectedFromLanguage("");
+      setSelectedToLanguage("");
       setSelectedTextType("");
       setSearchText("");
       setCurrentPage(1);
@@ -94,8 +96,8 @@ const Arena = () => {
       setShowCreateModal(false);
       setCreateForm({
         text_category_id: '',
-        from_language: 'Tibetan',
-        to_language: 'English',
+        from_language: '',
+        to_language: '',
         challenge_name: ''
       });
       // Reload challenges to show the new one
@@ -106,7 +108,8 @@ const Arena = () => {
   };
 
   const clearFilters = () => {
-    setSelectedLanguage('');
+    setSelectedFromLanguage('');
+    setSelectedToLanguage('');
     setSelectedTextType('');
     setSearchText('');
     setCurrentPage(1); // Reset to first page when clearing filters
@@ -180,11 +183,26 @@ const Arena = () => {
           {/* Filter Bar */}
           <div className="flex  h-full  flex-wrap gap-4 items-center">
           
-            {/* Language Filter */}
+            {/* From Language Filter */}
             <select
-              value={selectedLanguage}
+              value={selectedFromLanguage}
               onChange={(e) => {
-                setSelectedLanguage(e.target.value);
+                setSelectedFromLanguage(e.target.value);
+                setCurrentPage(1); // Reset to first page when filter changes
+              }}
+              className="px-3 py-3  border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">From Languages</option>
+              {uniqueLanguages.map(lang => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
+            </select>
+
+            {/* To Language Filter */}
+            <select
+              value={selectedToLanguage}
+              onChange={(e) => {
+                setSelectedToLanguage(e.target.value);
                 setCurrentPage(1); // Reset to first page when filter changes
               }}
               className="px-3 py-3  border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -213,7 +231,7 @@ const Arena = () => {
           
 
             {/* Clear Filters */}
-            {(selectedLanguage || selectedTextType || searchText) && (
+            {(selectedFromLanguage || selectedToLanguage || selectedTextType || searchText) && (
               <button
                 onClick={clearFilters}
                 className="px-3 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors duration-200"
@@ -384,9 +402,9 @@ const Arena = () => {
                   <select
                     value={createForm.from_language}
                     onChange={(e) => setCreateForm(prev => ({ ...prev, from_language: e.target.value }))}
-                    disabled={true}
-                    className="disabled:cursor-not-allowed disabled:opacity-50 w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
+                    <option value="">Select source language...</option>
                     {LANGUAGES.map(lang => (
                       <option key={lang.code} value={lang.name}>{lang.name}</option>
                     ))}
@@ -402,6 +420,7 @@ const Arena = () => {
                     onChange={(e) => setCreateForm(prev => ({ ...prev, to_language: e.target.value }))}
                     className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
+                    <option value="">Select target language...</option>
                     {LANGUAGES.map(lang => (
                       <option key={lang.code} value={lang.name}>{lang.name}</option>
                     ))}
