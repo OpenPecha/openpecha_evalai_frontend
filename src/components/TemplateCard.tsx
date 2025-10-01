@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { TemplateDetail } from "../types/template";
 import { formatRelativeTime } from "../utils/date";
 
-export const TemplateCard = ({ 
+const TemplateCard = ({ 
     template, 
     handleTemplateClick, 
     onDelete,
@@ -60,7 +60,7 @@ export const TemplateCard = ({
                     <div className="flex items-start justify-between">
                      <div className="flex flex-col">
 
-                        <h3 className="font-semibold w-full truncate text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight flex-1 pr-2">
+                        <h3 className="font-semibold w-full  text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight flex-1 pr-2">
                             {template.template_name}
                         </h3>
                           {/* Sample text */}
@@ -165,3 +165,6 @@ export const TemplateCard = ({
         </div>
     )
 }
+
+
+export default TemplateCard;

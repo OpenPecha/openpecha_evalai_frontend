@@ -1,9 +1,9 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState } from "react";
 import { Trophy, Medal, Award, Search, X, ChevronDown } from "lucide-react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { BiExpandAlt } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
-import { arenaApi } from "../api/arena_challenge";
+import { useAllArenaRankings, useArenaRankingById } from "../hooks/useArenaChallenge";
 import type { ArenaRanking as ArenaRankingType } from "../types/arena_challenge";
 import MattricHelper from "./MattricHelper";
 
@@ -15,69 +15,167 @@ type RankingBy = 'combined' | 'template' | 'model';
 
 const ArenaRanking: React.FC<ArenaRankingProps> = () => {
   useTranslation(); // For future i18n support
-  const [rankings, setRankings] = useState<ArenaRankingType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState<ArenaRankingType | null>(null);
-  const [modalLoading, setModalLoading] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<ArenaRankingType['challenge_details'] | null>(null);
   const [rankingBy, setRankingBy] = useState<RankingBy>('combined');
 
-  useEffect(() => {
-    const fetchRankings = async () => {
-      try {
-        setLoading(true);
-        const data = await arenaApi.getAllArenaRankings();
-        console.log("data arena ranking ::: ", data);
-        setRankings(data);
-      } catch (err) {
-        setError('Failed to fetch arena rankings');
-        console.error('Error fetching rankings:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // React Query hooks
+  const { 
+    data: rankings = [], 
+    isLoading: loading, 
+    error: rankingsError 
+  } = useAllArenaRankings();
 
-    fetchRankings();
-  }, []);
+  // Map rankingBy to API parameter
+  const getApiRankingBy = (rankingBy: RankingBy): string => {
+    switch (rankingBy) {
+      case 'template': return 'template';
+      case 'model': return 'model';
+      default: return 'combined';
+    }
+  };
+
+  const { 
+    data: modalData, 
+    isLoading: modalLoading, 
+    error: modalError 
+  } = useArenaRankingById(
+    selectedChallenge?.challenge_id || '', 
+    getApiRankingBy(rankingBy),
+    isModalOpen && !!selectedChallenge
+  );
 
   // Open modal with challenge data
-  const handleExpandChallenge = async (challenge: ArenaRankingType['challenge_details']) => {
-    try {
-      setModalLoading(true);
-      setSelectedChallenge(challenge);
-      setIsModalOpen(true);
-      
-      // Using challengeIndex as ID since we don't have actual challenge IDs in demo data
-      // Map our ranking types to API types
-      const apiRankingBy = rankingBy === 'template' ? 'template' : 
-                          rankingBy === 'model' ? 'model' : 'combined';
-      const data = await arenaApi.getArenaRankingById(challenge.challenge_id, apiRankingBy);
-      setModalData(data);
-    } catch (err) {
-      console.error('Error fetching expanded challenge data:', err);
-      setError('Failed to fetch detailed challenge data');
-    } finally {
-      setModalLoading(false);
-    }
+  const handleExpandChallenge = (challenge: ArenaRankingType['challenge_details']) => {
+    setSelectedChallenge(challenge);
+    setIsModalOpen(true);
   };
 
   // Handle modal close
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setModalData(null);
     setSelectedChallenge(null);
   };
 
-  // Refetch modal data when ranking filter changes
-  useEffect(() => {
-    if (isModalOpen && selectedChallenge && modalData) {
-      handleExpandChallenge(selectedChallenge);
+  // Render modal content based on loading/error state
+  const renderModalContent = () => {
+    if (modalLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+          <span className="ml-3 text-neutral-600 dark:text-neutral-400">Loading detailed rankings...</span>
+        </div>
+      );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rankingBy]);
+    
+    if (modalError) {
+      return (
+        <div className="text-center py-12">
+          <div className="text-red-500 dark:text-red-400 mb-2">
+            Failed to fetch detailed challenge data
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-200"
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+    
+    if (modalData) {
+      return (
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
+              <thead className="bg-neutral-50 dark:bg-neutral-900 sticky top-0">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    Rank
+                  </th>
+                  {(rankingBy === 'combined' || rankingBy === 'template') && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                      Template
+                    </th>
+                  )}
+                  {(rankingBy === 'combined' || rankingBy === 'model') && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                      Model
+                    </th>
+                  )}
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    ELO Rating
+                    <MattricHelper metric="ELO" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
+                {(() => {
+                  const sortedModalRankings = [...modalData.arena_ranking].sort((a, b) => b.elo_rating - a.elo_rating);
+                  return sortedModalRankings.map((entry, index) => (
+                  <tr
+                    key={`${entry.template_name || ''}-${entry.model_name || ''}-${index}`}
+                    className={`hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-200 ${
+                      index < 3 ? "bg-gradient-to-r from-yellow-50/30 to-transparent dark:from-yellow-900/10" : ""
+                    }`}
+                  >
+                    {/* Rank */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        {getRankIcon(index + 1)}
+                        <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                          #{index + 1}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Template Name */}
+                    {(rankingBy === 'combined' || rankingBy === 'template') && (
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                          {entry.template_name || 'N/A'}
+                        </div>
+                      </td>
+                    )}
+
+                    {/* Model Name */}
+                    {(rankingBy === 'combined' || rankingBy === 'model') && (
+                      <td className="px-6 py-4">
+                        <div className={`text-sm font-semibold ${getModelColor(entry.model_name || '')}`}>
+                          {entry.model_name || 'N/A'}
+                        </div>
+                      </td>
+                    )}
+
+                    {/* ELO Rating */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-lg font-bold ${getScoreColor(entry.elo_rating, index + 1)}`}>
+                          {entry.elo_rating}
+                        </span>
+                        {index < 3 && (
+                          <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                  ));
+                })()}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="text-center py-12">
+        <div className="text-neutral-500 dark:text-neutral-400">No data available</div>
+      </div>
+    );
+  };
 
   // Filter rankings based on search query
   const filteredRankings = rankings.filter(ranking => {
@@ -128,10 +226,12 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
     );
   }
 
-  if (error) {
+  if (rankingsError) {
     return (
       <div className="text-center py-12">
-        <div className="text-red-500 dark:text-red-400 mb-2">{error}</div>
+        <div className="text-red-500 dark:text-red-400 mb-2">
+          Failed to fetch arena rankings
+        </div>
         <button 
           onClick={() => window.location.reload()}
           className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-200"
@@ -215,9 +315,9 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
-                      {ranking.arena_ranking
-                        .sort((a, b) => b.elo_rating - a.elo_rating)
-                        .map((entry, entryIndex) => (
+                      {(() => {
+                        const sortedRankings = [...ranking.arena_ranking].sort((a, b) => b.elo_rating - a.elo_rating);
+                        return sortedRankings.map((entry, entryIndex) => (
                         <tr
                           key={`${entry.template_name}-${entry.model_name}-${entryIndex}`}
                           className={`hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-200 ${
@@ -252,7 +352,8 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                             </span>
                           </td>
                         </tr>
-                      ))}
+                        ));
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -360,96 +461,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
                   {/* Modal Leaderboard Content */}
                   <div className="max-h-[60vh] overflow-y-auto">
-                    {modalLoading ? (
-                      <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-                        <span className="ml-3 text-neutral-600 dark:text-neutral-400">Loading detailed rankings...</span>
-                      </div>
-                    ) : modalData ? (
-                      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden">
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
-                            <thead className="bg-neutral-50 dark:bg-neutral-900 sticky top-0">
-                              <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                                  Rank
-                                </th>
-                                {(rankingBy === 'combined' || rankingBy === 'template') && (
-                                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                                    Template
-                                  </th>
-                                )}
-                                {(rankingBy === 'combined' || rankingBy === 'model') && (
-                                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                                    Model
-                                  </th>
-                                )}
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                                  ELO Rating
-                                  <MattricHelper metric="ELO" />
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
-                              {modalData.arena_ranking
-                                .sort((a, b) => b.elo_rating - a.elo_rating)
-                                .map((entry, index) => (
-                                <tr
-                                  key={`${entry.template_name || ''}-${entry.model_name || ''}-${index}`}
-                                  className={`hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-200 ${
-                                    index < 3 ? "bg-gradient-to-r from-yellow-50/30 to-transparent dark:from-yellow-900/10" : ""
-                                  }`}
-                                >
-                                  {/* Rank */}
-                                  <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="flex items-center gap-2">
-                                      {getRankIcon(index + 1)}
-                                      <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                                        #{index + 1}
-                                      </span>
-                                    </div>
-                                  </td>
-
-                                  {/* Template Name */}
-                                  {(rankingBy === 'combined' || rankingBy === 'template') && (
-                                    <td className="px-6 py-4">
-                                      <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                                        {entry.template_name || 'N/A'}
-                                      </div>
-                                    </td>
-                                  )}
-
-                                  {/* Model Name */}
-                                  {(rankingBy === 'combined' || rankingBy === 'model') && (
-                                    <td className="px-6 py-4">
-                                      <div className={`text-sm font-semibold ${getModelColor(entry.model_name || '')}`}>
-                                        {entry.model_name || 'N/A'}
-                                      </div>
-                                    </td>
-                                  )}
-
-                                  {/* ELO Rating */}
-                                  <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="flex items-center gap-2">
-                                      <span className={`text-lg font-bold ${getScoreColor(entry.elo_rating, index + 1)}`}>
-                                        {entry.elo_rating}
-                                      </span>
-                                      {index < 3 && (
-                                        <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
-                                      )}
-                                    </div>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-12">
-                        <div className="text-neutral-500 dark:text-neutral-400">No data available</div>
-                      </div>
-                    )}
+                    {renderModalContent()}
                   </div>
                 </div>
               )}

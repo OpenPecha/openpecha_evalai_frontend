@@ -179,7 +179,7 @@ export function ReactQueryExamples() {
             )}
             
             <div className="space-y-2">
-              {templates.map((template) => (
+              {templates?.map((template) => (
                 <div key={template.template_detail?.id} className="border p-2 rounded">
                   <h4 className="font-medium">{template.template_detail?.template_name}</h4>
                   <p className="text-sm text-gray-600">

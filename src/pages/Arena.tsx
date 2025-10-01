@@ -1,16 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight, Info } from 'lucide-react';
-import { arenaApi } from '../api/arena_challenge';
+import { usePaginatedArenaChallenges, useArenaCategories, useCreateArenaChallenge } from '../hooks/useArenaChallenge';
 import { LANGUAGES } from '../utils/const';
 import type { ArenaChallenge, ArenaChallengeRequest } from '../types/arena_challenge';
-import Template from '../components/Template';
 
 const Arena = () => {
-  const [challenges, setChallenges] = useState<ArenaChallenge[]>([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
-  const [activeChallenge, setActiveChallenge] = useState<ArenaChallenge | null>(null);
-  const [judgeOrBattle, setJudgeOrBattle] = useState<string>('');
   
   // Filter states
   const [selectedFromLanguage, setSelectedFromLanguage] = useState<string>('');
@@ -19,8 +16,6 @@ const Arena = () => {
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [hasMorePages, setHasMorePages] = useState<boolean>(true);
   
   // Modal states
   const [selectedChallenge, setSelectedChallenge] = useState<ArenaChallenge | null>(null);
@@ -34,58 +29,38 @@ const Arena = () => {
     challenge_name: ''
   });
 
-  // Categories state
-  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
-
-  const loadChallenges = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await arenaApi.getChallengesWithPagination({
-        from_language: selectedFromLanguage || "",
-        to_language: selectedToLanguage || "",
-        text_category_id: selectedTextType || "",
-        challenge_name: searchText || "",
-        page_number: currentPage
-      });
-      
-      setChallenges(response.items);
-      setTotalPages(response.total_count); // total_count is the number of pages
-      
-      // Check if there are more pages
-      setHasMorePages(currentPage < response.total_count);
-    } catch (error) {
-      console.error('Failed to load challenges:', error);
-      setChallenges([]);
-      setTotalPages(0);
-      setHasMorePages(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, searchText, selectedFromLanguage, selectedToLanguage, selectedTextType]);
-
-  // Load challenges on component mount
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  // Load challenges when page, search, or filters change
-  useEffect(() => {
-    loadChallenges();
-  }, [loadChallenges]);
-
-  const loadCategories = async () => {
-    try {
-      const categoryData = await arenaApi.getCategories();
-      setCategories(categoryData);
-    } catch (error) {
-      console.error('Failed to load categories:', error);
-    }
+  // React Query hooks
+  const queryParams = {
+    from_language: selectedFromLanguage || "",
+    to_language: selectedToLanguage || "",
+    text_category_id: selectedTextType || "",
+    challenge_name: searchText || "",
+    page_number: currentPage
   };
+
+  const { 
+    data: challengesData, 
+    isLoading: loading, 
+    error: challengesError 
+  } = usePaginatedArenaChallenges(queryParams);
+
+  const { 
+    data: categories = []
+  } = useArenaCategories();
+
+  const createChallengeMutation = useCreateArenaChallenge();
+
+  // Extract data from challenges response
+  const challenges = challengesData?.items || [];
+  const totalPages = challengesData?.total_count || 0;
+  const hasMorePages = currentPage < totalPages;
 
   const handleCreateChallenge = async () => {
     try {
-        console.log("createForm ::: ", createForm);
-      const newChallenge = await arenaApi.createChallenge(createForm);
+      console.log("createForm ::: ", createForm);
+      const newChallenge = await createChallengeMutation.mutateAsync(createForm);
+      
+      // Reset form and filters
       setSelectedFromLanguage("");
       setSelectedToLanguage("");
       setSelectedTextType("");
@@ -100,10 +75,8 @@ const Arena = () => {
         to_language: '',
         challenge_name: ''
       });
-      // Reload challenges to show the new one
-      await loadChallenges();
     } catch (error) {
-      console.error('Failed to create challenge:', error);
+      console.error('Failed to create arena:', error);
     }
   };
 
@@ -121,13 +94,14 @@ const Arena = () => {
   };
 
   const handleJudgeOrBattle = (judgeOrBattle: string) => {
-    setActiveChallenge(selectedChallenge);
-    setJudgeOrBattle(judgeOrBattle);
-  };
-  
-  const backToArena = () => {
-    setActiveChallenge(null);
-    setSelectedChallenge(null);
+    if (!selectedChallenge) return;
+    
+    const challengeId = selectedChallenge.id;
+    if (judgeOrBattle === 'judge') {
+      navigate(`/arena/${challengeId}/review`);
+    } else if (judgeOrBattle === 'battle') {
+      navigate(`/arena/${challengeId}/contribute`);
+    }
   };
 
   // Get unique values for filter options from categories
@@ -135,8 +109,21 @@ const Arena = () => {
     ...LANGUAGES.map(lang => lang.name)
   ]));
 
-  if (activeChallenge) {
-    return <Template backToArena={backToArena} challenge={activeChallenge} judgeOrBattle={judgeOrBattle}/>;
+  // Error handling
+  if (challengesError) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-red-500 dark:text-red-400 mb-2">
+          Failed to load challenges
+        </div>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -156,7 +143,7 @@ const Arena = () => {
               className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Create Challenge
+              Create
             </button>
           </div>
         </div>
@@ -400,7 +387,7 @@ const Arena = () => {
           <div className="bg-white dark:bg-neutral-800 rounded-lg max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                Create Challenge
+                Create
               </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
@@ -487,10 +474,10 @@ const Arena = () => {
               </button>
               <button
                 onClick={handleCreateChallenge}
-                disabled={!createForm.text_category_id || !createForm.challenge_name || !createForm.from_language || !createForm.to_language}
+                disabled={!createForm.text_category_id || !createForm.challenge_name || !createForm.from_language || !createForm.to_language || createChallengeMutation.isPending}
                 className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors duration-200"
               >
-                Create Challenge
+                {createChallengeMutation.isPending ? 'Creating...' : 'Create'}
               </button>
             </div>
           </div>

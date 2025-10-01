@@ -5,6 +5,8 @@ import Sidebar from "./components/Sidebar";
 import { ToastProvider } from "./components/ToastContainer";
 import Home from "./pages/Home";
 import Arena from "./pages/Arena";
+import ArenaContribute from "./pages/ArenaContribute";
+import ArenaReview from "./pages/ArenaReview";
 import Leaderboard from "./pages/Leaderboard";
 import Leaderboards from "./pages/Leaderboards";
 import LeaderboardEmbed from "./pages/LeaderboardEmbed";
@@ -154,6 +156,8 @@ const App = () => {
                         }
                       />
                       <Route path="/arena" element={<Arena />} />
+                      <Route path="/arena/:challengeId/contribute" element={<ArenaContribute />} />
+                      <Route path="/arena/:challengeId/review" element={<ArenaReview />} />
                       <Route
                         path="/leaderboards"
                         element={

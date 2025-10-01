@@ -24,7 +24,7 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<TemplateDetail | null>(null);
   const [activeTemplate, setActiveTemplate] = useState<TemplateDetail | null>(null);
-  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(true);
+  const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(false);
   // React Query hooks
   const { 
     data: templatesResponse, 
@@ -170,15 +170,6 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
     );
   };
 
-  // If a template is selected, show the Chat component
-  if ((judgeOrBattle === 'judge')|| activeTemplate) {
-    return <Chat 
-    selectedTemplate={activeTemplate || undefined} 
-    challenge={challenge} 
-    onBackToTemplates={handleBackToTemplates}
-    onBackToArena={backToArena}
-    judgeOrBattle={judgeOrBattle} />;
-  }
 
   return (
     <div className="h-full flex flex-col bg-neutral-50 dark:bg-neutral-900">
@@ -226,43 +217,33 @@ const Template: React.FC<{ backToArena: () => void, challenge: ArenaChallenge, j
           {/* Filter and Actions Section */}
           <div className="mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Filter Toggle */}
+              {/* My Templates Switch Toggle */}
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <Filter className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
+                <div className="flex items-center space-x-3">
                   <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                    Show:
-                  </span>
-                </div>
-                <div className="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
-                  <button
-                    onClick={() => {
-                      setShowOnlyMyTemplates(true);
-                      setCurrentPage(1);
-                    }}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                      showOnlyMyTemplates
-                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
-                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
-                    }`}
-                  >
                     My Templates
-                  </button>
+                  </span>
                   <button
                     onClick={() => {
-                      setShowOnlyMyTemplates(false);
+                      setShowOnlyMyTemplates(!showOnlyMyTemplates);
                       setCurrentPage(1);
                     }}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                      !showOnlyMyTemplates
-                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm'
-                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      showOnlyMyTemplates ? 'bg-blue-600' : 'bg-neutral-200 dark:bg-neutral-700'
                     }`}
+                    role="switch"
+                    aria-checked={showOnlyMyTemplates}
+                    aria-label="Toggle my templates filter"
                   >
-                    All Templates
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        showOnlyMyTemplates ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
                   </button>
                 </div>
               </div>
+              
 
               {/* Create Button */}
               <button

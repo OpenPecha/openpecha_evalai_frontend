@@ -61,6 +61,26 @@ export const arenaApi = {
     
   },
 
+  // Get a specific challenge by ID
+  getChallengeById: async (challengeId: string): Promise<ArenaChallenge> => {
+    try {
+      const headers = await getAuthHeaders("json");
+      const response = await fetch(`${API_BASE_URL}/arena/challenge/${challengeId}`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching challenge:', error);
+      throw error;
+    }
+  },
+
   // get all categories
   getCategories: async (): Promise<{id: string, name: string}[]> => {
     try {
