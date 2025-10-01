@@ -20,7 +20,8 @@ import ShareButton from "../components/ShareButton";
 import LeaderboardChart from "../components/LeaderboardChart";
 import LeaderboardActionsMenu from "../components/LeaderboardActionsMenu";
 import { useToast } from "../components/use-toast";
-import ArenaRanking from "../components/ArenaRanking";
+import ArenaRanking from "../components/ArenaRanking";  
+import MattricHelper from "../components/MattricHelper";
 
 const Leaderboards = () => {
   const { t } = useTranslation();
@@ -284,7 +285,7 @@ const Leaderboards = () => {
                 )}
                 
                 {leaderboard.submissions.length > 0 && getCurrentViewMode(leaderboard.challengeId) === "table" && (
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto overflow-y-visible">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="">
                         <tr>
@@ -299,7 +300,9 @@ const Leaderboards = () => {
                               key={metric}
                               className="px-3 py-2 text-left text-xs font-medium  dark:text-neutral-400 uppercase tracking-wider"
                             >
+                            
 {t(`leaderboards.metrics.${metric}`, metric)}
+<MattricHelper metric={metric} />
                             </th>
                           ))}
                           {isAdmin && (

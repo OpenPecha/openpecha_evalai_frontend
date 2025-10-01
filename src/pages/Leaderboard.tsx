@@ -23,6 +23,7 @@ import { useCurrentUser } from "../hooks/useUsers";
 import ShareButton from "../components/ShareButton";
 import LeaderboardChart from "../components/LeaderboardChart";
 import { useToast } from "../components/use-toast";
+import MattricHelper from "../components/MattricHelper";
 
 const getRankIcon = (rank: number) => {
   switch (rank) {
@@ -418,6 +419,7 @@ const Leaderboard = () => {
                         className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
                       >
                         {metric}
+                        <MattricHelper metric={metric} />
                       </th>
                     ))}
                     <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">

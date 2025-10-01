@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Crown, Medal, Award, Search, TrendingUp, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import btRatingsData from "../score_data/bt_ratings.json";
+import MattricHelper from "./MattricHelper";
 
 interface ModelScore {
   id: string;
@@ -220,6 +221,7 @@ const ModelScoreLeaderboard: React.FC<ModelScoreLeaderboardProps> = ({ compact =
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                   ELO Rating
+                  <MattricHelper metric="ELO" />
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                   Performance Tier

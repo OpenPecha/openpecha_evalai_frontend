@@ -5,6 +5,7 @@ import { BiExpandAlt } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 import { arenaApi } from "../api/arena_challenge";
 import type { ArenaRanking as ArenaRankingType } from "../types/arena_challenge";
+import MattricHelper from "./MattricHelper";
 
 interface ArenaRankingProps {
   compact?: boolean;
@@ -158,7 +159,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
-            className="bg-white min-w-[400px] flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+            className="bg-white min-w-[500px] flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
           >
             {/* Challenge Header */}
             <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
@@ -172,7 +173,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                       {ranking.challenge_details.from_language}
                     </span>
                     <FaLongArrowAltRight className="w-4 h-4" />
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1">  
                       {ranking.challenge_details.to_language}
                     </span>
                   </div>
@@ -385,6 +386,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                                 )}
                                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                                   ELO Rating
+                                  <MattricHelper metric="ELO" />
                                 </th>
                               </tr>
                             </thead>
