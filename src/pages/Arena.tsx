@@ -260,9 +260,15 @@ const Arena = () => {
                 </div>
 
                 <div className="border-t border-neutral-200 dark:border-neutral-700 pt-4">
-                  <h3 className="font-medium text-neutral-900 dark:text-white">
-                    {challenge.challenge_name}
-                  </h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-neutral-900 dark:text-white">
+                      {challenge.challenge_name}
+                    </h3>
+                    <div className="flex items-center space-x-1 text-sm text-neutral-500 dark:text-neutral-400">
+                      <span>{challenge.template_count || 0}</span>
+                      <span>templates</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -346,18 +352,35 @@ const Arena = () => {
               <p className="text-neutral-600 dark:text-neutral-400">
                 {selectedChallenge.challenge_name}
               </p>
+              <div className="flex items-center space-x-1 text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+                <span>{selectedChallenge.template_count || 0}</span>
+                <span>templates available</span>
+              </div>
             </div>
 
             <div className="space-y-3 flex gap-2">
               <div className="relative group flex-1">
-                <button onClick={() => handleJudgeOrBattle('judge')} className="cursor-pointer w-full bg-green-800 hover:bg-green-700 text-white flex items-center justify-center space-x-3 px-4 py-3   font-medium rounded-lg transition-colors duration-200">
+                <button 
+                  onClick={() => handleJudgeOrBattle('judge')} 
+                  disabled={(selectedChallenge.template_count || 0) < 2}
+                  className={`w-full flex items-center justify-center space-x-3 px-4 py-3 font-medium rounded-lg transition-colors duration-200 ${
+                    (selectedChallenge.template_count || 0) < 2
+                      ? 'bg-neutral-400 cursor-not-allowed text-neutral-200'
+                      : 'bg-green-800 hover:bg-green-700 text-white cursor-pointer'
+                  }`}
+                >
                   <Eye className="w-5 h-5" />
                   <span>Review</span>
                 </button>
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                   <div className="flex items-center space-x-1">
                     <Info className="w-4 h-4" />
-                    <span>Provide a text and compare outputs from models and templates. Vote on the best response.</span>
+                    <span>
+                      {(selectedChallenge.template_count || 0) < 2 
+                        ? 'At least 2 templates are required for review'
+                        : 'Provide a text and compare outputs from models and templates. Vote on the best response.'
+                      }
+                    </span>
                   </div>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-neutral-900 dark:border-t-neutral-100"></div>
                 </div>

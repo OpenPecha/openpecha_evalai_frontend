@@ -9,14 +9,16 @@ const TemplateCard = ({
     onDelete,
     onEdit,
     currentUser,
-    isDeleting = false
+    isDeleting = false,
+    disabled = false
 }: { 
     template: TemplateDetail, 
     handleTemplateClick: (template: TemplateDetail) => void,
     onDelete?: (templateId: string) => void,
     onEdit?: (template: TemplateDetail) => void,
     currentUser?: { username?: string; email?: string } | null,
-    isDeleting?: boolean
+    isDeleting?: boolean,
+    disabled?: boolean
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -46,14 +48,25 @@ const TemplateCard = ({
         onEdit?.(template);
     };
 
+    const handleClick = () => {
+        if (disabled) {
+            return; // Prevent click when disabled
+        }
+        handleTemplateClick(template);
+    };
+
     
     return (
         <div className="relative">
             <button
                 key={template.id}
-                onClick={() => handleTemplateClick(template)}
-                className="w-full p-6 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-xl hover:border-primary-300 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 group"
-                disabled={isDeleting}
+                onClick={handleClick}
+                className={`w-full p-6 text-left bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 rounded-xl transition-all duration-200 group ${
+                    disabled 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:border-primary-300 dark:hover:border-primary-500 hover:shadow-lg'
+                }`}
+                disabled={isDeleting || disabled}
             >
                 <div className="space-y-3">
                     {/* Header with title, icon, and delete button */}

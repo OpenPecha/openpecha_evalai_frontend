@@ -6,6 +6,7 @@ export interface ArenaChallenge {
     to_language: string;
     challenge_name: string;
     user_id?: string;
+    template_count?: number;
   }
 
   export interface ArenaChallengeResponse {

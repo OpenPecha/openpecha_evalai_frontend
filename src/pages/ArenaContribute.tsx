@@ -90,8 +90,13 @@ const ArenaContribute: React.FC = () => {
     }
   };
 
-  // Handle template click
+  // Handle template click - prevent if less than 2 templates
   const handleTemplateClick = (template: TemplateDetail) => {
+    if ((templatesResponse?.items?.length || 0) < 2) {
+      // Show a message or prevent action
+      alert('At least 2 templates are required to use this feature');
+      return;
+    }
     setActiveTemplate(template);
   };
 
@@ -182,9 +187,7 @@ const ArenaContribute: React.FC = () => {
               </button>
               <div className="h-6 w-px bg-neutral-300 dark:bg-neutral-600" />
               <div>
-                <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">
-                  Contribute Templates
-                </h1>
+             
                 <p className="mt-1 text-neutral-600 dark:text-neutral-400">
                   {challenge.challenge_name} • {challenge.from_language} → {challenge.to_language}
                 </p>
@@ -195,7 +198,7 @@ const ArenaContribute: React.FC = () => {
               className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Create Template
+              Create template
             </button>
           </div>
         </div>
@@ -235,7 +238,16 @@ const ArenaContribute: React.FC = () => {
         </div>
 
         {/* Templates Grid */}
-        {templatesResponse?.items?.length === 0 ? (
+        {(templatesResponse?.items?.length || 0) < 2 && templatesResponse?.items?.length > 0 ? (
+          <div className="text-center py-12">
+            <div className="text-orange-500 dark:text-orange-400 mb-2">
+              ⚠️ At least 2 templates are required
+            </div>
+            <p className="text-neutral-600 dark:text-neutral-400">
+              Create more templates to enable template comparison and usage.
+            </p>
+          </div>
+        ) : templatesResponse?.items?.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-neutral-500 dark:text-neutral-400 mb-2">
               {showOnlyMyTemplates ? 'You haven\'t created any templates yet' : 'No templates found'}
@@ -255,6 +267,7 @@ const ArenaContribute: React.FC = () => {
                 onDelete={handleDeleteTemplate}
                 currentUser={currentUser}
                 isDeleting={deleteTemplateMutation.isPending}
+                disabled={(templatesResponse?.items?.length || 0) < 2}
               />
             ))}
           </div>
