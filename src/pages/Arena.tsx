@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { arenaApi } from '../api/arena_challenge';
 import { LANGUAGES } from '../utils/const';
 import type { ArenaChallenge, ArenaChallengeRequest } from '../types/arena_challenge';
@@ -361,16 +361,34 @@ const Arena = () => {
               </p>
             </div>
 
-            <div className="space-y-3">
-              <button onClick={() => handleJudgeOrBattle('judge')} className="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200">
-                <Eye className="w-5 h-5" />
-                <span>Judge Challenge</span>
-              </button>
+            <div className="space-y-3 flex gap-2">
+              <div className="relative group flex-1">
+                <button onClick={() => handleJudgeOrBattle('judge')} className="cursor-pointer w-full bg-green-800 hover:bg-green-700 text-white flex items-center justify-center space-x-3 px-4 py-3   font-medium rounded-lg transition-colors duration-200">
+                  <Eye className="w-5 h-5" />
+                  <span>Review</span>
+                </button>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  <div className="flex items-center space-x-1">
+                    <Info className="w-4 h-4" />
+                    <span>Provide a text and compare outputs from models and templates. Vote on the best response.</span>
+                  </div>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-neutral-900 dark:border-t-neutral-100"></div>
+                </div>
+              </div>
               
-              <button onClick={() => handleJudgeOrBattle('battle')} className="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
-                <Zap className="w-5 h-5" />
-                <span>Battle</span>
-              </button>
+              <div className="relative group flex-1">
+                <button onClick={() => handleJudgeOrBattle('battle')} className=" cursor-pointer w-full flex items-center justify-center space-x-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                  <Zap className="w-5 h-5" />
+                  <span>Contribute</span>
+                </button>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  <div className="flex items-center space-x-1">
+                    <Info className="w-4 h-4" />
+                    <span>Create and submit your own template. Compete with other templates to see how different approaches perform.</span>
+                  </div>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-neutral-900 dark:border-t-neutral-100"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
