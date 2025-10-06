@@ -24,8 +24,8 @@ export function useCurrentUser() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     retry: (failureCount, error) => {
-      // Don't retry on 401 errors (unauthorized)
-      if (error instanceof Error && error.message.includes('401')) {
+      // Don't retry on 401/403 errors (unauthorized/forbidden)
+      if (error instanceof Error && (error.message.includes('401') || error.message.includes('403'))) {
         return false;
       }
       return failureCount < 3;

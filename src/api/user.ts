@@ -23,7 +23,7 @@ export const userApi = {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
           return {
             data: null,
             message: "Unauthorized - Please log in",

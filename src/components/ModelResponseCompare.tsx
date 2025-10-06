@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useTranslateV2 } from "../hooks/useTranslateV2";
+import { useTranslateV2Stream } from "../hooks/useTranslateV2Stream";
 import { updateBattleWinner } from "../api/translate";
 import { useToast } from "./use-toast";
 import { ChevronLeft, ChevronRight, Copy, StopCircle, AlertCircle } from "lucide-react";
@@ -8,48 +8,6 @@ import { FaHandshake } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
 import Markdown from 'react-markdown'
 import FontSizeControl from './FontSizeControl';
-
-
-const DEFAULT_STEPS = [
-  "Analyzing text…",
-  "Searching for commentaries...",
-  "Searching for sanskrit text...",
-  "Extracting UCCA...",
-  "Analyzing UCCA...",
-  "Extracting Gloss...",
-  "Translating…",
-  "Refining wording…",
-  "Finalizing translation…",
-];
-
-
-
-
-// Custom hook for managing translation steps
-const useTranslationSteps = (isLoading: boolean) => {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [currentStep, setCurrentStep] = useState(DEFAULT_STEPS[0]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      setCurrentStepIndex(0);
-      setCurrentStep(DEFAULT_STEPS[0]);
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setCurrentStepIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % DEFAULT_STEPS.length;
-        setCurrentStep(DEFAULT_STEPS[nextIndex]);
-        return nextIndex;
-      });
-    }, 2000); // Change step every 2 seconds
-
-    return () => clearInterval(interval);
-  }, [isLoading]);
-
-  return { currentStep, currentStepIndex, totalSteps: DEFAULT_STEPS.length };
-};
 
 interface ModelResponseCompareProps {
   templateId: string | null;
@@ -68,16 +26,13 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
 }) => {
   const { t } = useTranslation();
   const { success: showSuccessToast, error: showErrorToast } = useToast();
-  const { state, translate, reset, stop } = useTranslateV2();
+  const { state, translate, reset, stop } = useTranslateV2Stream();
   
   const [selectedOption, setSelectedOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [isVoting, setIsVoting] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [leftFontSize, setLeftFontSize] = useState(16);
   const [rightFontSize, setRightFontSize] = useState(16);
-  
-  // Dynamic translation steps
-  const { currentStep, currentStepIndex, totalSteps } = useTranslationSteps(state.isLoading);
 
   // Auto-start translation when component mounts
   useEffect(() => {
@@ -85,6 +40,91 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
       translate(templateId, challengeId, inputText);
     }
   }, [templateId, challengeId, inputText, translate]);
+
+  // Helper function to get current step message with more detail
+  const getCurrentStepMessage = (translationId: '1' | '2') => {
+    const progress = translationId === '1' ? state.translation1Progress : state.translation2Progress;
+    const lastStep = progress[progress.length - 1];
+    
+    if (!lastStep) return 'Starting translation...';
+    
+    // Get the model name for context
+    const modelName = translationId === '1' ? state.data?.model_1 : state.data?.model_2;
+    const modelDisplay = modelName ? `${modelName}` : `Model ${translationId}`;
+    
+    switch (lastStep.step) {
+      case `translation_${translationId}_analysis`:
+        return lastStep.status === 'progress' 
+          ? `Analyzing template requirements for ${modelDisplay}...` 
+          : `Template analysis complete for ${modelDisplay}`;
+      case `translation_${translationId}_commentaries`:
+        return lastStep.status === 'progress' 
+          ? `Fetching commentaries and sanskrit for ${modelDisplay}...` 
+          : `Commentaries loaded for ${modelDisplay}`;
+      case `translation_${translationId}_ucca`:
+        return lastStep.status === 'progress' 
+          ? `Generating UCCA interpretation for ${modelDisplay}...` 
+          : `UCCA generated for ${modelDisplay}`;
+      case `translation_${translationId}_gloss`:
+        return lastStep.status === 'progress' 
+          ? `Generating glossary for ${modelDisplay}...` 
+          : `Glossary generated for ${modelDisplay}`;
+      case `translation_${translationId}_payload`:
+        return lastStep.status === 'progress' 
+          ? `Preparing translation payload for ${modelDisplay}...` 
+          : `Payload ready for ${modelDisplay}`;
+      case `translation_${translationId}_generation`:
+        return lastStep.status === 'progress' 
+          ? `Generating translation with ${modelDisplay}...` 
+          : `Translation complete for ${modelDisplay}`;
+      default:
+        return `Processing with ${modelDisplay}...`;
+    }
+  };
+
+  // Helper function to get step progress with more detail
+  const getStepProgress = (translationId: '1' | '2') => {
+    const progress = translationId === '1' ? state.translation1Progress : state.translation2Progress;
+    const completedSteps = progress.filter(step => step.status === 'completed').length;
+    const totalSteps = progress.length;
+    
+    if (totalSteps === 0) return { current: 0, total: 6, message: 'Starting...' };
+    
+    return {
+      current: completedSteps,
+      total: Math.max(totalSteps, 6), // At least 6 steps expected
+      message: completedSteps === totalSteps ? 'Complete!' : `Step ${completedSteps}/${totalSteps}`
+    };
+  };
+
+  // Helper function to determine which translation is ahead
+  const getTranslationStatus = (translationId: '1' | '2') => {
+    const progress1 = getStepProgress('1');
+    const progress2 = getStepProgress('2');
+    
+    if (translationId === '1') {
+      if (progress1.current > progress2.current) return 'ahead';
+      if (progress1.current < progress2.current) return 'behind';
+      return 'equal';
+    } else {
+      if (progress2.current > progress1.current) return 'ahead';
+      if (progress2.current < progress1.current) return 'behind';
+      return 'equal';
+    }
+  };
+
+  // Debug logging for development
+  useEffect(() => {
+    if (state.translation1Progress.length > 0) {
+      console.log('Translation 1 progress:', state.translation1Progress);
+    }
+  }, [state.translation1Progress]);
+
+  useEffect(() => {
+    if (state.translation2Progress.length > 0) {
+      console.log('Translation 2 progress:', state.translation2Progress);
+    }
+  }, [state.translation2Progress]);
 
   // Handle voting
   const handleVoteOption = useCallback(async (option: 'left' | 'right' | 'both' | 'none') => {
@@ -139,26 +179,30 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
 
   // Copy content handlers
   const handleCopyLeft = useCallback(async () => {
-    if (state.data?.translation_1?.translation) {
+    const textToCopy = state.data?.translation_1?.translation || 
+                      (state.translation1Ready && state.individualTranslation1?.translation);
+    if (textToCopy) {
       try {
-        await navigator.clipboard.writeText(state.data.translation_1.translation);
+        await navigator.clipboard.writeText(textToCopy);
         showSuccessToast(t('translation.copied'), t('translation.copied'));
       } catch {
         showErrorToast(t('translation.copyFailed'), t('translation.unableToCopy'));
       }
     }
-  }, [state.data?.translation_1?.translation, showSuccessToast, showErrorToast, t]);
+  }, [state.data?.translation_1?.translation, state.translation1Ready, state.individualTranslation1, showSuccessToast, showErrorToast, t]);
 
   const handleCopyRight = useCallback(async () => {
-    if (state.data?.translation_2.translation) {
+    const textToCopy = state.data?.translation_2?.translation || 
+                      (state.translation2Ready && state.individualTranslation2?.translation);
+    if (textToCopy) {
       try {
-        await navigator.clipboard.writeText(state.data.translation_2.translation);
+        await navigator.clipboard.writeText(textToCopy);
         showSuccessToast(t('translation.copied'), t('translation.copied'));
       } catch {
         showErrorToast(t('translation.copyFailed'), t('translation.unableToCopy'));
       }
     }
-  }, [state.data?.translation_2?.translation, showSuccessToast, showErrorToast, t]);
+  }, [state.data?.translation_2?.translation, state.translation2Ready, state.individualTranslation2, showSuccessToast, showErrorToast, t]);
 
   // Handle stop translation
   const handleStop = useCallback(() => {
@@ -215,7 +259,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                 />
                 
                 {/* Copy button */}
-                {state.data?.translation_1?.translation && (
+                {(state.data?.translation_1?.translation || (state.translation1Ready && state.individualTranslation1)) && (
                   <button
                     onClick={handleCopyLeft}
                     className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
@@ -253,8 +297,15 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                 {state.data?.translation_1?.translation ? (
                   <div className="break-words">
                     <Markdown>
-                    {state.data.translation_1.translation}
-                      </Markdown>
+                      {String(state.data.translation_1.translation)}
+                    </Markdown>
+                  </div>
+                ) : state.translation1Ready && state.individualTranslation1 ? (
+                  <div className="break-words">
+                   
+                    <Markdown>
+                      {String(state.individualTranslation1.translation?.translation)}
+                    </Markdown>
                   </div>
                 ) : (
                   <div className="text-neutral-400 dark:text-neutral-500 italic">
@@ -267,8 +318,19 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-medium text-primary-600 dark:text-primary-400 transition-all duration-300">
-                              {currentStep}
+                              {getCurrentStepMessage('1')}
                             </span>
+                            {state.translation1Progress.length > 0 && (
+                              <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 flex items-center gap-2">
+                                <span>{getStepProgress('1').message}</span>
+                                {getTranslationStatus('1') === 'ahead' && (
+                                  <span className="text-green-600 dark:text-green-400 font-medium">⚡ Ahead</span>
+                                )}
+                                {getTranslationStatus('1') === 'behind' && (
+                                  <span className="text-orange-600 dark:text-orange-400 font-medium">⏳ Behind</span>
+                                )}
+                              </div>
+                            )}
                           </div>
                       </div>
                     ) : (
@@ -314,7 +376,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                 />
                 
                 {/* Copy button */}
-                {state.data?.translation_2?.translation && (
+                {(state.data?.translation_2?.translation || (state.translation2Ready && state.individualTranslation2)) && (
                   <button
                     onClick={handleCopyRight}
                     className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
@@ -352,8 +414,15 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                 {state.data?.translation_2?.translation ? (
                   <div className="break-words">
                     <Markdown>
-                    {state.data.translation_2.translation}
-                      </Markdown>
+                      {String(state.data.translation_2.translation)}
+                    </Markdown>
+                  </div>
+                ) : state.translation2Ready && state.individualTranslation2 ? (
+                  <div className="break-words">
+                 
+                    <Markdown>
+                      {String(state.individualTranslation2.translation.translation)}
+                    </Markdown>
                   </div>
                 ) : (
                   <div className="text-neutral-400 dark:text-neutral-500 italic">
@@ -367,8 +436,19 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-medium text-primary-600 dark:text-primary-400 transition-all duration-300">
-                              {currentStep}
+                              {getCurrentStepMessage('2')}
                             </span>
+                            {state.translation2Progress.length > 0 && (
+                              <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 flex items-center gap-2">
+                                <span>{getStepProgress('2').message}</span>
+                                {getTranslationStatus('2') === 'ahead' && (
+                                  <span className="text-green-600 dark:text-green-400 font-medium">⚡ Ahead</span>
+                                )}
+                                {getTranslationStatus('2') === 'behind' && (
+                                  <span className="text-orange-600 dark:text-orange-400 font-medium">⏳ Behind</span>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

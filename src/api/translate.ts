@@ -1,6 +1,24 @@
 import type { SuggestResponse, TranslateRequest, VoteRequest, TranslationLeaderboardResponse, UserVoteLeaderboardResponse, ModelVoteLeaderboardResponse } from "../types/translate";
 import { getAuthHeaders as getCentralAuthHeaders, setAuthTokenGetter } from "../lib/auth";
 
+export interface TranslateV2Response {
+  battle_result_id: string;
+  id_1: string;
+  template_1_name: string;
+  template_2_name: string;
+  translation_1: {
+    combo_key: string;
+    translation: string;
+  };
+  model_1: string;
+  id_2: string;
+  translation_2: {
+    combo_key: string;
+    translation: string;
+  };
+  model_2: string;
+}
+
 // API Base URL
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools";
 
@@ -33,7 +51,7 @@ export async function suggestModels(token?: string, sourceText?: string): Promis
     }
 
     // Add timestamp to prevent caching and source text for filtering
-    const url = new URL(`${API_BASE_URL}/translate/suggest_model`);
+    const url = new URL(`${API_BASE_URL}/arena/translate/suggest_model`);
     url.searchParams.append('_t', Date.now().toString());
     
     // Add source text parameter if provided
@@ -308,13 +326,100 @@ export const translateApi = {
 
 
 /**
+ * Translate using v2 streaming API endpoint
+ */
+export async function translateV2Stream(
+  templateId: string | null,
+  challengeId: string,
+  input_text: string,
+  onStep: (step: { step: string; data: unknown; status: string }) => void,
+  onComplete: (data: TranslateV2Response) => void,
+  onError: (error: string) => void,
+  signal?: AbortSignal
+): Promise<void> {
+  try {
+    const body = {
+      template_id: templateId || null,
+      challenge_id: challengeId,
+      input_text: input_text,
+    };
+
+    const response = await fetch(`${API_BASE_URL}/arena/translate/stream`, {
+      method: "POST",
+      headers: {
+        "accept": "text/event-stream",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("No response body");
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Process complete lines
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // Keep incomplete line in buffer
+        
+        for (const line of lines) {
+          if (line.trim() === '') continue;
+          
+          if (line.startsWith('data: ')) {
+            try {
+              const jsonData = line.slice(6); // Remove 'data: ' prefix
+              const stepData = JSON.parse(jsonData);
+              
+              console.log('Parsed SSE data:', stepData); // Debug log
+              
+              // Check if this is the final response
+              if (stepData.step === 'final_response' && stepData.status === 'completed') {
+                console.log('Final response received:', stepData.data); // Debug log
+                onComplete(stepData.data);
+                return;
+              } else {
+                onStep(stepData);
+              }
+            } catch (parseError) {
+              console.warn('Failed to parse SSE data:', parseError);
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  } catch (error) {
+    console.error("Error calling translate v2 stream:", error);
+    onError(error instanceof Error ? error.message : "Failed to translate v2");
+  }
+}
+
+/**
  * Translate using v2 API endpoint
  */
 export async function translateV2(
   templateId: string | null,
   challengeId: string,
   input_text: string,
-): Promise<any> {
+): Promise<TranslateV2Response> {
   try {
     const body = {
       template_id: templateId || null,
