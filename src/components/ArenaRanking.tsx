@@ -447,27 +447,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                       </p>
                     </div>
 
-                    {/* Ranking Filter Dropdown */}
-                    <div className="flex items-center gap-2">
-                      <label htmlFor="ranking-filter" className="text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Ranking by:
-                      </label>
-                      <div className="relative">
-                        <select
-                          id="ranking-filter"
-                          value={rankingBy}
-                          onChange={(e) => setRankingBy(e.target.value as RankingBy)}
-                          className="appearance-none bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 
-                                   rounded-lg px-3 py-2 pr-8 text-xs sm:text-sm text-neutral-900 dark:text-neutral-100
-                                   focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        >
-                          <option value="model">Models Only</option>
-                          <option value="template">Templates Only</option>
-                          <option value="combined">Combined</option>
-                        </select>
-                        <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
-                      </div>
-                    </div>
+               
                   </div>
 
                   {/* Modal Leaderboard Content */}
