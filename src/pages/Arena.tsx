@@ -170,35 +170,7 @@ const Arena = () => {
           {/* Filter Bar */}
           <div className="flex  h-full  flex-wrap gap-4 items-center">
           
-            {/* From Language Filter */}
-            <select
-              value={selectedFromLanguage}
-              onChange={(e) => {
-                setSelectedFromLanguage(e.target.value);
-                setCurrentPage(1); // Reset to first page when filter changes
-              }}
-              className="px-3 py-3  border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">From Languages</option>
-              {uniqueLanguages.map(lang => (
-                <option key={lang} value={lang}>{lang}</option>
-              ))}
-            </select>
-
-            {/* To Language Filter */}
-            <select
-              value={selectedToLanguage}
-              onChange={(e) => {
-                setSelectedToLanguage(e.target.value);
-                setCurrentPage(1); // Reset to first page when filter changes
-              }}
-              className="px-3 py-3  border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">To Languages</option>
-              {uniqueLanguages.map(lang => (
-                <option key={lang} value={lang}>{lang}</option>
-              ))}
-            </select>
+          
 
             {/* Text Type Filter */}
             <select

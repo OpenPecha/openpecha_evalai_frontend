@@ -271,15 +271,6 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                   {ranking.challenge_details.challenge_name}
                 </h3>
                 <div className="flex items-center justify-between sm:justify-end gap-3">
-                  <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
-                    <span className="flex items-center gap-1">
-                      {ranking.challenge_details.from_language}
-                    </span>
-                    <FaLongArrowAltRight className="w-4 h-4" />
-                    <span className="flex items-center gap-1">  
-                      {ranking.challenge_details.to_language}
-                    </span>
-                  </div>
                   <button
                     onClick={() => handleExpandChallenge(ranking.challenge_details)}
                     className="p-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
@@ -404,7 +395,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           {/* Backdrop */}
           <button 
-            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity border-none cursor-default"
+            className="fixed inset-0 bg-black/25 bg-opacity-50 transition-opacity border-none cursor-default"
             onClick={handleCloseModal}
             onKeyDown={(e) => e.key === 'Escape' && handleCloseModal()}
             aria-label="Close modal"
