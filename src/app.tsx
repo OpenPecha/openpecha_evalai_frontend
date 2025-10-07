@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Menu } from "lucide-react";
 
 import Sidebar from "./components/Sidebar";
 import { ToastProvider } from "./components/ToastContainer";
@@ -31,6 +32,7 @@ const App = () => {
   const { isAuthenticated, isLoading, getToken } = useAuth();
   const { i18n } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Initialize theme system at root level
   useTheme();
@@ -77,6 +79,14 @@ const App = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <ToastProvider>
       <div className="min-h-screen ">
@@ -92,15 +102,29 @@ const App = () => {
             path="/*"
             element={
               <>
-                {/* Sidebar - Always visible on desktop */}
-                <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+                {/* Mobile Hamburger Menu Button */}
+                <button
+                  onClick={toggleMobileMenu}
+                  className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700"
+                  aria-label="Toggle mobile menu"
+                >
+                  <Menu className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
+                </button>
+
+                {/* Sidebar - Desktop and Mobile */}
+                <Sidebar 
+                  isOpen={isSidebarOpen} 
+                  onToggle={toggleSidebar}
+                  isMobileMenuOpen={isMobileMenuOpen}
+                  onCloseMobileMenu={closeMobileMenu}
+                />
 
                 {/* Mobile Sidebar Overlay */}
-                {isSidebarOpen && (
+                {isMobileMenuOpen && (
                   <div className="fixed inset-0 z-20 lg:hidden">
                     <button
                       className="fixed inset-0 bg-black bg-opacity-50 border-0 p-0"
-                      onClick={() => setIsSidebarOpen(false)}
+                      onClick={closeMobileMenu}
                       aria-label="Close sidebar"
                     />
                   </div>
@@ -113,7 +137,7 @@ const App = () => {
                   } ml-0 h-screen flex flex-col`}
                 >
                   {/* Main Content */}
-                  <main className="flex-1 overflow-auto">
+                  <main className="flex-1 overflow-auto pt-16 lg:pt-0">
                     <Routes>
                       <Route
                         path="/login"

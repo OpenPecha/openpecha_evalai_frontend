@@ -16,7 +16,6 @@ import {
   Monitor,
   MessageCircle,
   Plus,
-  BookOpen,
 } from "lucide-react";
 import { useAuth0 } from "../hooks/useAuth0";
 import { useTheme } from "../hooks/useTheme";
@@ -28,6 +27,8 @@ import LanguageSwitcher from "./LanguageSwitcher";
 interface SidebarProps {
   isOpen?: boolean;
   onToggle?: () => void;
+  isMobileMenuOpen?: boolean;
+  onCloseMobileMenu?: () => void;
 }
 
 interface NavigationItem {
@@ -48,7 +49,7 @@ interface UserMenuItem {
   tooltip: string;
 }
 
-const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
+const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMobileMenu }: SidebarProps) => {
   const { t } = useTranslation();
   const location = useLocation();
   const {
@@ -190,7 +191,9 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
     <div
       className={`${
         isOpen ? "w-64" : "w-16"
-      } bg-white dark:bg-neutral-800 dark:text-neutral-100 shadow-lg border-r border-neutral-200 dark:border-neutral-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col  fixed top-0 left-0 z-30`}
+      } bg-white dark:bg-neutral-800 dark:text-neutral-100 shadow-lg border-r border-neutral-200 dark:border-neutral-700 h-screen overflow-y-auto transition-all duration-300 flex flex-col fixed top-0 left-0 z-30 ${
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}
     >
       {/* Header with Logo and Toggle Button */}
       <div
@@ -270,6 +273,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   rel="noopener noreferrer"
                   className={`${baseClasses} ${stateClasses}`}
                   title={isOpen ? "" : item.tooltip}
+                  onClick={onCloseMobileMenu}
                 >
                   <IconComponent className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
                   {isOpen && item.label}
@@ -283,6 +287,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                 to={item.path!}
                 className={`${baseClasses} ${stateClasses}`}
                 title={isOpen ? "" : item.tooltip}
+                onClick={onCloseMobileMenu}
               >
                 <IconComponent className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
                 {isOpen && (
@@ -326,6 +331,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                   to={item.path!}
                   className={`${baseClasses} ${stateClasses}`}
                   title={isOpen ? "" : item.tooltip}
+                  onClick={onCloseMobileMenu}
                 >
                   <IconComponent className={`w-4 h-4 ${isOpen ? "mr-3" : ""}`} />
                   {isOpen && item.label}
@@ -414,7 +420,10 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                       key={item.label}
                       to={item.path}
                       className="flex items-center px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-                      onClick={() => setIsUserMenuOpen(false)}
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        onCloseMobileMenu?.();
+                      }}
                     >
                       <IconComponent className="w-3 h-3 mr-2" />
                       {item.label}
@@ -485,6 +494,7 @@ const Sidebar = ({ isOpen = true, onToggle }: SidebarProps) => {
                       to={item.path}
                       className="p-2 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200"
                       title={item.tooltip}
+                      onClick={onCloseMobileMenu}
                     >
                       <IconComponent className="w-4 h-4" />
                     </Link>

@@ -332,15 +332,15 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                           </td>
 
                           {/* Template Name */}
-                          <td className="px-3 py-3">
-                            <div title={entry.template_name} className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate max-w-24">
+                          <td className="px-3 py-3 w-fit">
+                            <div title={entry.template_name} className="text-sm font-medium text-neutral-900 dark:text-neutral-100  max-w-24">
                               {entry.template_name}
                             </div>
                           </td>
 
                           {/* Model Name */}
                           <td className="px-3 py-3">
-                            <div title={entry.model_name} className={`text-sm font-semibold truncate max-w-20 ${getModelColor(entry.model_name)}`}>
+                            <div title={entry.model_name} className={`text-sm font-semibold max-w-20 ${getModelColor(entry.model_name)}`}>
                               {entry.model_name}
                             </div>
                           </td>
