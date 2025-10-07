@@ -185,28 +185,16 @@ const Leaderboards = () => {
               </p>
             </div>
             
-            {/* Leaderboard Type Toggle */}
-            <div className="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
-              <button
-                onClick={() => setLeaderboardType("arena")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  leaderboardType === "arena"
-                    ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
-                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
-                }`}
+            {/* Leaderboard Type Selection */}
+            <div className="flex items-center">
+              <select
+                value={leaderboardType}
+                onChange={(e) => setLeaderboardType(e.target.value as "arena" | "challenges")}
+                className="px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm font-medium text-neutral-900 dark:text-neutral-100  focus:border-transparent transition-colors duration-200"
               >
-                Arena
-              </button>
-              <button
-                onClick={() => setLeaderboardType("challenges")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  leaderboardType === "challenges"
-                    ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
-                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
-                }`}
-              >
-                Challenges
-              </button>
+                <option value="arena">Arena</option>
+                <option value="challenges">Challenges</option>
+              </select>
             </div>
           </div>
         </div>
