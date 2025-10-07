@@ -107,26 +107,26 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
                 <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
                   {challenge?.challenge_name || t('arena.title')}
                 </h1>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
+                <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
                   ✨ {t('arena.live')}
                 </span>
               </div>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm hidden md:block text-neutral-500 dark:text-neutral-400">
                 {t('arena.compare')}
               </p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col gap-2 md:flex-row items-center space-x-2">
             {judgeOrBattle === 'judge' && onBackToArena && (
               <button
                 onClick={onBackToArena}
-                className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
+                className="flex w-max items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Arena List</span>
               </button>
-            )}
+            )} 
             {selectedTemplate && onBackToTemplates && judgeOrBattle !== 'judge' && !hasCurrentSession && (
               <button
                 onClick={onBackToTemplates}
@@ -142,7 +142,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
                 className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200"
               >
                 <RotateCcw className="w-4 h-4" />
-                <span>New Translation</span>
+                <span>New</span>
               </button>
             )}
           </div>
@@ -275,27 +275,15 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
             </div>
 
             {/* Model Response Compare - New V2 Component */}
-            <ModelResponseCompare
+              <ModelResponseCompare
               templateId={currentSession.template_id || null}
               challengeId={currentSession.challenge_id}
               inputText={currentSession.input_text}
               onComplete={handleSessionComplete}
               onNewTranslation={handleNewChat}
-            />
+              />:
+             
 
-            {/* Dual Compare - Original Component (Commented Out) */}
-            {/* <DualCompare
-              modelA={currentSession.modelA.id}
-              modelB={currentSession.modelB.id}
-              payload={{
-                input_text: currentSession.input_text,
-                template_id: currentSession.template_id,
-                challenge_id: currentSession.challenge_id,
-              }}
-              token={token}
-              onComplete={handleSessionComplete}
-              onNewTranslation={handleNewChat}
-            /> */}
           </div>
         )}
       </div>

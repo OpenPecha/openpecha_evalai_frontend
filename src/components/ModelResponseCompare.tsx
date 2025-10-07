@@ -8,6 +8,7 @@ import { FaHandshake } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
 import Markdown from 'react-markdown'
 import FontSizeControl from './FontSizeControl';
+import { useAuth } from "../auth/use-auth-hook";
 
 interface ModelResponseCompareProps {
   templateId: string | null;
@@ -27,6 +28,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
   const { t } = useTranslation();
   const { success: showSuccessToast, error: showErrorToast } = useToast();
   const { state, translate, reset, stop } = useTranslateV2Stream();
+  const { isAuthenticated } = useAuth();
   
   const [selectedOption, setSelectedOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [isVoting, setIsVoting] = useState(false);
@@ -495,6 +497,8 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
         </div>
       )}
 
+
+
       {/* Centralized Voting Buttons - Only show when translation is complete */}
       {state.data && state.isComplete && !state.error && (
           <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-6">
@@ -502,7 +506,8 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
                 {selectedOption ? t('arena.thankYou') : t('arena.whichBetter')}
               </div>
-              
+
+             {isAuthenticated? 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Left is Better */}
                 <button
@@ -583,7 +588,24 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                   {selectedOption === 'right' ? t('arena.newTranslation') : t('arena.rightBetter')}
                   <ChevronRight size={18} />
                 </button>
-              </div>
+              </div>:
+               <div className="flex flex-col items-center justify-center bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 text-center max-w-lg mx-auto">
+               <span className="mb-2 text-amber-700 dark:text-amber-300 font-semibold flex items-center justify-center gap-2">
+                 <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+                 Login required
+               </span>
+               <p className="text-sm text-amber-800 dark:text-amber-200 mb-4">
+                 You need to <a href="/login" className="text-primary-600 dark:text-primary-400 underline font-medium hover:text-primary-700 dark:hover:text-primary-300 transition-colors">log in</a> to vote and compare model translations.
+               </p>
+               <a
+                 href="/login"
+                 className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors duration-200"
+               >
+                 Log in to Vote
+               </a>
+             </div>
+           
+              }
             </div>
           </div>
       )}
