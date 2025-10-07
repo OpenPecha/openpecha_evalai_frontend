@@ -123,7 +123,7 @@ const App = () => {
                 {isMobileMenuOpen && (
                   <div className="fixed inset-0 z-20 lg:hidden">
                     <button
-                      className="fixed inset-0 bg-black bg-opacity-50 border-0 p-0"
+                      className="fixed inset-0 bg-black/20 bg-opacity-50 border-0 p-0"
                       onClick={closeMobileMenu}
                       aria-label="Close sidebar"
                     />
