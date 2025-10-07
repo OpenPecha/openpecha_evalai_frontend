@@ -105,7 +105,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
-                  {t('arena.title')}
+                  {challenge?.challenge_name || t('arena.title')}
                 </h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
                   ✨ {t('arena.live')}
