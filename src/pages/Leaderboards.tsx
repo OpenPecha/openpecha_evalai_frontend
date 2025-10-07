@@ -29,6 +29,8 @@ const Leaderboards = () => {
   const [viewModes, setViewModes] = useState<Record<string, "table" | "chart">>({});
   // State to track which share modal to show
   const [activeShareModal, setActiveShareModal] = useState<string | null>(null);
+  // State to track whether to show Arena or Challenges leaderboard
+  const [leaderboardType, setLeaderboardType] = useState<"arena" | "challenges">("arena");
   
   const {
     data: challengesResponse,
@@ -173,22 +175,53 @@ const Leaderboards = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
-            {t('leaderboards.title')}
-          </h1>
-          <p className=" dark:text-neutral-400 text-sm">
-            {t('leaderboards.subtitle')}
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-neutral-700 dark:text-neutral-100 mb-2">
+                {t('leaderboards.title')}
+              </h1>
+              <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+                {t('leaderboards.subtitle')}
+              </p>
+            </div>
+            
+            {/* Leaderboard Type Toggle */}
+            <div className="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
+              <button
+                onClick={() => setLeaderboardType("arena")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  leaderboardType === "arena"
+                    ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                }`}
+              >
+                Arena
+              </button>
+              <button
+                onClick={() => setLeaderboardType("challenges")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  leaderboardType === "challenges"
+                    ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 shadow-sm"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+                }`}
+              >
+                Challenges
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="w-full ">
-         <span className="font-semibold flex gap-2">
-          <Trophy  />
-           Model Arena Scores
-          </span>
-              <ArenaRanking />
-         </div>
-        {/* Leaderboards - 2 column layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Arena or Challenges Leaderboards */}
+        {leaderboardType === "arena" ? (
+          <div className="w-full">
+            <span className="font-semibold flex gap-2">
+              <Trophy  />
+              Model Arena Scores
+            </span>
+            <ArenaRanking />
+          </div>
+        ) : (
+          /* Challenges Leaderboards - 2 column layout */
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           
           {/* User Vote Leaderboard - Second Item */}
           
@@ -398,8 +431,9 @@ const Leaderboards = () => {
 
           
         </div>
+        )}
 
-        {leaderboardsData?.length === 0 && (
+        {leaderboardType === "challenges" && leaderboardsData?.length === 0 && (
           <div className="text-center py-12">
             <Trophy className="w-16 h-16 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-neutral-700 dark:text-neutral-100 mb-2">

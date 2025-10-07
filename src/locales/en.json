@@ -36,7 +36,7 @@
   },
   "leaderboards": {
     "title": "Leaderboards",
-    "subtitle": "Track the performance of submissions across all challenges and AI translation models",
+    "subtitle": "Track the performance of models across all arena and challenges",
     "arena": "Arena",
     "topVoters": "Top Voters",
     "translationModels": "Translation Models",
