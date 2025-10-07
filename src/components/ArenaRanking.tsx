@@ -28,7 +28,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
   } = useAllArenaRankings();
 
   // Map rankingBy to API parameter
-  const getApiRankingBy = (rankingBy: RankingBy): string => {
+  const getApiRankingBy = (rankingBy: RankingBy): 'combined' | 'template' | 'model' => {
     switch (rankingBy) {
       case 'template': return 'template';
       case 'model': return 'model';
@@ -125,7 +125,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         {getRankIcon(index + 1)}
-                        <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        <span className="text-xs sm:text-sm font-medium text-neutral-900 dark:text-neutral-100">
                           #{index + 1}
                         </span>
                       </div>
@@ -134,7 +134,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                     {/* Template Name */}
                     {(rankingBy === 'combined' || rankingBy === 'template') && (
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        <div className="text-xs sm:text-sm font-medium text-neutral-900 dark:text-neutral-100">
                           {entry.template_name || 'N/A'}
                         </div>
                       </td>
@@ -143,7 +143,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                     {/* Model Name */}
                     {(rankingBy === 'combined' || rankingBy === 'model') && (
                       <td className="px-6 py-4">
-                        <div className={`text-sm font-semibold ${getModelColor(entry.model_name || '')}`}>
+                        <div className={`text-xs sm:text-sm font-semibold ${getModelColor(entry.model_name || '')}`}>
                           {entry.model_name || 'N/A'}
                         </div>
                       </td>
@@ -192,7 +192,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
         return <Award className="w-5 h-5 text-amber-600" />;
       default:
         return (
-          <span className="w-5 h-5 flex items-center justify-center text-neutral-600 dark:text-neutral-300 font-semibold text-sm">
+          <span className="w-5 h-5 flex items-center justify-center text-neutral-600 dark:text-neutral-300 font-semibold text-xs sm:text-sm">
             {rank}
           </span>
         );
@@ -258,20 +258,20 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       </div>
 
       {/* Arena Rankings Grid */}
-      <div className="flex flex-wrap gap-6 pb-3 overflow-x-auto hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600 scroll-smooth">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-3">
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
-            className="bg-white min-w-[100dvw] flex-1 flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
           >
             {/* Challenge Header */}
-            <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
-              <div className="flex items-center justify-between">
+            <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-3 border-b border-neutral-200 dark:border-neutral-700">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate">
                   {ranking.challenge_details.challenge_name}
                 </h3>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                <div className="flex items-center justify-between sm:justify-end gap-3">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
                     <span className="flex items-center gap-1">
                       {ranking.challenge_details.from_language}
                     </span>
@@ -291,7 +291,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
               </div>
               
               {/* Challenge Text Preview */}
-              <div className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 rounded-md">
+              <div className="text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 rounded-md mt-2">
                   {ranking.challenge_details.text_category}
               </div>
             </div>
@@ -300,23 +300,23 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
             <div className="py-2">
               <div className="overflow-hidden">
                 <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600">
-                  <table className="md:min-w-full">
+                  <table className="w-full">
                     <thead className="sticky top-0 bg-white dark:bg-neutral-800 z-10">
                       <tr className="border-b border-neutral-200 dark:border-neutral-700">
-                        <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                        <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                           #
                         </th>
                         {(rankingBy === 'combined' || rankingBy === 'template') && (
-                          <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                             Template
                           </th>
                         )}
                         {(rankingBy === 'combined' || rankingBy === 'model') && (
-                          <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                             Model
                           </th>
                         )}
-                        <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                        <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                           ELO
                         </th>
                       </tr>
@@ -341,7 +341,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                           {/* Template Name */}
                           {(rankingBy === 'combined' || rankingBy === 'template') && (
                             <td className="px-3 py-3">
-                              <div title={entry.template_name} className="text-sm font-medium text-neutral-900 dark:text-neutral-100  max-w-24">
+                              <div title={entry.template_name} className="text-xs sm:text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
                                 {entry.template_name}
                               </div>
                             </td>
@@ -350,7 +350,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                           {/* Model Name */}
                           {(rankingBy === 'combined' || rankingBy === 'model') && (
                             <td className="px-3 py-3">
-                              <div title={entry.model_name} className={`text-sm font-semibold max-w-20 ${getModelColor(entry.model_name)}`}>
+                              <div title={entry.model_name} className={`text-xs sm:text-sm font-semibold truncate ${getModelColor(entry.model_name)}`}>
                                 {entry.model_name}
                               </div>
                             </td>
@@ -358,7 +358,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
                           {/* ELO Rating */}
                           <td className="px-3 py-3 whitespace-nowrap">
-                            <span className={`text-sm font-bold ${getScoreColor(entry.elo_rating, entryIndex + 1)}`}>
+                            <span className={`text-xs sm:text-sm font-bold ${getScoreColor(entry.elo_rating, entryIndex + 1)}`}>
                               {entry.elo_rating}
                             </span>
                           </td>
@@ -373,7 +373,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
             {/* Challenge Stats */}
             {/* <div className="bg-neutral-50 dark:bg-neutral-900 px-4 py-3 border-t border-neutral-200 dark:border-neutral-700">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
                 <span className="text-neutral-600 dark:text-neutral-400">
                   {ranking.ranking.length} model{ranking.ranking.length !== 1 ? 's' : ''} competing
                 </span>
@@ -390,10 +390,10 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       {filteredRankings.length === 0 && (
         <div className="text-center py-12">
           <Search className="mx-auto h-12 w-12 text-neutral-400" />
-          <h3 className="mt-2 text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          <h3 className="mt-2 text-xs sm:text-sm font-medium text-neutral-900 dark:text-neutral-100">
             No challenges found
           </h3>
-          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-1 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
             Try adjusting your search query.
           </p>
         </div>
@@ -433,7 +433,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                           {selectedChallenge.challenge_name}
                         </h1>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
                         <span>{selectedChallenge.from_language}</span>
                         <FaLongArrowAltRight className="w-4 h-4" />
                         <span>{selectedChallenge.to_language}</span>
@@ -449,7 +449,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
                     {/* Ranking Filter Dropdown */}
                     <div className="flex items-center gap-2">
-                      <label htmlFor="ranking-filter" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                      <label htmlFor="ranking-filter" className="text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300">
                         Ranking by:
                       </label>
                       <div className="relative">
@@ -458,7 +458,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
                           value={rankingBy}
                           onChange={(e) => setRankingBy(e.target.value as RankingBy)}
                           className="appearance-none bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 
-                                   rounded-lg px-3 py-2 pr-8 text-sm text-neutral-900 dark:text-neutral-100
+                                   rounded-lg px-3 py-2 pr-8 text-xs sm:text-sm text-neutral-900 dark:text-neutral-100
                                    focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         >
                           <option value="model">Models Only</option>
