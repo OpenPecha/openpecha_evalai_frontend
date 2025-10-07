@@ -1,5 +1,6 @@
 ﻿import React, { useState } from "react";
-import { Trophy, Medal, Award, Search, X, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Trophy, Medal, Award, Search, X } from "lucide-react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { BiExpandAlt } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
@@ -15,10 +16,11 @@ type RankingBy = 'combined' | 'template' | 'model';
 
 const ArenaRanking: React.FC<ArenaRankingProps> = () => {
   useTranslation(); // For future i18n support
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<ArenaRankingType['challenge_details'] | null>(null);
-  const [rankingBy, setRankingBy] = useState<RankingBy>('model'); // Changed from 'combined' to 'model'
+  const [rankingBy] = useState<RankingBy>('model'); // Changed from 'combined' to 'model'
 
   // React Query hooks
   const { 
@@ -56,6 +58,11 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedChallenge(null);
+  };
+
+  // Handle challenge name click - navigate to challenge review page
+  const handleChallengeClick = (challenge: ArenaRankingType['challenge_details']) => {
+    navigate(`/arena/${challenge.challenge_id}/review`);
   };
 
   // Render modal content based on loading/error state
@@ -267,9 +274,13 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
             {/* Challenge Header */}
             <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-3 border-b border-neutral-200 dark:border-neutral-700">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate">
+                <button
+                  onClick={() => handleChallengeClick(ranking.challenge_details)}
+                  className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 hover:text-primary-600 dark:hover:text-primary-400 truncate text-left transition-colors duration-200"
+                  title={`Go to ${ranking.challenge_details.challenge_name}`}
+                >
                   {ranking.challenge_details.challenge_name}
-                </h3>
+                </button>
                 <div className="flex items-center justify-between sm:justify-end gap-3">
                   <button
                     onClick={() => handleExpandChallenge(ranking.challenge_details)}
