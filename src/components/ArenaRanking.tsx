@@ -279,7 +279,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       </div>
 
       {/* Arena Rankings Grid */}
-      <div className="flex gap-6 pb-3 overflow-x-auto scrollbar-none hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600 scroll-smooth">
+      <div className="flex flex-wrap gap-6 pb-3 scrollbar-none hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600 scroll-smooth">
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
