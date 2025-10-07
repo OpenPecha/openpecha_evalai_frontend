@@ -135,7 +135,7 @@ const Arena = () => {
             <div>
               <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Arena</h1>
               <p className="mt-1 text-neutral-600 dark:text-neutral-400">
-                Browse challenges, compete, and judge submissions
+                Browse Arena, contribute and review submissions
               </p>
             </div>
             <button
@@ -157,7 +157,7 @@ const Arena = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search challenges..."
+              placeholder="Search Arena..."
               value={searchText}
               onChange={(e) => {
                 setSearchText(e.target.value);
@@ -329,7 +329,7 @@ const Arena = () => {
           <div className="bg-white dark:bg-neutral-800 rounded-lg max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                Join Challenge
+                Join Arena
               </h2>
               <button
                 onClick={() => setSelectedChallenge(null)}

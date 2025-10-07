@@ -249,7 +249,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       <div className="flex flex-col sm:flex-row gap-4 my-4">
         <input
           type="text"
-          placeholder="Search challenges..."
+          placeholder="Search Arena..."
           className="flex-1 pl-4 pr-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-300 dark:focus:ring-primary-600 transition"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
