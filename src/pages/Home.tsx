@@ -103,7 +103,7 @@ const Home = () => {
             {t('challenges.subtitle')}
           </p>
         </div>
-        <div>
+        <div className="hidden md:block">
           <a href={documentation_link} target="_blank" rel="noopener noreferrer" className="bg-white  dark:text-neutral-100 dark:bg-neutral-700  dark:hover:bg-neutral-600 hover:bg-neutral-600 hover:text-white px-4 py-2 rounded-md">
             {t('navigation.documentation')}
           </a>

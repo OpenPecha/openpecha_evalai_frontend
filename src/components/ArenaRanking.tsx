@@ -258,11 +258,11 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
       </div>
 
       {/* Arena Rankings Grid */}
-      <div className="flex flex-wrap gap-6 pb-3 scrollbar-none hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600 scroll-smooth">
+      <div className="flex flex-wrap gap-6 pb-3 overflow-x-auto hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600 scroll-smooth">
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
-            className="bg-white min-w-[500px] flex-1 flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+            className="bg-white min-w-[100dvw] flex-1 flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
           >
             {/* Challenge Header */}
             <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
@@ -300,7 +300,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
             <div className="py-2">
               <div className="overflow-hidden">
                 <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-600">
-                  <table className="min-w-full">
+                  <table className="md:min-w-full">
                     <thead className="sticky top-0 bg-white dark:bg-neutral-800 z-10">
                       <tr className="border-b border-neutral-200 dark:border-neutral-700">
                         <th className="px-3 py-2 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
@@ -340,7 +340,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
 
                           {/* Template Name */}
                           {(rankingBy === 'combined' || rankingBy === 'template') && (
-                            <td className="px-3 py-3 w-fit">
+                            <td className="px-3 py-3">
                               <div title={entry.template_name} className="text-sm font-medium text-neutral-900 dark:text-neutral-100  max-w-24">
                                 {entry.template_name}
                               </div>

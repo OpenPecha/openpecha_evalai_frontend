@@ -214,7 +214,7 @@ const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMob
             {onToggle && (
               <button
                 onClick={onToggle}
-                className="p-1 text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 rounded-md transition-colors duration-200"
+                className="p-1 text-neutral-400 hidden md:block dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 rounded-md transition-colors duration-200"
                 title={t('sidebar.collapseSidebar')}
               >
                 <ChevronLeft className="w-5 h-5" />
