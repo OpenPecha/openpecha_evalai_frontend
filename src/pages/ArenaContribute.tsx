@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useAuth } from "../auth/use-auth-hook";
@@ -40,6 +40,13 @@ const ArenaContribute: React.FC = () => {
   const createTemplateMutation = useCreateTemplate();
   const deleteTemplateMutation = useDeleteTemplate();
   const updateTemplateMutation = useUpdateTemplate();
+
+  // Redirect to /arena if challenge doesn't exist or there's an error
+  useEffect(() => {
+    if (!challengeLoading && (challengeError || !challenge)) {
+      navigate('/arena');
+    }
+  }, [challengeLoading, challengeError, challenge, navigate]);
 
   // Handle template creation
   const handleCreateTemplate = async (templateName: string, templateText: string) => {
@@ -120,38 +127,9 @@ const ArenaContribute: React.FC = () => {
     );
   }
 
-  // Error state
-  if (challengeError || templatesError) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-red-500 dark:text-red-400 mb-2">
-          Failed to load challenge or templates
-        </div>
-        <button 
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
-
-  // No challenge found
+  // If we reach here, challenge should exist (redirect happens in useEffect)
   if (!challenge) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-neutral-500 dark:text-neutral-400 mb-2">
-          Challenge not found
-        </div>
-        <button 
-          onClick={handleBackToArena}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
-        >
-          Back to Arena
-        </button>
-      </div>
-    );
+    return null; // This shouldn't happen due to redirect, but just in case
   }
 
   // If a template is selected, show the Chat component

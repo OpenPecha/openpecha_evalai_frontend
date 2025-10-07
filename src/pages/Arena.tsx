@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { usePaginatedArenaChallenges, useArenaCategories, useCreateArenaChallenge } from '../hooks/useArenaChallenge';
-import { LANGUAGES, DEFAULT_ARENA_CHALLENGE_ID } from '../utils/const';
+import { LANGUAGES } from '../utils/const';
 import type { ArenaChallenge, ArenaChallengeRequest } from '../types/arena_challenge';
 
 const Arena = () => {
@@ -28,11 +28,6 @@ const Arena = () => {
     to_language: '',
     challenge_name: ''
   });
-
-  // Redirect to default challenge review page
-  useEffect(() => {
-    navigate(`/arena/${DEFAULT_ARENA_CHALLENGE_ID}/review`);
-  }, [navigate]);
 
   // React Query hooks
   const queryParams = {

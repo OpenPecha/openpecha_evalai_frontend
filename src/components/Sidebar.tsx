@@ -23,6 +23,7 @@ import { useCurrentUser } from "../hooks/useUsers";
 import { useTranslation } from "react-i18next";
 import ToolsButton from "./ToolsButton";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { DEFAULT_ARENA_CHALLENGE_ID } from "../utils/const";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -82,7 +83,7 @@ const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMob
   const navigationItems: NavigationItem[] = [
     {
       label: "Arena",
-      path: "/arena",
+      path: `/arena/${DEFAULT_ARENA_CHALLENGE_ID}/review`,
       href: undefined,
       icon: MessageCircle,
       isActive: () => isActivePath("/arena"),
