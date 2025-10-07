@@ -283,7 +283,7 @@ const ArenaRanking: React.FC<ArenaRankingProps> = () => {
         {filteredRankings.map((ranking, index) => (
           <div
             key={`${ranking.challenge_details.challenge_name}-${index}`}
-            className="bg-white min-w-[500px] flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+            className="bg-white min-w-[500px] flex-1 flex-shrink-0 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
           >
             {/* Challenge Header */}
             <div className="from-primary-50 to-primary-100 dark:bg-primary-800/20 p-2 border-b border-neutral-200 dark:border-neutral-700">
