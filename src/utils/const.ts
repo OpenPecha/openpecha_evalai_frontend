@@ -23,8 +23,11 @@ const LANGUAGES = [
     {code: "vi", name: "Vietnamese"},
 ]
 
+// Default Arena Challenge ID
+const DEFAULT_ARENA_CHALLENGE_ID = "b67930f4-1d96-4aca-bed7-1cf6dafad23d";
+
 const getLanguageName = (code: string) => {
     return LANGUAGES.find(language => language.code === code)?.name;
 }
 
-export { LANGUAGES, getLanguageName };
+export { LANGUAGES, getLanguageName, DEFAULT_ARENA_CHALLENGE_ID };
