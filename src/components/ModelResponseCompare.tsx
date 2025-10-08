@@ -11,6 +11,199 @@ import FontSizeControl from './FontSizeControl';
 import { useAuth } from "../auth/use-auth-hook";
 import TemplateDetailModal from './TemplateDetailModal';
 
+// Type aliases
+type SelectedOption = 'left' | 'right' | 'both' | 'none' | null;
+
+// Reusable ModelPanel component
+interface ModelPanelProps {
+  side: 'left' | 'right';
+  modelName: string;
+  templateName?: string;
+  templateId?: string;
+  fontSize: number;
+  onFontSizeChange: (size: number) => void;
+  onCopy: () => void;
+  onStop: () => void;
+  onTemplateClick: (templateId: string) => void;
+  selectedOption: SelectedOption;
+  borderClass: string;
+  translation: string | undefined;
+  individualTranslation: unknown;
+  translationReady: boolean;
+  isLoading: boolean;
+  error: string | null;
+  currentStepMessage: string;
+  stepProgress: { current: number; total: number; message: string };
+  translationStatus: string;
+  comboKey?: string;
+  t: (key: string) => string;
+}
+
+const ModelPanel: React.FC<ModelPanelProps> = ({
+  side,
+  modelName,
+  templateName,
+  templateId,
+  fontSize,
+  onFontSizeChange,
+  onCopy,
+  onStop,
+  onTemplateClick,
+  selectedOption,
+  borderClass,
+  translation,
+  individualTranslation,
+  translationReady,
+  isLoading,
+  error,
+  currentStepMessage,
+  stepProgress,
+  translationStatus,
+  comboKey,
+  t,
+}) => {
+  const isSelected = selectedOption === side || selectedOption === 'both';
+  const hasContent = translation || (translationReady && individualTranslation);
+
+  // Helper function to get individual translation text
+  const getIndividualTranslationText = (individualTranslation: unknown): string => {
+    if (individualTranslation && typeof individualTranslation === 'object') {
+      const translationObj = individualTranslation as { translation?: { translation?: string } | string };
+      if (translationObj.translation) {
+        if (typeof translationObj.translation === 'string') {
+          return translationObj.translation;
+        } else if (translationObj.translation.translation) {
+          return translationObj.translation.translation;
+        }
+      }
+    }
+    return '';
+  };
+
+  return (
+    <div className={`bg-white dark:bg-neutral-800 rounded-xl border-2 transition-all duration-200 ${borderClass}`}>
+      {/* Header */}
+      <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
+              {modelName}
+              {templateName && templateId && (
+                <TemplateName 
+                  templateName={templateName} 
+                  templateId={templateId} 
+                  onTemplateClick={onTemplateClick} 
+                />
+              )}
+            </h3>
+            {isSelected && (
+              <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            {/* Font size control */}
+            <FontSizeControl
+              fontSize={fontSize}
+              onFontSizeChange={onFontSizeChange}
+              className="mr-2"
+            />
+            
+            {/* Copy button */}
+            {hasContent && (
+              <button
+                onClick={onCopy}
+                className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
+                title={t('translation.copyContent')}
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+            )}
+            
+            {/* Stop button */}
+            {isLoading && (
+              <button
+                onClick={onStop}
+                className="p-1 text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
+                title="Stop Translation"
+              >
+                <StopCircle className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-4">
+        {error ? (
+          <div className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          </div>
+        ) : (
+          <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${fontSize}px` }}>
+            {translation ? (
+              <div className="break-words">
+                <Markdown>
+                  {String(translation)}
+                </Markdown>
+              </div>
+            ) : translationReady && individualTranslation ? (
+              <div className="break-words">
+                <Markdown>
+                  {String(getIndividualTranslationText(individualTranslation))}
+                </Markdown>
+              </div>
+            ) : (
+              <div className="text-neutral-400 dark:text-neutral-500 italic">
+                {isLoading ? (
+                  <div className="flex items-center space-x-3">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-primary-600 dark:text-primary-400 transition-all duration-300">
+                        {currentStepMessage}
+                      </span>
+                      {stepProgress.current > 0 && (
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 flex items-center gap-2">
+                          <span>{stepProgress.message}</span>
+                          {translationStatus === 'ahead' && (
+                            <span className="text-green-600 dark:text-green-400 font-medium">⚡ Ahead</span>
+                          )}
+                          {translationStatus === 'behind' && (
+                            <span className="text-orange-600 dark:text-orange-400 font-medium">⏳ Behind</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  'Ready to translate'
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Combo Key Info */}
+      {comboKey && (
+        <div className="px-4 pb-4">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-700/50 rounded px-2 py-1">
+            Combination Key: {comboKey}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 interface ModelResponseCompareProps {
   templateId: string | null;
   challengeId: string;
@@ -31,9 +224,9 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
   const { state, translate, reset, stop } = useTranslateV2Stream();
   const { isAuthenticated } = useAuth();
   
-  const [selectedOption, setSelectedOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
+  const [selectedOption, setSelectedOption] = useState<SelectedOption>(null);
   const [isVoting, setIsVoting] = useState(false);
-  const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
+  const [hoveredOption, setHoveredOption] = useState<SelectedOption>(null);
   const [leftFontSize, setLeftFontSize] = useState(16);
   const [rightFontSize, setRightFontSize] = useState(16);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
@@ -241,239 +434,54 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
       {/* Model panels side by side - Always visible */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-[monlam-2] text-lg">
         {/* Model 1 Panel */}
-        <div className={`bg-white dark:bg-neutral-800 rounded-xl border-2 transition-all duration-200 ${getPanelBorderClass('left')}`}>
-          {/* Header */}
-          <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
-                  {(selectedOption && state.data) ? state.data.model_1 : t('translation.modelA')}
-                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_1_name} templateId={state.data?.id_1} onTemplateClick={handleTemplateClick} />}
-                </h3>
-                {(selectedOption === 'left' || selectedOption === 'both') && (
-                  <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
-                )}
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                {/* Font size control */}
-                <FontSizeControl
-                  fontSize={leftFontSize}
-                  onFontSizeChange={setLeftFontSize}
-                  className="mr-2"
-                />
-                
-                {/* Copy button */}
-                {(state.data?.translation_1?.translation || (state.translation1Ready && state.individualTranslation1)) && (
-                  <button
-                    onClick={handleCopyLeft}
-                    className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
-                    title={t('translation.copyContent')}
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
-                )}
-                
-                {/* Stop button */}
-                {state.isLoading && (
-                  <button
-                    onClick={handleStop}
-                    className="p-1 text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
-                    title="Stop Translation"
-                  >
-                    <StopCircle className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-4">
-            {state.error ? (
-              <div className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  <span>{state.error}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${leftFontSize}px` }}>
-                {state.data?.translation_1?.translation ? (
-                  <div className="break-words">
-                    <Markdown>
-                      {String(state.data.translation_1.translation)}
-                    </Markdown>
-                  </div>
-                ) : state.translation1Ready && state.individualTranslation1 ? (
-                  <div className="break-words">
-                   
-                    <Markdown>
-                      {String(state.individualTranslation1.translation?.translation)}
-                    </Markdown>
-                  </div>
-                ) : (
-                  <div className="text-neutral-400 dark:text-neutral-500 italic">
-                    {state.isLoading ? (
-                        <div className="flex items-center space-x-3">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium text-primary-600 dark:text-primary-400 transition-all duration-300">
-                              {getCurrentStepMessage('1')}
-                            </span>
-                            {state.translation1Progress.length > 0 && (
-                              <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 flex items-center gap-2">
-                                <span>{getStepProgress('1').message}</span>
-                                {getTranslationStatus('1') === 'ahead' && (
-                                  <span className="text-green-600 dark:text-green-400 font-medium">⚡ Ahead</span>
-                                )}
-                                {getTranslationStatus('1') === 'behind' && (
-                                  <span className="text-orange-600 dark:text-orange-400 font-medium">⏳ Behind</span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                      </div>
-                    ) : (
-                      'Ready to translate'
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Combo Key Info */}
-          {state.data?.translation_1?.combo_key && (
-            <div className="px-4 pb-4">
-              <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-700/50 rounded px-2 py-1">
-                Combination Key: {state.data.translation_1.combo_key}
-              </div>
-            </div>
-          )}
-        </div>
+        <ModelPanel
+          side="left"
+          modelName={(selectedOption && state.data) ? state.data.model_1 : t('translation.modelA')}
+          templateName={state.data?.template_1_name}
+          templateId={state.data?.id_1}
+          fontSize={leftFontSize}
+          onFontSizeChange={setLeftFontSize}
+          onCopy={handleCopyLeft}
+          onStop={handleStop}
+          onTemplateClick={handleTemplateClick}
+          selectedOption={selectedOption}
+          borderClass={getPanelBorderClass('left')}
+          translation={state.data?.translation_1?.translation}
+          individualTranslation={state.individualTranslation1}
+          translationReady={state.translation1Ready}
+          isLoading={state.isLoading}
+          error={state.error}
+          currentStepMessage={getCurrentStepMessage('1')}
+          stepProgress={getStepProgress('1')}
+          translationStatus={getTranslationStatus('1')}
+          comboKey={state.data?.translation_1?.combo_key}
+          t={t}
+        />
+        
         {/* Model 2 Panel */}
-        <div className={`bg-white dark:bg-neutral-800 rounded-xl border-2 transition-all duration-200 ${getPanelBorderClass('right')}`}>
-          {/* Header */}
-          <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
-                  {(selectedOption && state.data) ? state.data.model_2 : t('translation.modelB')}
-                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_2_name} templateId={state.data?.id_2} onTemplateClick={handleTemplateClick} />}
-                </h3>
-                {(selectedOption === 'right' || selectedOption === 'both') && (
-                  <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
-                )}
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                {/* Font size control */}
-                <FontSizeControl
-                  fontSize={rightFontSize}
-                  onFontSizeChange={setRightFontSize}
-                  className="mr-2"
-                />
-                
-                {/* Copy button */}
-                {(state.data?.translation_2?.translation || (state.translation2Ready && state.individualTranslation2)) && (
-                  <button
-                    onClick={handleCopyRight}
-                    className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
-                    title={t('translation.copyContent')}
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
-                )}
-                
-                {/* Stop button */}
-                {state.isLoading && (
-                  <button
-                    onClick={handleStop}
-                    className="p-1 text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
-                    title="Stop Translation"
-                  >
-                    <StopCircle className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-4">
-            {state.error ? (
-              <div className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  <span>{state.error}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${rightFontSize}px` }}>
-                {state.data?.translation_2?.translation ? (
-                  <div className="break-words">
-                    <Markdown>
-                      {String(state.data.translation_2.translation)}
-                    </Markdown>
-                  </div>
-                ) : state.translation2Ready && state.individualTranslation2 ? (
-                  <div className="break-words">
-                 
-                    <Markdown>
-                      {String(state.individualTranslation2.translation.translation)}
-                    </Markdown>
-                  </div>
-                ) : (
-                  <div className="text-neutral-400 dark:text-neutral-500 italic">
-                    {state.isLoading ? (
-                      <div className="flex flex-col space-y-2">
-                        <div className="flex items-center space-x-3">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium text-primary-600 dark:text-primary-400 transition-all duration-300">
-                              {getCurrentStepMessage('2')}
-                            </span>
-                            {state.translation2Progress.length > 0 && (
-                              <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 flex items-center gap-2">
-                                <span>{getStepProgress('2').message}</span>
-                                {getTranslationStatus('2') === 'ahead' && (
-                                  <span className="text-green-600 dark:text-green-400 font-medium">⚡ Ahead</span>
-                                )}
-                                {getTranslationStatus('2') === 'behind' && (
-                                  <span className="text-orange-600 dark:text-orange-400 font-medium">⏳ Behind</span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      'Ready to translate'
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Combo Key Info */}
-          {state.data?.translation_2?.combo_key && (
-            <div className="px-4 pb-4">
-              <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-700/50 rounded px-2 py-1">
-                Combination Key: {state.data.translation_2.combo_key}
-              </div>
-            </div>
-          )}
-        </div>
+        <ModelPanel
+          side="right"
+          modelName={(selectedOption && state.data) ? state.data.model_2 : t('translation.modelB')}
+          templateName={state.data?.template_2_name}
+          templateId={state.data?.id_2}
+          fontSize={rightFontSize}
+          onFontSizeChange={setRightFontSize}
+          onCopy={handleCopyRight}
+          onStop={handleStop}
+          onTemplateClick={handleTemplateClick}
+          selectedOption={selectedOption}
+          borderClass={getPanelBorderClass('right')}
+          translation={state.data?.translation_2?.translation}
+          individualTranslation={state.individualTranslation2}
+          translationReady={state.translation2Ready}
+          isLoading={state.isLoading}
+          error={state.error}
+          currentStepMessage={getCurrentStepMessage('2')}
+          stepProgress={getStepProgress('2')}
+          translationStatus={getTranslationStatus('2')}
+          comboKey={state.data?.translation_2?.combo_key}
+          t={t}
+        />
       </div>
 
       {/* Error State - Only show if there's an error */}
