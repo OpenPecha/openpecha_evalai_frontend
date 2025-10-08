@@ -9,6 +9,7 @@ import { AiOutlineStop } from "react-icons/ai";
 import Markdown from 'react-markdown'
 import FontSizeControl from './FontSizeControl';
 import { useAuth } from "../auth/use-auth-hook";
+import TemplateDetailModal from './TemplateDetailModal';
 
 interface ModelResponseCompareProps {
   templateId: string | null;
@@ -35,6 +36,8 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
   const [hoveredOption, setHoveredOption] = useState<'left' | 'right' | 'both' | 'none' | null>(null);
   const [leftFontSize, setLeftFontSize] = useState(16);
   const [rightFontSize, setRightFontSize] = useState(16);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
 
   // Auto-start translation when component mounts
   useEffect(() => {
@@ -167,6 +170,18 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
     onNewTranslation?.();
   }, [onNewTranslation, reset]);
 
+  // Handle template click
+  const handleTemplateClick = useCallback((templateId: string) => {
+    setSelectedTemplateId(templateId);
+    setShowTemplateModal(true);
+  }, []);
+
+  // Handle modal close
+  const handleModalClose = useCallback(() => {
+    setShowTemplateModal(false);
+    setSelectedTemplateId(null);
+  }, []);
+
   // Copy content handlers
   const handleCopyLeft = useCallback(async () => {
     const textToCopy = state.data?.translation_1?.translation || 
@@ -233,7 +248,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="flex items-center space-x-2">
                 <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
                   {(selectedOption && state.data) ? state.data.model_1 : t('translation.modelA')}
-                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_1_name} />}
+                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_1_name} templateId={state.data?.id_1} onTemplateClick={handleTemplateClick} />}
                 </h3>
                 {(selectedOption === 'left' || selectedOption === 'both') && (
                   <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
@@ -341,7 +356,6 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
             </div>
           )}
         </div>
-
         {/* Model 2 Panel */}
         <div className={`bg-white dark:bg-neutral-800 rounded-xl border-2 transition-all duration-200 ${getPanelBorderClass('right')}`}>
           {/* Header */}
@@ -350,7 +364,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
               <div className="flex items-center space-x-2">
                 <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
                   {(selectedOption && state.data) ? state.data.model_2 : t('translation.modelB')}
-                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_2_name} />}
+                  {(selectedOption && state.data) && <TemplateName templateName={state.data?.template_2_name} templateId={state.data?.id_2} onTemplateClick={handleTemplateClick} />}
                 </h3>
                 {(selectedOption === 'right' || selectedOption === 'both') && (
                   <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
@@ -613,6 +627,13 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
           </p>
         )}
       </div>
+
+      {/* Template Detail Modal */}
+      <TemplateDetailModal
+        isOpen={showTemplateModal}
+        onClose={handleModalClose}
+        templateId={selectedTemplateId}
+      />
     </div>
   );
 };
@@ -621,11 +642,29 @@ export default ModelResponseCompare;
 
 
 
-function TemplateName({ templateName }: { templateName: string | undefined }) {
+function TemplateName({ 
+  templateName, 
+  templateId, 
+  onTemplateClick 
+}: Readonly<{ 
+  templateName: string | undefined;
+  templateId: string | undefined;
+  onTemplateClick: (templateId: string) => void;
+}>) {
+  const handleClick = () => {
+    if (templateId) {
+      onTemplateClick(templateId);
+    }
+  };
+
   return (
-    <span className="text-xs text-neutral-500 dark:text-neutral-400 ml-4">
+    <button
+      onClick={handleClick}
+      className="text-xs text-blue-600 dark:text-blue-400 ml-4 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors cursor-pointer"
+      title="Click to view template details"
+    >
       {templateName}
-    </span>
+    </button>
   );
 }
 
