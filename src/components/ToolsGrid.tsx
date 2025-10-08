@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { ExternalLink, Grid, List, Search, RefreshCw, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useTools } from "../hooks/useTools";
@@ -15,6 +16,26 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
   const { data: toolsResponse, isLoading, error, refetch } = useTools();
+
+  // Handle escape key to close modal
+  React.useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
 
   // Filter tools based on search query
   const filteredTools = React.useMemo(() => {
@@ -43,11 +64,78 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-3 text-neutral-600 dark:text-neutral-400">{t('tools.loadingTools')}</span>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="text-center py-12">
+          <div className="text-red-600 dark:text-red-400 mb-2">
+            {t('tools.failedToLoad')}
+          </div>
+          <button
+            onClick={() => refetch()}
+            className="text-blue-600 hover:text-blue-700 text-sm"
+          >
+            {t('tools.tryAgain')}
+          </button>
+        </div>
+      );
+    }
+
+    if (filteredTools.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <div className="text-neutral-600 dark:text-neutral-400 mb-2">
+            {searchQuery ? t('tools.noToolsFound') : t('tools.noToolsAvailable')}
+          </div>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="text-blue-600 hover:text-blue-700 text-sm"
+            >
+              {t('tools.clearSearch')}
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className={
+        viewMode === "grid" 
+          ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+          : "space-y-3"
+      }>
+        {filteredTools.map((tool) => (
+          <ToolCard key={tool.id} tool={tool} viewMode={viewMode} handleToolClick={handleToolClick} handleKeyDown={handleKeyDown} />
+        ))}
+      </div>
+    );
+  };
+
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-neutral-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+  return createPortal(
+    <div className="fixed inset-0 bg-black/20 bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <button
+        className="absolute inset-0 w-full h-full"
+        onClick={onClose}
+        aria-label="Close modal"
+      />
+      <div 
+        className="bg-white dark:bg-neutral-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl relative z-10"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tools-modal-title"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
           <div className="flex items-center gap-3">
@@ -55,7 +143,7 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
               <Grid className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
+              <h2 id="tools-modal-title" className="text-xl font-semibold text-neutral-900 dark:text-white">
                 {t('tools.title')}
               </h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
@@ -120,58 +208,18 @@ const ToolsGrid: React.FC<ToolsGridProps> = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="p-6 max-h-96 overflow-y-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-neutral-600 dark:text-neutral-400">{t('tools.loadingTools')}</span>
-            </div>
-          ) : error ? (
-            <div className="text-center py-12">
-              <div className="text-red-600 dark:text-red-400 mb-2">
-                {t('tools.failedToLoad')}
-              </div>
-              <button
-                onClick={() => refetch()}
-                className="text-blue-600 hover:text-blue-700 text-sm"
-              >
-                {t('tools.tryAgain')}
-              </button>
-            </div>
-          ) : filteredTools.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-neutral-600 dark:text-neutral-400 mb-2">
-                {searchQuery ? t('tools.noToolsFound') : t('tools.noToolsAvailable')}
-              </div>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="text-blue-600 hover:text-blue-700 text-sm"
-                >
-                  {t('tools.clearSearch')}
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className={
-              viewMode === "grid" 
-                ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
-                : "space-y-3"
-            }>
-              {filteredTools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} viewMode={viewMode} handleToolClick={handleToolClick} handleKeyDown={handleKeyDown} />
-              ))}
-            </div>
-          )}
+          {renderContent()}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
 export default ToolsGrid;
 
 
-function ToolCard({ tool, viewMode, handleToolClick, handleKeyDown }: { tool: Tool, viewMode: "grid" | "list", handleToolClick: (tool: Tool) => void, handleKeyDown: (event: React.KeyboardEvent, tool: Tool) => void }) {
+function ToolCard({ tool, viewMode, handleToolClick, handleKeyDown }: Readonly<{ tool: Tool, viewMode: "grid" | "list", handleToolClick: (tool: Tool) => void, handleKeyDown: (event: React.KeyboardEvent, tool: Tool) => void }>) {
  
   const isComingSoon = tool.name.toLowerCase().includes("coming soon");
  
