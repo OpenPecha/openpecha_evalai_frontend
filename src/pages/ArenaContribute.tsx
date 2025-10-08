@@ -8,6 +8,8 @@ import type { CreateTemplateV2, TemplateDetail } from "../types/template";
 import TemplateCard from "../components/TemplateCard";
 import TemplateBuilder from "../components/TemplateBuilder";
 import TemplateEditModal from "../components/TemplateEditModal";
+import usePagination from "../hooks/usePagination";
+import Pagination from "./Pagination";
 
 const ArenaContribute: React.FC = () => {
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -15,14 +17,13 @@ const ArenaContribute: React.FC = () => {
   const { currentUser } = useAuth();
   
   // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { currentPage, setCurrentPage } = usePagination();
   const [showOnlyMyTemplates, setShowOnlyMyTemplates] = useState(false);
   
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<TemplateDetail | null>(null);
-  const [activeTemplate, setActiveTemplate] = useState<TemplateDetail | null>(null);
 
   // React Query hooks
   const { 
@@ -33,8 +34,7 @@ const ArenaContribute: React.FC = () => {
 
   const { 
     data: templatesResponse, 
-    isLoading: templatesLoading, 
-    error: templatesError 
+    isLoading: templatesLoading
   } = useTemplates(challengeId || '', currentPage, showOnlyMyTemplates ? currentUser?.id : undefined);
 
   const createTemplateMutation = useCreateTemplate();
@@ -97,24 +97,65 @@ const ArenaContribute: React.FC = () => {
     }
   };
 
-  // Handle template click - prevent if less than 2 templates
+  // Handle template click - navigate to template route
   const handleTemplateClick = (template: TemplateDetail) => {
     if ((templatesResponse?.items?.length || 0) < 2) {
       // Show a message or prevent action
       alert('At least 2 templates are required to use this feature');
       return;
     }
-    setActiveTemplate(template);
+    navigate(`/arena/${challengeId}/contribute/${template.id}`);
   };
 
-  // Handle back to templates
-  const handleBackToTemplates = () => {
-    setActiveTemplate(null);
-  };
 
   // Handle back to arena
   const handleBackToArena = () => {
     navigate('/arena');
+  };
+
+  // Render templates grid based on conditions
+  const renderTemplatesGrid = () => {
+    const templateCount = templatesResponse?.items?.length || 0;
+    
+    
+    
+    if (templateCount === 0) {
+      return (
+        <div className="text-center py-12">
+          <div className="text-neutral-500 dark:text-neutral-400 mb-2">
+            {showOnlyMyTemplates ? 'You haven\'t created any templates yet' : 'No templates found'}
+          </div>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            {showOnlyMyTemplates ? 'Create your first template to get started!' : 'Be the first to create a template for this challenge.'}
+          </p>
+        </div>
+      );
+    }
+    
+    return (
+      <>
+      {templateCount < 2 && templateCount > 0 &&
+          <div className="text-orange-500 dark:text-orange-400 mb-2">
+            ⚠️ At least 2 templates are required
+          </div>
+       }
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {templatesResponse?.items?.map((template: TemplateDetail) => (
+          <TemplateCard 
+            key={template?.id} 
+            template={template} 
+            handleTemplateClick={handleTemplateClick}
+            onEdit={handleEditTemplate}
+            onDelete={handleDeleteTemplate}
+            currentUser={currentUser}
+            isDeleting={deleteTemplateMutation.isPending}
+            disabled={(templatesResponse?.items?.length || 0) < 2}
+          />
+        ))}
+      </div>
+      </>
+
+    );
   };
 
   // Loading state
@@ -132,23 +173,6 @@ const ArenaContribute: React.FC = () => {
     return null; // This shouldn't happen due to redirect, but just in case
   }
 
-  // If a template is selected, show the Chat component
-  if (activeTemplate) {
-    // Import Chat component dynamically to avoid circular dependencies
-    const Chat = React.lazy(() => import('./Chat'));
-    
-    return (
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <Chat 
-          selectedTemplate={activeTemplate} 
-          challenge={challenge} 
-          onBackToTemplates={handleBackToTemplates}
-          onBackToArena={handleBackToArena}
-          judgeOrBattle="battle"
-        />
-      </React.Suspense>
-    );
-  }
   return (
     <div className="h-full flex flex-col bg-neutral-50 dark:bg-neutral-900">
       {/* Header */}
@@ -216,42 +240,12 @@ const ArenaContribute: React.FC = () => {
         </div>
 
         {/* Templates Grid */}
-        {(templatesResponse?.items?.length || 0) < 2 && templatesResponse?.items?.length > 0 ? (
-          <div className="text-center py-12">
-            <div className="text-orange-500 dark:text-orange-400 mb-2">
-              ⚠️ At least 2 templates are required
-            </div>
-            <p className="text-neutral-600 dark:text-neutral-400">
-              Create more templates to enable template comparison and usage.
-            </p>
-          </div>
-        ) : templatesResponse?.items?.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-neutral-500 dark:text-neutral-400 mb-2">
-              {showOnlyMyTemplates ? 'You haven\'t created any templates yet' : 'No templates found'}
-            </div>
-            <p className="text-neutral-600 dark:text-neutral-400">
-              {showOnlyMyTemplates ? 'Create your first template to get started!' : 'Be the first to create a template for this challenge.'}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {templatesResponse?.items?.map((template: TemplateDetail) => (
-              <TemplateCard 
-                key={template?.id} 
-                template={template} 
-                handleTemplateClick={handleTemplateClick}
-                onEdit={handleEditTemplate}
-                onDelete={handleDeleteTemplate}
-                currentUser={currentUser}
-                isDeleting={deleteTemplateMutation.isPending}
-                disabled={(templatesResponse?.items?.length || 0) < 2}
-              />
-            ))}
-          </div>
-        )}
+        {renderTemplatesGrid()}
       </div>
-
+      <Pagination
+        items={templatesResponse?.items || []}
+        totalPages={templatesResponse?.total_count || 0}
+      />
       {/* Template Builder Modal */}
       <TemplateBuilder
         isOpen={showCreateModal}

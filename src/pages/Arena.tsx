@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, Languages, Trophy, Eye, Zap, ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { Search, Plus, Languages, Trophy, Eye, Zap, Info } from 'lucide-react';
 import { usePaginatedArenaChallenges, useArenaCategories, useCreateArenaChallenge } from '../hooks/useArenaChallenge';
 import { LANGUAGES } from '../utils/const';
 import type { ArenaChallenge, ArenaChallengeRequest } from '../types/arena_challenge';
+import Pagination from './Pagination';
+import usePagination from '../hooks/usePagination';
 
 const Arena = () => {
   const navigate = useNavigate();
@@ -14,8 +16,7 @@ const Arena = () => {
   const [selectedToLanguage, setSelectedToLanguage] = useState<string>('');
   const [selectedTextType, setSelectedTextType] = useState<string>('');
   
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { currentPage, setCurrentPage } = usePagination();
   
   // Modal states
   const [selectedChallenge, setSelectedChallenge] = useState<ArenaChallenge | null>(null);
@@ -53,11 +54,9 @@ const Arena = () => {
   // Extract data from challenges response
   const challenges = challengesData?.items || [];
   const totalPages = challengesData?.total_count || 0;
-  const hasMorePages = currentPage < totalPages;
 
   const handleCreateChallenge = async () => {
     try {
-      console.log("createForm ::: ", createForm);
       const newChallenge = await createChallengeMutation.mutateAsync(createForm);
       
       // Reset form and filters
@@ -67,7 +66,6 @@ const Arena = () => {
       setSearchText("");
       setCurrentPage(1);
       setSelectedChallenge(newChallenge);
-      console.log("newChallenge ::: ", newChallenge);
       setShowCreateModal(false);
       setCreateForm({
         text_category_id: '',
@@ -88,10 +86,7 @@ const Arena = () => {
     setCurrentPage(1); // Reset to first page when clearing filters
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+
 
   const handleJudgeOrBattle = (judgeOrBattle: string) => {
     if (!selectedChallenge) return;
@@ -104,10 +99,6 @@ const Arena = () => {
     }
   };
 
-  // Get unique values for filter options from categories
-  const uniqueLanguages = Array.from(new Set([
-    ...LANGUAGES.map(lang => lang.name)
-  ]));
 
   // Error handling
   if (challengesError) {
@@ -262,38 +253,7 @@ const Arena = () => {
       </div>
 
       {/* Pagination Controls - Moved to bottom of page */}
-      {!loading && challenges.length > 0 && totalPages > 1 && (
-        <div className="bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div className="flex flex-col items-center space-y-4">
-              {/* Pagination Buttons */}
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  Previous
-                </button>
-                
-                <span className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  Page {currentPage} of {totalPages}
-                </span>
-                
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={!hasMorePages}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {!loading && <Pagination items={challenges} totalPages={totalPages} />}
 
       {/* Challenge Selection Modal */}
       {selectedChallenge && (

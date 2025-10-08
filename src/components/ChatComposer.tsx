@@ -46,7 +46,6 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
       let modelB: string = DEFAULT_MODELS[1];
       let selectionMethod: string | undefined;
 
-      console.log('Fetching fresh model suggestions for new translation...');
       try {
         const suggestion: SuggestResponse = await suggestModels(token, text);
         
@@ -55,7 +54,6 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           modelA = suggestion.model_a;
           modelB = suggestion.model_b;
           selectionMethod = suggestion.selection_method || undefined;
-          console.log(`Using suggested models: ${modelA} vs ${modelB} (${selectionMethod})`);
           
           // Log information about filtered models if any
           if (suggestion.used_models && suggestion.used_models.length > 0) {

@@ -36,16 +36,18 @@ export async function getAllTemplates(challenge_id: string, page: number, creato
   // GET: single template by ID
 export async function getPromptTemplate(id: string): Promise<any> {
   try {
-    const res = await fetch(`${API_BASE_URL}/templates/${id}`, {
+    const headers = await getAuthHeaders("json");
+    const res = await fetch(`${API_BASE_URL}/arena/template/${id}`, {
       method: 'GET',
-      headers: {
-        'accept': 'application/json'
-      }
+      headers,
     });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
     const data = await res.json();
     return data;
-    // For now, return mock data
-    
   } catch (error) {
     console.error("Error fetching prompt template:", error);
     throw error;

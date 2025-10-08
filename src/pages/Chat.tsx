@@ -18,8 +18,6 @@ interface ChatProps {
 }
 
 const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBackToArena, challenge, judgeOrBattle }) => {
-  console.log("challenge", challenge);
-  console.log("selectedTemplate", selectedTemplate); 
   const { t } = useTranslation();
   const { isAuthenticated, getToken } = useAuth();
   const [sessions, setSessions] = useState<TranslateSession[]>([]);
@@ -84,7 +82,6 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
       setSessions(prev => prev.map(s => s.id === currentSession.id ? updatedSession : s));
       setCurrentSession(updatedSession);
     }
-    console.log("Translation session completed");
   }, [currentSession]);
 
   // Start new chat

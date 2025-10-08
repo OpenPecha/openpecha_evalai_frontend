@@ -62,7 +62,6 @@ const AuthContextProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
 
-      console.log("Attempting silent authentication...");
       setSilentAuthAttempted(true);
 
       // Try silent authentication first

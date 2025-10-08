@@ -127,7 +127,6 @@ export function useTranslateV2Stream(): UseTranslateV2StreamReturn {
 
       // Handle streaming steps
       const handleStep = (step: StreamStep) => {
-        console.log('Received step:', step); // Debug log
         setState(prev => {
           const newProgressSteps = [...prev.progressSteps, step];
           
@@ -141,23 +140,19 @@ export function useTranslateV2Stream(): UseTranslateV2StreamReturn {
           
           if (step.step.startsWith('translation_1_')) {
             newTranslation1Progress = [...prev.translation1Progress, step];
-            console.log('Added to translation 1 progress:', step.step); // Debug log
             
             // Check for individual translation completion
             if (step.step === 'translation_1_ready' && step.status === 'completed') {
               newTranslation1Ready = true;
               newIndividualTranslation1 = step.data;
-              console.log('Translation 1 ready:', step.data); // Debug log
             }
           } else if (step.step.startsWith('translation_2_')) {
             newTranslation2Progress = [...prev.translation2Progress, step];
-            console.log('Added to translation 2 progress:', step.step); // Debug log
             
             // Check for individual translation completion
             if (step.step === 'translation_2_ready' && step.status === 'completed') {
               newTranslation2Ready = true;
               newIndividualTranslation2 = step.data;
-              console.log('Translation 2 ready:', step.data); // Debug log
             }
           }
           

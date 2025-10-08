@@ -64,7 +64,6 @@ export function ReactQueryExamples() {
         challenge_name: 'Example Challenge'
       });
       // Success handling is done automatically by the hook
-      console.log('Challenge created successfully!');
     } catch (error) {
       // Error handling
       console.error('Failed to create challenge:', error);
@@ -81,7 +80,6 @@ export function ReactQueryExamples() {
       challenge_id: challengeId,
     }, {
       onSuccess: () => {
-        console.log('Template created successfully!');
       },
       onError: (error) => {
         console.error('Failed to create template:', error);

@@ -68,12 +68,11 @@ const TemplateCard = ({
                 }`}
                 disabled={isDeleting || disabled}
             >
-                <div className="space-y-3">
+                <div className="space-y-3 flex flex-col">
                     {/* Header with title, icon, and delete button */}
-                    <div className="flex items-start justify-between">
-                     <div className="flex flex-col">
-
-                        <h3 className="font-semibold w-full  text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight flex-1 pr-2">
+                    <div className="flex items-start justify-between ">
+                     <div className="flex  flex-1  flex-col w-full max-w-[80%]">
+                        <h3 title={template.template_name} className="  font-semibold  truncate text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight pr-2">
                             {template.template_name}
                         </h3>
                           {/* Sample text */}
@@ -83,7 +82,7 @@ const TemplateCard = ({
                             </div>
                     )}
                     </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="flex items-center gap-2 fflex-1 flex-shrink-0">
                             {onEdit && isOwner && (
                                 <div
                                     onClick={handleEdit}

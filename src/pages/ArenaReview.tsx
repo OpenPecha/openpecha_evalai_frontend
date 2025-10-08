@@ -21,10 +21,6 @@ const ArenaReview: React.FC = () => {
     }
   }, [challengeLoading, challengeError, challenge, navigate]);
 
-  // Handle back to templates
-  const handleBackToTemplates = () => {
-    setActiveTemplate(null);
-  };
 
   // Handle back to arena
   const handleBackToArena = () => {
@@ -32,30 +28,20 @@ const ArenaReview: React.FC = () => {
   };
 
   // Loading state
-  if (challengeLoading) {
+  if (challengeLoading|| !challenge) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-3 text-neutral-600 dark:text-neutral-400">Loading...</span>
-      </div>
+     <Loader/>
     );
   }
 
-  // If we reach here, challenge should exist (redirect happens in useEffect)
-  if (!challenge) {
-    return null; // This shouldn't happen due to redirect, but just in case
-  }
-
-  // For review mode, show Chat component directly without template selection
-  // Import Chat component dynamically to avoid circular dependencies
   const Chat = React.lazy(() => import('./Chat'));
   
   return (
-    <React.Suspense fallback={<div>Loading...</div>}>
+    <React.Suspense fallback={<Loader />}>
       <Chat 
         selectedTemplate={ undefined} 
         challenge={challenge} 
-        onBackToTemplates={handleBackToTemplates}
+        onBackToTemplates={()=>{}}
         onBackToArena={handleBackToArena}
         judgeOrBattle="judge"
       />
@@ -64,3 +50,14 @@ const ArenaReview: React.FC = () => {
 };
 
 export default ArenaReview;
+
+
+
+export const Loader=()=>{
+  return (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <span className="ml-3 text-neutral-600 dark:text-neutral-400">Loading challenge...</span>
+    </div>
+  );
+}

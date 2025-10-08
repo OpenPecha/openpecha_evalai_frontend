@@ -13,7 +13,6 @@ interface TemplateViewProps {
   }
 
 const TemplateView: React.FC<TemplateViewProps> = ({ template, isOpen, onClose, onSelect, onEdit, currentUser }) => {
-    console.log('selected Template:', template);
   
   // Check if current user owns this template
   const isOwner = currentUser?.email?.split('@')[0] === template.created_by;

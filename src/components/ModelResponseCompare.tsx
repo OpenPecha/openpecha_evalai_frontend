@@ -115,18 +115,6 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
     }
   };
 
-  // Debug logging for development
-  useEffect(() => {
-    if (state.translation1Progress.length > 0) {
-      console.log('Translation 1 progress:', state.translation1Progress);
-    }
-  }, [state.translation1Progress]);
-
-  useEffect(() => {
-    if (state.translation2Progress.length > 0) {
-      console.log('Translation 2 progress:', state.translation2Progress);
-    }
-  }, [state.translation2Progress]);
 
   // Handle voting
   const handleVoteOption = useCallback(async (option: 'left' | 'right' | 'both' | 'none') => {

@@ -7,6 +7,7 @@ import { ToastProvider } from "./components/ToastContainer";
 import Home from "./pages/Home";
 import Arena from "./pages/Arena";
 import ArenaContribute from "./pages/ArenaContribute";
+import ArenaTemplate from "./pages/ArenaTemplate";
 import ArenaReview from "./pages/ArenaReview";
 import Leaderboard from "./pages/Leaderboard";
 import Leaderboards from "./pages/Leaderboards";
@@ -181,6 +182,7 @@ const App = () => {
                       />
                       <Route path="/arena" element={<Arena />} />
                       <Route path="/arena/:challengeId/contribute" element={<ArenaContribute />} />
+                      <Route path="/arena/:challengeId/contribute/:templateId" element={<ArenaTemplate />} />
                       <Route path="/arena/:challengeId/review" element={<ArenaReview />} />
                       <Route
                         path="/leaderboards"

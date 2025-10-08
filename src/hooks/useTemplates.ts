@@ -16,7 +16,7 @@ export function useTemplates(challengeId: string, page: number = 1, creator_id?:
 // Hook to fetch a single template by ID
 export function useTemplate(id: string) {
   return useQuery({
-    queryKey: templatekey,
+    queryKey: [...templatekey, 'single', id],
     queryFn: () => getPromptTemplate(id),
     enabled: !!id, // Only run query if id is provided
     staleTime: 10 * 60 * 1000, // 10 minutes since individual templates change less frequently
@@ -66,7 +66,6 @@ export function useDeleteTemplate() {
   return useMutation({
     mutationFn: (templateId: string) => deleteTemplate(templateId),
     onSuccess: (_, deletedTemplateId) => {
-      console.log('Template deleted successfully, invalidating cache...', deletedTemplateId);
       // Invalidate and refetch templates list
       queryClient.invalidateQueries({
         queryKey: templatekey
@@ -84,7 +83,7 @@ export function usePrefetchTemplate() {
 
   return (id: string) => {
     queryClient.prefetchQuery({
-      queryKey: templatekey,
+      queryKey: [...templatekey, 'single', id],
       queryFn: () => getPromptTemplate(id),
       staleTime: 10 * 60 * 1000,
     });
