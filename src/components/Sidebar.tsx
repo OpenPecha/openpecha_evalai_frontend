@@ -386,10 +386,10 @@ const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMob
               } p-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200`}
             >
               <div className={`flex items-center ${isOpen ? "space-x-3" : ""}`}>
-                {user?.avatar ? (
+                {user?.picture ? (
                   <img
                     className="w-6 h-6 rounded-full object-cover"
-                    src={user.avatar}
+                    src={user.picture}
                     alt={user.name || "User avatar"}
                   />
                 ) : (

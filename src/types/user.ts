@@ -5,7 +5,7 @@ export interface User {
   email: string;
   name: string;
   username?: string;
-  avatar?: string;
+  picture?: string;
   bio?: string;
   location?: string;
   website?: string;
@@ -58,7 +58,7 @@ export interface UserProfile {
   email: string;
   name: string;
   username?: string;
-  avatar?: string;
+  picture?: string;
   bio?: string;
   location?: string;
   website?: string;
@@ -86,7 +86,7 @@ export interface UserUpdateRequest {
   bio?: string;
   location?: string;
   website?: string;
-  avatar?: string;
+  picture?: string;
 }
 
 export interface UserPreferencesUpdateRequest {
@@ -119,7 +119,7 @@ export interface UserListItem {
   id: string;
   name: string;
   username?: string;
-  avatar?: string;
+  picture?: string;
   totalSubmissions: number;
   bestRanking: number | null;
   joinedDate: string;

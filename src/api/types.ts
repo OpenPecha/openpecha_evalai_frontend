@@ -15,14 +15,14 @@ export interface UserResponse {
   id: string;
   email: string;
   name: string;
-  avatar?: string;
+  picture?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UserUpdate {
   name?: string;
-  avatar?: string;
+  picture?: string;
 }
 
 export interface UserFilters {
