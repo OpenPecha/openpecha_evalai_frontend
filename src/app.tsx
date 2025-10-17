@@ -28,8 +28,6 @@ import { SAMPLE_UCCA } from "./utils/data";
 
 const Login = lazy(() => import("./pages/Login"));
 const Callback = lazy(() => import("./pages/Callback"));
-import ReactGA from "react-ga4";
-ReactGA.initialize("G-GK3GRRYXDZ"); // Replace with your Measurement ID
 
 
 const App = () => {
@@ -37,11 +35,7 @@ const App = () => {
   const { i18n } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location=useLocation();
 
-  useEffect(()=>{
-    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
-  },[location])
   // Initialize theme system at root level
   useTheme();
   useTokenExpiration();
