@@ -61,11 +61,7 @@ const App = () => {
   // Store token when authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      getToken().then((token) => {
-        if (token) {
-          localStorage.setItem("access_token", token);
-        }
-      });
+      getToken()
     }
   }, [isAuthenticated, getToken]);
 
