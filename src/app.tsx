@@ -170,7 +170,7 @@ const App = () => {
                         }
                       />
                       <Route
-                        path="/challenges"
+                        path="/benchmark_eval"
                         element={
                           <div className="p-4 lg:p-6">
                             <Home />

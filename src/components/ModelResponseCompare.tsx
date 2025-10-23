@@ -28,7 +28,7 @@ interface ModelPanelProps {
   selectedOption: SelectedOption;
   borderClass: string;
   translation: string | undefined;
-  individualTranslation: unknown;
+  individualTranslation: any;
   translationReady: boolean;
   isLoading: boolean;
   error: string | null;
@@ -81,12 +81,12 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-neutral-800 rounded-xl border-2 transition-all duration-200 ${borderClass}`}>
+    <div className={`bg-white/5 backdrop-blur-xl rounded-xl border-2 transition-all duration-200 ${borderClass}`}>
       {/* Header */}
-      <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
+      <div className="p-4 border-b border-white/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h3 className="font-semibold text-neutral-700 dark:text-neutral-100">
+            <h3 className="font-semibold text-white">
               {modelName}
               {templateName && templateId && (
                 <TemplateName 
@@ -97,7 +97,9 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
               )}
             </h3>
             {isSelected && (
-              <div className="w-4 h-4 bg-green-600 dark:bg-green-400 rounded-full" />
+              <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full" />
+              </div>
             )}
           </div>
           
@@ -113,7 +115,7 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
             {hasContent && (
               <button
                 onClick={onCopy}
-                className="p-1 text-neutral-500 hover:text-blue-600 dark:text-neutral-400 dark:hover:text-blue-400 transition-colors"
+                className="p-2 text-neutral-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
                 title={t('translation.copyContent')}
               >
                 <Copy className="w-4 h-4" />
@@ -124,7 +126,7 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
             {isLoading && (
               <button
                 onClick={onStop}
-                className="p-1 text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
+                className="p-2 text-neutral-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                 title="Stop Translation"
               >
                 <StopCircle className="w-4 h-4" />
@@ -137,14 +139,14 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
       {/* Content */}
       <div className="p-4">
         {error ? (
-          <div className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+          <div className="text-red-300 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
             <div className="flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
           </div>
         ) : (
-          <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${fontSize}px` }}>
+          <div className="max-h-96 min-h-10 overflow-y-auto text-neutral-200 leading-relaxed whitespace-pre-wrap scroll-smooth" style={{ fontSize: `${fontSize}px` }}>
             {translation ? (
               <div className="break-words">
                 <Markdown>
@@ -158,26 +160,26 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
                 </Markdown>
               </div>
             ) : (
-              <div className="text-neutral-400 dark:text-neutral-500 italic">
+              <div className="text-neutral-400 italic">
                 {isLoading ? (
                   <div className="flex items-center space-x-3">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                      <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                      <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-primary-600 dark:text-primary-400 transition-all duration-300">
+                      <span className="text-sm font-medium text-primary-400 transition-all duration-300">
                         {currentStepMessage}
                       </span>
                       {stepProgress.current > 0 && (
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 flex items-center gap-2">
+                        <div className="text-xs text-neutral-400 mt-1 flex items-center gap-2">
                           <span>{stepProgress.message}</span>
                           {translationStatus === 'ahead' && (
-                            <span className="text-green-600 dark:text-green-400 font-medium">⚡ Ahead</span>
+                            <span className="text-green-400 font-medium">⚡ Ahead</span>
                           )}
                           {translationStatus === 'behind' && (
-                            <span className="text-orange-600 dark:text-orange-400 font-medium">⏳ Behind</span>
+                            <span className="text-orange-400 font-medium">⏳ Behind</span>
                           )}
                         </div>
                       )}
@@ -195,7 +197,7 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
       {/* Combo Key Info */}
       {comboKey && (
         <div className="px-4 pb-4">
-          <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-700/50 rounded px-2 py-1">
+          <div className="text-xs text-neutral-400 bg-white/5 border border-white/10 rounded px-2 py-1">
             Combination Key: {comboKey}
           </div>
         </div>
@@ -415,18 +417,18 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
     const isRed = hoveredOption === 'none';
     
     if (isSelected) {
-      return "border-green-500 dark:border-green-400 bg-green-50/50 dark:bg-green-900/10";
+      return "border-green-500 bg-green-500/10 shadow-lg shadow-green-500/20";
     }
     if (isHovered && !selectedOption) {
-      return "border-blue-400 dark:border-blue-300 shadow-lg shadow-blue-200/50 dark:shadow-blue-800/30 bg-blue-50/30 dark:bg-blue-900/20";
+      return "border-blue-400 shadow-xl shadow-blue-400/30 bg-blue-500/10";
     }
     if (isRed && !selectedOption) {
-      return "border-red-400 dark:border-red-300 shadow-lg shadow-red-200/50 dark:shadow-red-800/30 bg-red-50/30 dark:bg-red-900/20";
+      return "border-red-400 shadow-xl shadow-red-400/30 bg-red-500/10";
     }
     if (state.error) {
-      return "border-red-300 dark:border-red-600";
+      return "border-red-400 bg-red-500/10";
     }
-    return "border-neutral-200 dark:border-neutral-600";
+    return "border-white/10";
   };
 
   return (
@@ -486,20 +488,20 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
 
       {/* Error State - Only show if there's an error */}
       {state.error && (
-        <div className="bg-white dark:bg-neutral-800 border border-red-300 dark:border-red-600 rounded-lg p-6">
+        <div className="bg-white/5 backdrop-blur-xl border border-red-400/30 rounded-xl p-6 shadow-xl">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center">
-              <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+              <AlertCircle className="w-8 h-8 text-red-400" />
             </div>
-            <div className="text-lg font-medium text-red-700 dark:text-red-300">
+            <div className="text-lg font-medium text-red-300">
               Translation Failed
             </div>
-            <p className="text-sm text-red-600 dark:text-red-400">
+            <p className="text-sm text-red-400">
               {state.error}
             </p>
             <button
               onClick={handleNewTranslation}
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
             >
               Try Again
             </button>
@@ -511,9 +513,9 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
 
       {/* Centralized Voting Buttons - Only show when translation is complete */}
       {state.data && state.isComplete && !state.error && (
-          <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-6">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-xl">
             <div className="text-center space-y-4">
-              <div className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
+              <div className="text-lg font-medium text-white">
                 {selectedOption ? t('arena.thankYou') : t('arena.whichBetter')}
               </div>
 
@@ -527,13 +529,13 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                   onMouseLeave={() => !selectedOption && setHoveredOption(null)}
                   className={`${
                     selectedOption === 'left' 
-                      ? 'bg-green-600 hover:bg-green-700' 
-                      : (selectedOption !== null && selectedOption !== 'left')
-                      ? 'bg-neutral-300 dark:bg-neutral-600' 
-                      : 'bg-neutral-600 hover:bg-neutral-700'
+                      ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/50' 
+                      : (!!selectedOption && !['left', null].includes(selectedOption as string | null))
+                      ? 'bg-white/5 border border-white/10' 
+                      : 'bg-white/10 hover:bg-white/20 border border-white/20'
                   } ${
-                    (selectedOption !== null && selectedOption !== 'left') ? 'opacity-50' : ''
-                  } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
+                    (!!selectedOption && !['left', null].includes(selectedOption as string | null)) ? 'opacity-50' : ''
+                  } text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 disabled:cursor-not-allowed hover:shadow-xl flex items-center justify-center gap-2`}
                 >
                   <ChevronLeft size={18} />
                   {selectedOption === 'left' ? t('arena.newTranslation') : t('arena.leftBetter')}
@@ -547,13 +549,13 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                   onMouseLeave={() => !selectedOption && setHoveredOption(null)}
                   className={`${
                     selectedOption === 'both' 
-                      ? 'bg-green-600 hover:bg-green-700' 
-                      : (selectedOption !== null && selectedOption !== 'both')
-                      ? 'bg-neutral-300 dark:bg-neutral-600' 
-                      : 'bg-neutral-600 hover:bg-neutral-700'
+                      ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/50' 
+                      : (!!selectedOption && !['both', null].includes(selectedOption as string | null))
+                      ? 'bg-white/5 border border-white/10' 
+                      : 'bg-white/10 hover:bg-white/20 border border-white/20'
                   } ${
-                    (selectedOption !== null && selectedOption !== 'both') ? 'opacity-50' : ''
-                  } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
+                    (!!selectedOption && !['both', null].includes(selectedOption as string | null)) ? 'opacity-50' : ''
+                  } text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 disabled:cursor-not-allowed hover:shadow-xl flex items-center justify-center gap-2`}
                 >
                   <FaHandshake size={18} />
                   {selectedOption === 'both' ? t('arena.newTranslation') : t('arena.itsTie')}
@@ -567,13 +569,13 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                   onMouseLeave={() => !selectedOption && setHoveredOption(null)}
                   className={`${
                     selectedOption === 'none' 
-                      ? 'bg-green-600 hover:bg-green-700' 
-                      : (selectedOption !== null && selectedOption !== 'none')
-                      ? 'bg-neutral-300 dark:bg-neutral-600' 
-                      : 'bg-neutral-600 hover:bg-neutral-700'
+                      ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/50' 
+                      : (!!selectedOption && !['none', null].includes(selectedOption as string | null))
+                      ? 'bg-white/5 border border-white/10' 
+                      : 'bg-white/10 hover:bg-white/20 border border-white/20'
                   } ${
-                    (selectedOption !== null && selectedOption !== 'none') ? 'opacity-50' : ''
-                  } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
+                    (!!selectedOption && !['none', null].includes(selectedOption as string | null)) ? 'opacity-50' : ''
+                  } text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 disabled:cursor-not-allowed hover:shadow-xl flex items-center justify-center gap-2`}
                 >
                   <AiOutlineStop size={18} />
                   {selectedOption === 'none' ? t('arena.newTranslation') : t('arena.bothBad')}
@@ -587,29 +589,29 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
                   onMouseLeave={() => !selectedOption && setHoveredOption(null)}
                   className={`${
                     selectedOption === 'right' 
-                      ? 'bg-green-600 hover:bg-green-700' 
-                      : (selectedOption !== null && selectedOption !== 'right')
-                      ? 'bg-neutral-300 dark:bg-neutral-600' 
-                      : 'bg-neutral-600 hover:bg-neutral-700'
+                      ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/50' 
+                      : (!!selectedOption && !['right', null].includes(selectedOption as string | null))
+                      ? 'bg-white/5 border border-white/10' 
+                      : 'bg-white/10 hover:bg-white/20 border border-white/20'
                   } ${
-                    (selectedOption !== null && selectedOption !== 'right') ? 'opacity-50' : ''
-                  } text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg flex items-center justify-center gap-2`}
+                    (!!selectedOption && !['right', null].includes(selectedOption as string | null)) ? 'opacity-50' : ''
+                  } text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 disabled:cursor-not-allowed hover:shadow-xl flex items-center justify-center gap-2`}
                 >
                   {selectedOption === 'right' ? t('arena.newTranslation') : t('arena.rightBetter')}
                   <ChevronRight size={18} />
                 </button>
               </div>:
-               <div className="flex flex-col items-center justify-center bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 text-center max-w-lg mx-auto">
-               <span className="mb-2 text-amber-700 dark:text-amber-300 font-semibold flex items-center justify-center gap-2">
-                 <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+               <div className="flex flex-col items-center justify-center bg-amber-500/10 border border-amber-500/30 rounded-xl p-6 text-center max-w-lg mx-auto backdrop-blur-sm">
+               <span className="mb-2 text-amber-300 font-semibold flex items-center justify-center gap-2">
+                 <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
                  Login required
                </span>
-               <p className="text-sm text-amber-800 dark:text-amber-200 mb-4">
-                 You need to <a href="/login" className="text-primary-600 dark:text-primary-400 underline font-medium hover:text-primary-700 dark:hover:text-primary-300 transition-colors">log in</a> to vote and compare model translations.
+               <p className="text-sm text-amber-200 mb-4">
+                 You need to <a href="/login" className="text-primary-400 underline font-medium hover:text-primary-300 transition-colors">log in</a> to vote and compare model translations.
                </p>
                <a
                  href="/login"
-                 className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors duration-200"
+                 className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
                >
                  Log in to Vote
                </a>
@@ -624,13 +626,13 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
       <div className="text-center space-y-2">
         
         {state.isComplete && !selectedOption && !state.error && (
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          <p className="text-sm text-neutral-300">
             ✅ {t('arena.translationsComplete')}
           </p>
         )}
 
         {isVoting && (
-          <p className="text-sm text-primary-600 dark:text-primary-400">
+          <p className="text-sm text-primary-400">
             ⏳ {t('arena.submittingVote')}
           </p>
         )}
@@ -668,7 +670,7 @@ function TemplateName({
   return (
     <button
       onClick={handleClick}
-      className="text-xs text-blue-600 dark:text-blue-400 ml-4 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors cursor-pointer"
+      className="text-xs text-blue-400 ml-4 hover:text-blue-300 hover:underline transition-colors cursor-pointer"
       title="Click to view template details"
     >
       {templateName}

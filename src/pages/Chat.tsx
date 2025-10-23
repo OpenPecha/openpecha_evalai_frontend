@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
-import { Languages, RotateCcw, History, ArrowLeft, AlertTriangle } from "lucide-react";
+import { Languages, RotateCcw, History, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ChatComposer from "../components/ChatComposer";
-// import DualCompare from "../components/DualCompare"; // Commented out - using ModelResponseCompare instead
 import ModelResponseCompare from "../components/ModelResponseCompare";
+import ArenaHeader from "../components/ArenaHeader";
 import { useAuth } from "../auth/use-auth-hook";
 import type { TranslateRequest, TranslateSession } from "../types/translate";
 import type { PromptTemplate } from "../types/template";
@@ -94,195 +94,154 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
   const hasHistory = sessions.length > 0;
 
   return (
-    <div className="h-full flex flex-col bg-neutral-50 dark:bg-neutral-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div>
-              <div className="flex items-center space-x-3">
-                <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
-                  {challenge?.challenge_name || t('arena.title')}
-                </h1>
-                <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
-                  ✨ {t('arena.live')}
-                </span>
-              </div>
-              <p className="text-sm hidden md:block text-neutral-500 dark:text-neutral-400">
-                {t('arena.compare')}
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col gap-2 md:flex-row items-center space-x-2">
-            {judgeOrBattle === 'judge' && onBackToArena && (
-              <button
-                onClick={onBackToArena}
-                className="flex w-max items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Arena List</span>
-              </button>
-            )} 
-            {selectedTemplate && onBackToTemplates && judgeOrBattle !== 'judge' && !hasCurrentSession && (
-              <button
-                onClick={onBackToTemplates}
-                className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back to Templates</span>
-              </button>
-            )}
-            {hasCurrentSession && (
-              <button
-                onClick={handleNewChat}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>New</span>
-              </button>
-            )}
-          </div>
+    <div className="h-full flex flex-col relative overflow-hidden">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-radial from-neutral-800 from-[30%] via-neutral-900 to-neutral-950 dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-950" />
+      
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-5" style={{
+        backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+        backgroundSize: '40px 40px'
+      }} />
+      
+      {/* Content Container */}
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Floating Header with Actions */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          {judgeOrBattle === 'judge' && onBackToArena && (
+            <button
+              onClick={onBackToArena}
+              className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/20 rounded-lg transition-all duration-200"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Arena List</span>
+            </button>
+          )} 
+          {selectedTemplate && onBackToTemplates && judgeOrBattle !== 'judge' && !hasCurrentSession && (
+            <button
+              onClick={onBackToTemplates}
+              className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/20 rounded-lg transition-all duration-200"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Templates</span>
+            </button>
+          )}
+          {hasCurrentSession && (
+            <button
+              onClick={handleNewChat}
+              className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 shadow-lg"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>New</span>
+            </button>
+          )}
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto">
-        {!hasCurrentSession ? (
-          /* Welcome Screen */
-          <div className="min-h-full flex items-center justify-center p-6">
-            <div className="w-full max-w-6xl mx-auto space-y-8">
-              {/* Welcome Section */}
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-neutral-800 dark:text-neutral-100 mb-3">
-                  {t('arena.welcomeTitle')}
-                </h2>
-                <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-6 max-w-2xl mx-auto leading-relaxed">
-                  {t('arena.welcomeSubtitle')}
-                </p>
-                
-                {!isAuthenticated && (
-                  <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 mb-8 max-w-2xl mx-auto">
-                    <div className="flex items-center gap-3">
-                      <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-                      <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
-                        {t('arena.authNote')}
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto">
+          {!hasCurrentSession ? (
+            /* Welcome Screen with Centered Layout */
+            <div className="min-h-full flex flex-col items-center justify-center p-6 pt-20">
+              <div className="w-full max-w-6xl mx-auto space-y-8">
+                {/* Arena Header */}
+                <ArenaHeader 
+                  challengeName={challenge?.challenge_name}
+                  subtitle={t('arena.compare')}
+                  judgeOrBattle={judgeOrBattle}
+                />
+
+                {/* Composer */}
+                <div className="w-full">
+                  {challenge && (
+                    <ChatComposer
+                      onSubmit={handleTranslateSubmit}
+                      token={token}
+                      selectedTemplate={selectedTemplate}
+                      challenge={challenge}
+                      judgeOrBattle={judgeOrBattle}
+                    />
+                  )}
+                </div>
+
+                {/* History Section */}
+                {hasHistory && (
+                  <div className="w-full max-w-6xl mx-auto">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+                      <div className="px-6 py-4 bg-white/5 border-b border-white/10">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                            <History className="w-4 h-4 text-white" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-white">
+                            {t('arena.recentRequests')}
+                          </h3>
+                        </div>
+                      </div>
+                      
+                      <div className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {sessions.slice(0, 6).map((session) => (
+                            <div
+                              key={session.id}
+                              className="p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all duration-200 cursor-pointer"
+                            >
+                              <div className="space-y-3">
+                                <p className="text-sm text-neutral-300 line-clamp-2 leading-relaxed">
+                                  {session.input_text}
+                                </p>
+                                {session.selectedModel === 'both' && (
+                                  <div className="inline-flex items-center px-2 py-1 bg-amber-500/20 text-amber-300 text-xs font-medium rounded-full">
+                                    {t('translation.tie')}
+                                  </div>
+                                )}
+                                {session.selectedModel === 'none' && (
+                                  <div className="inline-flex items-center px-2 py-1 bg-red-500/20 text-red-300 text-xs font-medium rounded-full">
+                                    {t('translation.neither')}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* Active Translation Session - Lighter Background */
+            <div className="min-h-full bg-neutral-900/50 py-6">
+              <div className="max-w-7xl mx-auto px-6 space-y-6">
+                {/* Input Display */}
+                <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 font-[monlam-2] text-lg p-6">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Languages className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-white mb-2">
+                        {t('arena.inputText')}
+                      </h3>
+                      <p className="text-neutral-300 leading-relaxed">
+                        {currentSession.input_text}
                       </p>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* Composer */}
-              <div className="max-w-4xl mx-auto">
-                { challenge && (
-                  <ChatComposer
-                    onSubmit={handleTranslateSubmit}
-                    token={token}
-                    selectedTemplate={selectedTemplate}
-                    challenge={challenge}
-                    judgeOrBattle={judgeOrBattle}
-                  />
-                )}
-              </div>
-
-              {/* History Section */}
-              {hasHistory && (
-                <div className="max-w-6xl mx-auto">
-                  <div className="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-600 overflow-hidden shadow-lg">
-                    <div className="px-6 py-4 bg-neutral-50 dark:bg-neutral-700/50 border-b border-neutral-200 dark:border-neutral-600">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-neutral-600 rounded-lg flex items-center justify-center">
-                          <History className="w-4 h-4 text-white" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-neutral-700 dark:text-neutral-100">
-                          {t('arena.recentRequests')}
-                        </h3>
-                      </div>
-                    </div>
-                    
-                    <div className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {sessions.slice(0, 6).map((session) => (
-                          <div
-                            key={session.id}
-                            className="p-4 bg-neutral-50 dark:bg-neutral-700/30 border border-neutral-200 dark:border-neutral-600 rounded-xl hover:shadow-md transition-all duration-200"
-                          >
-                            <div className="space-y-3">
-                              <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 leading-relaxed">
-                                {session.input_text}
-                              </p>
-                              {/* <div className="flex items-center justify-between text-xs">
-                                <div className="text-neutral-500 dark:text-neutral-400">
-                                  <span className={
-                                    session.selectedModel === session.modelA.name 
-                                      ? 'font-semibold text-green-600 dark:text-green-400' 
-                                      : 'font-medium'
-                                  }>
-                                    {session.modelA.name}
-                                  </span>
-                                  <span className="mx-1 text-neutral-400">vs</span>
-                                  <span className={
-                                    session.selectedModel === session.modelB.name 
-                                      ? 'font-semibold text-green-600 dark:text-green-400' 
-                                      : 'font-medium'
-                                  }>
-                                    {session.modelB.name}
-                                  </span>
-                                </div>
-                              </div> */}
-                              {session.selectedModel === 'both' && (
-                                <div className="inline-flex items-center px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-medium rounded-full">
-                                  {t('translation.tie')}
-                                </div>
-                              )}
-                              {session.selectedModel === 'none' && (
-                                <div className="inline-flex items-center px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-medium rounded-full">
-                                  {t('translation.neither')}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          /* Active Translation Session */
-          <div className="max-w-7xl mx-auto p-6 space-y-6">
-            {/* Input Display */}
-            <div className="bg-white dark:bg-neutral-800 rounded-xl border font-[monlam-2] text-lg border-neutral-200 dark:border-neutral-600 p-6">
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Languages className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-medium text-neutral-700 dark:text-neutral-100 mb-2">
-                    {t('arena.inputText')}
-                  </h3>
-                  <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
-                    {currentSession.input_text}
-                  </p>
-                </div>
+                {/* Model Response Compare */}
+                <ModelResponseCompare
+                  templateId={currentSession.template_id || null}
+                  challengeId={currentSession.challenge_id}
+                  inputText={currentSession.input_text}
+                  onComplete={handleSessionComplete}
+                  onNewTranslation={handleNewChat}
+                />
               </div>
             </div>
-
-            {/* Model Response Compare - New V2 Component */}
-              <ModelResponseCompare
-              templateId={currentSession.template_id || null}
-              challengeId={currentSession.challenge_id}
-              inputText={currentSession.input_text}
-              onComplete={handleSessionComplete}
-              onNewTranslation={handleNewChat}
-              />:
-             
-
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

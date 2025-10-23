@@ -302,7 +302,7 @@ const Arena = () => {
                   }`}
                 >
                   <Eye className="w-5 h-5" />
-                  <span>Review</span>
+                  <span>Compete</span>
                 </button>
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                   <div className="flex items-center space-x-1">
@@ -321,7 +321,7 @@ const Arena = () => {
               <div className="relative group flex-1">
                 <button onClick={() => handleJudgeOrBattle('battle')} className=" cursor-pointer w-full flex items-center justify-center space-x-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
                   <Zap className="w-5 h-5" />
-                  <span>Contribute</span>
+                  <span>Add Prompt</span>
                 </button>
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                   <div className="flex items-center space-x-1">

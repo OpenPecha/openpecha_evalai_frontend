@@ -75,12 +75,17 @@ const TemplateCard = ({
                         <h3 title={template.template_name} className="  font-semibold  truncate text-lg text-neutral-800 dark:text-neutral-100 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors line-clamp-2 leading-tight pr-2">
                             {template.template_name}
                         </h3>
-                          {/* Sample text */}
-                    {template.text_category && (
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{template.text_category}</span>
-                            </div>
-                    )}
+                          {/* Sample text and zero shot badge */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {template.text_category && (
+                            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{template.text_category}</span>
+                        )}
+                        {template.is_zero_shot && (
+                            <span className="px-2 py-0.5 text-[8px] font-normal bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 rounded-full border border-amber-300 dark:border-amber-700">
+                                Zero Shot
+                            </span>
+                        )}
+                    </div>
                     </div>
                         <div className="flex items-center gap-2 fflex-1 flex-shrink-0">
                             {onEdit && isOwner && (

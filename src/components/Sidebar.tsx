@@ -92,13 +92,13 @@ const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMob
       isExternal: false,
     },
     {
-      label: t('navigation.challenges'),
-      path: "/challenges",
+      label: t('navigation.benchmark_eval'),
+      path: "/benchmark_eval",
       href: undefined,
       icon: Trophy,
-      isActive: () => isActivePath("/challenges"),
+      isActive: () => isActivePath("/benchmark_eval"),
       activeClasses: "text-primary-600 bg-primary-50 border-l-4 border-blue-600",
-      tooltip: t('navigation.challenges'),
+      tooltip: t('navigation.benchmark_eval'),
       isExternal: false,
     },
     {
@@ -353,10 +353,10 @@ const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMob
         <div className={`${isOpen ? "mb-4" : "mb-2 flex justify-center"}`}>
           {isOpen ? (
               
-              <ToolsButton />
+              <ToolsButton isSidebarOpen={isOpen}/>
           ) : (
             <div className="flex justify-center">
-              <ToolsButton />
+              <ToolsButton isSidebarOpen={isOpen}/>
             </div>
           )}
         </div>
