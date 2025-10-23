@@ -23,7 +23,7 @@
   },
   "navigation": {
     "home": "Home",
-    "challenges": "Challenges",
+    "benchmark_eval": "Benchmark Eval",
     "leaderboards": "Leaderboards",
     "mySubmissions": "My Submissions",
     "profile": "Profile",

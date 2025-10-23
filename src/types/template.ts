@@ -22,6 +22,9 @@ export interface TemplateDetail {
   created_by: string;
 }
 
+// Alias for compatibility
+export type PromptTemplate = TemplateDetail;
+
 
 export interface TemplateResponse {
   total_count: number;
