@@ -70,11 +70,11 @@ const InputComposer: React.FC<InputComposerProps> = ({
         </div>
         
         {/* Action Bar */}
-        <div className="px-4 md:px-6 py-3 md:py-4 border-t border-white/10 flex items-center justify-end">
+        <div className="flex items-center justify-end">
          
           
           {/* Right side actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 p-2">
             {isLoading && (
               <div className="flex items-center gap-2 text-primary-400 text-sm font-medium">
                 <div className="w-4 h-4 border-2 border-primary-400 border-t-transparent rounded-full animate-spin" />
@@ -85,11 +85,10 @@ const InputComposer: React.FC<InputComposerProps> = ({
             <button
               onClick={onSubmit}
               disabled={!value.trim() || disabled || isLoading}
-              className="flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-neutral-600 hover:bg-neutral-500 disabled:bg-neutral-700/50 disabled:cursor-not-allowed text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:shadow-none transform hover:scale-105 disabled:transform-none disabled:opacity-50"
+              className="flex items-center gap-2 px-2 md:px-3 py-2 md:py-1.5 bg-neutral-600 hover:bg-neutral-500 disabled:bg-neutral-700/50 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:shadow-none transform hover:scale-105 disabled:transform-none disabled:opacity-50"
               title="Submit (Enter)"
             >
               <Send className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="hidden md:inline">Submit</span>
             </button>
           </div>
         </div>
