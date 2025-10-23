@@ -17,10 +17,14 @@ export interface TemplateDetail {
   challenge_name: string;
   from_language: string;
   to_language: string;
+  is_zero_shot: boolean;
   created_at: string;
   updated_at: string;
   created_by: string;
 }
+
+// Alias for compatibility
+export type PromptTemplate = TemplateDetail;
 
 
 export interface TemplateResponse {
