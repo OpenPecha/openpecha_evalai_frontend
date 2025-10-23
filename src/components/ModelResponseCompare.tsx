@@ -624,13 +624,6 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
 
       {/* Status and instructions */}
       <div className="text-center space-y-2">
-        
-        {state.isComplete && !selectedOption && !state.error && (
-          <p className="text-sm text-neutral-300">
-            ✅ {t('arena.translationsComplete')}
-          </p>
-        )}
-
         {isVoting && (
           <p className="text-sm text-primary-400">
             ⏳ {t('arena.submittingVote')}
