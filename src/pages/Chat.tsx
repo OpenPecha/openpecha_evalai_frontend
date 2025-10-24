@@ -102,7 +102,18 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
         backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
         backgroundSize: '40px 40px'
       }} />
-      
+      {/* Fixed Arena List Button - Top Right */}
+          {judgeOrBattle === 'judge' && onBackToArena && (
+        <div className="absolute top-4 right-6 z-20">
+          <button
+            onClick={onBackToArena}
+            className="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors shadow-lg"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="font-medium">Arena List</span>
+          </button>
+        </div>
+      )}
       {/* Content Container */}
       <div className="relative z-10 flex flex-col h-full">
         {hasCurrentSession && <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-6 py-4 flex items-center justify-between">
