@@ -97,6 +97,8 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
+  --font-monlam: monlam, sans-serif;
+  --font-monlam-2: monlam-2, sans-serif;
   --radius: 0.5rem;
   --shadow-2xs: 0px 4px 10px 0px hsl(240 30% 25% / 0.06);
   --shadow-xs: 0px 4px 10px 0px hsl(240 30% 25% / 0.06);

@@ -46,10 +46,10 @@ const App = () => {
     
     if (i18n.language === 'bo') {
       // Add Tibetan font for Tibetan language
-      body.classList.add('font-[monlam]');
+      body.classList.add('font-monlam');
     } else {
       // Remove Tibetan font for other languages
-      body.classList.remove('font-[monlam]');
+      body.classList.remove('font-monlam');
     }
     
     // Cleanup function to remove the class when component unmounts

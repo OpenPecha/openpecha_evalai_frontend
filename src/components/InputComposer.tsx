@@ -63,7 +63,7 @@ const InputComposer: React.FC<InputComposerProps> = ({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="w-full bg-transparent text-white placeholder-neutral-400 focus:outline-none resize-none min-h-[60px] md:min-h-[80px] max-h-[300px] text-base md:text-lg leading-relaxed font-['monlam']"
+            className="w-full bg-transparent text-white placeholder-neutral-400 focus:outline-none resize-none min-h-[60px] font-monlam-2 md:min-h-[80px] max-h-[300px] text-lg md:text-2xl leading-relaxed "
             disabled={isLoading || disabled}
             rows={1}
           />

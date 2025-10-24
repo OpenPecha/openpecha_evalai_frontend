@@ -59,7 +59,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
             title={`Switch to ${language.name}`}
           >
             <span className="text-xs">{language.flag}</span>
-            <span className={`${language.code==='bo' && "font-[monlam]"} hidden sm:inline text-xs`}>{language.nativeName}</span>
+            <span className={`${language.code==='bo' && "font-monlam-2"} hidden sm:inline text-xs`}>{language.nativeName}</span>
             {language.code === 'bo' && (
               <span className="text-xs text-neutral-500 dark:text-neutral-400">
               ( coming soon ) 

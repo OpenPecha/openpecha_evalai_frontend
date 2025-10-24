@@ -434,7 +434,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
   return (
     <div className="space-y-6">
       {/* Model panels side by side - Always visible */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-[monlam-2] text-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-monlam-2 text-lg">
         {/* Model 1 Panel */}
         <ModelPanel
           side="left"
