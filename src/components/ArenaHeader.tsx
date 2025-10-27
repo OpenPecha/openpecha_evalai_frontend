@@ -25,7 +25,7 @@ const ArenaHeader: React.FC<ArenaHeaderProps> = ({ challengeName, subtitle, judg
         </div>
       {/* Main Title */}
       {judgeOrBattle === 'judge' && <div className="space-y-3">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-700 dark:text-neutral-100 tracking-tight">
           {challengeName || t('arena.title')}
         </h1>
       </div>}

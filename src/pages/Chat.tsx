@@ -95,13 +95,14 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
   return (
     <div className="h-full flex flex-col relative overflow-hidden">
       {/* Gradient Background */}
-      <div className="absolute inset-0 " />
+      <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800" />
       
       {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 opacity-5" style={{
-        backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-        backgroundSize: '40px 40px'
-      }} />
+      <div className="absolute inset-0 opacity-5 dark:opacity-10" 
+           style={{
+             backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(115 115 115 / 0.3) 1px, transparent 0)',
+             backgroundSize: '40px 40px'
+           }} />
       {/* Fixed Arena List Button - Top Right */}
           {judgeOrBattle === 'judge' && onBackToArena && (
         <div className="absolute top-4 right-6 z-20">
@@ -131,15 +132,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
             </div>
           
             <div className="flex flex-col gap-2 md:flex-row items-center space-x-2">
-              {judgeOrBattle === 'judge' && onBackToArena && (
-                <button
-                  onClick={onBackToArena}
-                  className="flex w-max items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Arena List</span>
-                </button>
-              )} 
+        
               {selectedTemplate && onBackToTemplates && judgeOrBattle !== 'judge' && !hasCurrentSession && (
                 <button
                   onClick={onBackToTemplates}
@@ -152,7 +145,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
               {hasCurrentSession && (
                 <button
                   onClick={handleNewChat}
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors duration-200"
+                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg transition-colors duration-200"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>New</span>
@@ -162,10 +155,10 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
           </div>}
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto ">
           {!hasCurrentSession ? (
             /* Welcome Screen with Centered Layout */
-            <div className="min-h-full flex flex-col items-center justify-center p-6 pt-20">
+            <div className="min-h-full flex flex-col items-center justify-center p-6 pt-20 ">
               <div className="w-full max-w-6xl mx-auto space-y-8">
                 {/* Arena Header */}
                 <ArenaHeader 
@@ -190,19 +183,19 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
             </div>
           ) : (
             /* Active Translation Session - Lighter Background */
-            <div className="min-h-full bg-neutral-900/50 py-6">
+            <div className="min-h-full py-6">
               <div className="max-w-7xl mx-auto px-6 space-y-6">
                 {/* Input Display */}
-                <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 font-monlam-2 text-lg p-6">
+                <div className="text-neutral-700 dark:text-neutral-100 bg-neutral-200 dark:bg-neutral-800 backdrop-blur-xl rounded-xl border border-white/10 font-monlam-2 text-lg p-6">
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-primary-600 dark:bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
                       <Languages className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-white mb-2">
+                      <h3 className="font-medium mb-2">
                         {t('arena.inputText')}
                       </h3>
-                      <p className="text-neutral-300 leading-relaxed">
+                      <p className=" leading-relaxed">
                         {currentSession.input_text}
                       </p>
                     </div>

@@ -41,7 +41,7 @@ const InputComposer: React.FC<InputComposerProps> = ({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-4">
+    <div className="w-full max-w-5xl mx-auto space-y-4 ">
       {/* Error display */}
       {error && (
         <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 backdrop-blur-sm">
@@ -63,7 +63,7 @@ const InputComposer: React.FC<InputComposerProps> = ({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="w-full bg-transparent text-white placeholder-neutral-400 focus:outline-none resize-none min-h-[60px] font-monlam-2 md:min-h-[80px] max-h-[300px] text-lg md:text-2xl leading-relaxed "
+            className="w-full bg-transparent text-neutral-700 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none resize-none min-h-[60px] font-monlam-2 md:min-h-[80px] max-h-[300px] text-lg md:text-2xl leading-relaxed "
             disabled={isLoading || disabled}
             rows={1}
           />

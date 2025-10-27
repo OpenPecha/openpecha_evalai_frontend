@@ -174,7 +174,7 @@ const DualCompare: React.FC<DualCompareProps> = ({
   return (
     <div className="space-y-6">
       {/* Model panels side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-monlam-2 text-lg ">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-monlam-2 text-lg bg-red-500 ">
         {/* Model A Panel */}
         <ModelStreamPanel
           modelId={modelA}
