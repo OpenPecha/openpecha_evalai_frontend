@@ -95,7 +95,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
   return (
     <div className="h-full flex flex-col relative overflow-hidden">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-radial from-neutral-800 from-[30%] via-neutral-900 to-neutral-950 dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-950" />
+      <div className="absolute inset-0 " />
       
       {/* Subtle pattern overlay */}
       <div className="absolute inset-0 opacity-5" style={{

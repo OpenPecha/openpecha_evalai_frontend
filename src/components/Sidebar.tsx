@@ -82,13 +82,13 @@ const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMob
   // Navigation configuration
   const navigationItems: NavigationItem[] = [
     {
-      label: "Arena",
+      label: "Human Eval",
       path: `/arena/${DEFAULT_ARENA_CHALLENGE_ID}/review`,
       href: undefined,
       icon: MessageCircle,
       isActive: () => isActivePath("/arena"),
       activeClasses: "text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-l-4 border-blue-600 dark:border-blue-400",
-      tooltip: "Arena",
+      tooltip: "Human Eval",
       isExternal: false,
     },
     {
