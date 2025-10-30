@@ -38,36 +38,12 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
   // Handle new translation request
   const handleTranslateSubmit = useCallback((
     payload: TranslateRequest,
-    modelA: string,
-    modelB: string,
-    selectionMethod?: string
   ) => {
     const session: TranslateSession = {
       id: Date.now().toString(),
       input_text: payload.input_text,
       template_id: payload.template_id,
       challenge_id: payload.challenge_id,
-      modelA: {
-        id: modelA,
-        name: modelA,
-        content: "",
-        isStreaming: false,
-        error: null,
-        isComplete: false,
-      },
-      modelB: {
-        id: modelB,
-        name: modelB,
-        content: "",
-        isStreaming: false,
-        error: null,
-        isComplete: false,
-      },
-      selectedModel: null,
-      score: null,
-      voted: false,
-      timestamp: new Date(),
-      selectionMethod,
     };
 
     setCurrentSession(session);

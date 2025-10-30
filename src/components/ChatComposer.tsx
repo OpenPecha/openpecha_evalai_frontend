@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { suggestModels } from "../api/translate";
-import { DEFAULT_MODELS } from "../types/translate";
 import type { SuggestResponse, TranslateRequest } from "../types/translate";
 import type { PromptTemplate } from "../types/template";
 import type { ArenaChallenge } from "../types/arena_challenge";
@@ -40,42 +38,13 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
     setError(null);
 
     try {
-      // Get fresh suggested models for this translation
-      let modelA: string | null = null;
-      let modelB: string | null = null;
-      let selectionMethod: string | undefined;
-
-      try {
-        const suggestion: SuggestResponse = await suggestModels(token, text);
-        
-        // Use suggested models if available, otherwise fallback to defaults
-        if (suggestion.model_a && suggestion.model_b) {
-          modelA = suggestion.model_a;
-          modelB = suggestion.model_b;
-          selectionMethod = suggestion.selection_method || undefined;
-          
-          // Log information about filtered models if any
-          if (suggestion.used_models && suggestion.used_models.length > 0) {
-            console.log(`Excluded ${suggestion.used_models.length} already used models:`, suggestion.used_models);
-          }
-        } else {
-          console.warn("Incomplete model suggestion, using defaults:", suggestion);
-          setError(t('messages.errorOccurred'));
-        }
-      } catch (suggestionError) {
-        console.warn("Failed to get model suggestions, using defaults:", suggestionError);
-        setError(t('messages.errorOccurred'));
-      }
       const payload: TranslateRequest = {
         template_id: selectedTemplate?.id,
         challenge_id: challenge.id,
         input_text: text,
       };
-      if (!modelA || !modelB) {
-        setError("No models found");
-        return;
-      }
-      onSubmit(payload, modelA, modelB, selectionMethod);
+    
+      onSubmit(payload);
     } catch (submitError) {
       console.error("Error submitting translation request:", submitError);
       setError(

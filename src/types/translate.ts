@@ -37,27 +37,7 @@ export interface TranslateSession {
   input_text: string;
   challenge_id: string;
   template_id?: string;
-  modelA: {
-    id: string;
-    name: string;
-    content: string;
-    isStreaming: boolean;
-    error: string | null;
-    isComplete: boolean;
-  };
-  modelB: {
-    id: string;
-    name: string;
-    content: string;
-    isStreaming: boolean;
-    error: string | null;
-    isComplete: boolean;
-  };
-  selectedModel: string | null;
-  score: number | null;
-  voted: boolean;
-  timestamp: Date;
-  selectionMethod?: string;
+ 
 }
 
 export interface StreamChunk {
