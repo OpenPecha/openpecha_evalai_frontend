@@ -41,8 +41,8 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
 
     try {
       // Get fresh suggested models for this translation
-      let modelA: string = DEFAULT_MODELS[0];
-      let modelB: string = DEFAULT_MODELS[1];
+      let modelA: string | null = null;
+      let modelB: string | null = null;
       let selectionMethod: string | undefined;
 
       try {
@@ -71,6 +71,10 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
         challenge_id: challenge.id,
         input_text: text,
       };
+      if (!modelA || !modelB) {
+        setError("No models found");
+        return;
+      }
       onSubmit(payload, modelA, modelB, selectionMethod);
     } catch (submitError) {
       console.error("Error submitting translation request:", submitError);
@@ -97,7 +101,6 @@ const ChatComposer: React.FC<ChatComposerProps> = ({
           <SelectionReviewCard challenge={challenge} template={selectedTemplate} />
         </div>
       )}
-
       {/* Central Input Composer */}
       <InputComposer
         value={inputValue}
