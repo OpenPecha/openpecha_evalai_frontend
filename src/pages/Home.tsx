@@ -58,7 +58,7 @@ const Home = () => {
       <div className="min-h-screen py-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto"></div>
             <p className="mt-4 text-neutral-600 dark:text-neutral-400">
               Loading challenges...
             </p>
@@ -88,7 +88,6 @@ const Home = () => {
   }
 
 
-  const documentation_link=`${import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"}/documentation`
   return (
     <div className="py-0">
       <div className="max-w-7xl mx-auto px-4">
@@ -103,11 +102,6 @@ const Home = () => {
             {t('challenges.subtitle')}
           </p>
         </div>
-        <div className="hidden md:block">
-          <a href={documentation_link} target="_blank" rel="noopener noreferrer" className="bg-white  dark:text-neutral-100 dark:bg-neutral-700  dark:hover:bg-neutral-600 hover:bg-neutral-600 hover:text-white px-4 py-2 rounded-md">
-            {t('navigation.documentation')}
-          </a>
-        </div>
         </div>
 
         {challenges.length === 0 ? (
@@ -121,11 +115,11 @@ const Home = () => {
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="flex flex-col group bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                className="flex flex-col group bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-xl transition-all duration-300 overflow-hidden"
                 onMouseEnter={() => handleMouseEnter(challenge.id)}
               >
                 {/* Header with image or gradient */}
-                <div className="h-32 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 relative overflow-hidden">
+                <div className="h-32 bg-gradient-to-br from-primary-500 via-primary-400 to-primary-600 relative overflow-hidden">
                   {challenge.image_uri ? (
                     <>
                       <img
@@ -137,7 +131,7 @@ const Home = () => {
                       <div className="absolute inset-0 bg-black/30" />
                     </>
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-400 to-primary-600" />
                   )}
 
                   {/* Status & Category badges */}
@@ -158,7 +152,7 @@ const Home = () => {
 
                 {/* Content */}
                 <div className="p-4 flex-1 flex flex-col">
-                  <h3 className="text-lg font-bold text-neutral-600 dark:text-neutral-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                  <h3 className="text-lg font-bold text-neutral-600 dark:text-neutral-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
                     {challenge.title || challenge.name}
                   </h3>
 
@@ -180,7 +174,7 @@ const Home = () => {
                     <div className="flex space-x-2">
                       <Link
                         to={`/leaderboard/${challenge.id}`}
-                        className="flex-1 flex items-center justify-center px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                        className="flex-1 flex items-center justify-center px-3 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 transition-colors duration-200"
                       >
                         <Trophy className="w-3 h-3 mr-1" />
                         Board
@@ -197,7 +191,7 @@ const Home = () => {
                       ) : (
                         <button
                           disabled
-                          className="flex-1 flex items-center justify-center px-3 py-2 bg-gray-400 text-white text-sm rounded-lg cursor-not-allowed"
+                          className="flex-1 flex items-center justify-center px-3 py-2 bg-neutral-400 dark:bg-neutral-600 text-white text-sm rounded-lg cursor-not-allowed"
                         >
                           <Upload className="w-3 h-3 mr-1" />
                           {challenge.status === "upcoming" ? "Soon" : "Closed"}
@@ -221,13 +215,13 @@ const Home = () => {
                       href={repoUrl + challenge.title.toLowerCase() + "_dataset"}//lower the title and add dataset to the url 
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center px-3 py-2 mt-2 border border-neutral-300 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300 text-sm rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 group"
+                      className="w-full flex items-center justify-center px-3 py-2 mt-2 border border-neutral-300 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300 text-sm rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 group"
                     >
-                      <Github className="w-3 h-3 mr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                      <span className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      <Github className="w-3 h-3 mr-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+                      <span className="group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                         View dataset
                       </span>
-                      <ExternalLink className="w-3 h-3 ml-2 opacity-60 group-hover:opacity-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all" />
+                      <ExternalLink className="w-3 h-3 ml-2 opacity-60 group-hover:opacity-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all" />
                     </a>
                   </div>
                 </div>

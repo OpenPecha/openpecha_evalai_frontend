@@ -82,7 +82,7 @@ const ShareButton = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Overlay */}
           <button
-            className="fixed inset-0 bg-[rgba(0,0,0,0.5)] dark:bg-[rgba(0,0,0,0.5)] bg-opacity-50 border-0 p-0"
+            className="fixed inset-0 bg-black/50 dark:bg-black/70 border-0 p-0"
             onClick={closeModal}
             aria-label="Close modal"
           ></button>
@@ -96,7 +96,7 @@ const ShareButton = ({
               </h3>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700"
               >
                 <svg
                   className="w-5 h-5"
@@ -120,7 +120,7 @@ const ShareButton = ({
               <div className="flex justify-center space-x-6 mb-6">
                 <button
                   onClick={() => copyToClipboard(iframeCode)}
-                  className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                  className="flex flex-col items-center p-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors group"
                 >
                   <div className="w-12 h-12 bg-primary-100 dark:bg-primary-800/30 rounded-full flex items-center justify-center mb-2 group-hover:bg-primary-200 dark:group-hover:bg-primary-700/40 transition-colors">
                     <svg
@@ -137,38 +137,38 @@ const ShareButton = ({
                       />
                     </svg>
                   </div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                  <span className="text-sm text-neutral-700 dark:text-neutral-300 font-medium">
                     Embed
                   </span>
                 </button>
 
                 <button
                   onClick={() => copyToClipboard(embedUrl)}
-                  className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                  className="flex flex-col items-center p-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors group"
                 >
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-2 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
                     <Copy className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                  <span className="text-sm text-neutral-700 dark:text-neutral-300 font-medium">
                     Copy link
                   </span>
                 </button>
 
                 <button
                   onClick={openInNewTab}
-                  className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                  className="flex flex-col items-center p-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors group"
                 >
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-2 group-hover:bg-purple-200 dark:group-hover:bg-purple-800 transition-colors">
                     <ExternalLink className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                  <span className="text-sm text-neutral-700 dark:text-neutral-300 font-medium">
                     Open
                   </span>
                 </button>
               </div>
 
               {/* Link Input */}
-              <div className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+              <div className="flex items-center space-x-2 bg-neutral-50 dark:bg-neutral-700 rounded-lg p-3 border border-neutral-200 dark:border-neutral-600">
                 <input
                   type="text"
                   value={embedUrl}
@@ -194,7 +194,7 @@ const ShareButton = ({
               </div>
 
               {/* Additional Info */}
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-3 text-center">
                 Click "Embed" to copy iframe code for websites
               </p>
             </div>

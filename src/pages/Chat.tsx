@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Languages, RotateCcw, History, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ChatComposer from "../components/ChatComposer";
-import ModelResponseCompare from "../components/ModelResponseCompare";
+import ModelResponseCompare from "../components/ModelResponseCompare/index";
 import ArenaHeader from "../components/ArenaHeader";
 import { useAuth } from "../auth/use-auth-hook";
 import type { TranslateRequest, TranslateSession } from "../types/translate";
@@ -81,7 +81,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
            }} />
       {/* Fixed Arena List Button - Top Right */}
           {judgeOrBattle === 'judge' && onBackToArena && (
-        <div className="absolute top-4 right-6 z-20">
+        <div className="absolute top-3 right-6 z-20">
           <button
             onClick={onBackToArena}
             className="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors shadow-lg"
@@ -93,7 +93,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
       )}
       {/* Content Container */}
       <div className="relative z-10 flex flex-col h-full">
-        {hasCurrentSession && <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-6 py-4 flex items-center justify-between">
+         <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
               <div>
                 <div className="flex items-center space-x-3">
@@ -128,7 +128,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
                 </button>
               )}
             </div>
-          </div>}
+          </div>
 
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto ">
@@ -162,7 +162,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
             <div className="min-h-full py-6">
               <div className="max-w-7xl mx-auto px-6 space-y-6">
                 {/* Input Display */}
-                <div className="text-neutral-700 dark:text-neutral-100 bg-neutral-200 dark:bg-neutral-800 backdrop-blur-xl rounded-xl border border-white/10 font-monlam-2 text-lg p-6">
+                <div className="text-neutral-700 dark:text-neutral-100 bg-neutral-200 dark:bg-neutral-800 backdrop-blur-xl rounded-xl border border-neutral-300 dark:border-neutral-700 font-monlam-2 text-lg p-6">
                   <div className="flex items-start space-x-3">
                     <div className="w-8 h-8 bg-primary-600 dark:bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
                       <Languages className="w-4 h-4 text-white" />

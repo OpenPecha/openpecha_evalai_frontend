@@ -21,12 +21,12 @@ const Callback: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-900">
       <div className="text-center">
-        <h2 className="text-2xl font-semibold mb-4">
+        <h2 className="text-2xl font-semibold mb-4 text-neutral-700 dark:text-neutral-100">
           Processing your login...
         </h2>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto"></div>
       </div>
     </div>
   );
