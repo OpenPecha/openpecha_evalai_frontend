@@ -69,7 +69,6 @@ export async function suggestModels(token?: string, sourceText?: string): Promis
     }
 
     const data: SuggestResponse = await response.json();
-    console.log('Fresh model suggestions received:', data);
     return data;
   } catch (error) {
     console.error("Error fetching suggested models:", error);
@@ -202,9 +201,6 @@ export async function voteModel(
       response_time_ms: responseTimeMs,
       comment: comment
     };
-
-    console.log(`FRONTEND: Voting on outputs: ${translationOutput1Id} vs ${translationOutput2Id}, choice: ${winnerChoice}`);
-
     const response = await fetch(
       `${API_BASE_URL}/translate/vote`,
       {
@@ -387,11 +383,9 @@ export async function translateV2Stream(
               const jsonData = line.slice(6); // Remove 'data: ' prefix
               const stepData = JSON.parse(jsonData);
               
-              console.log('Parsed SSE data:', stepData); // Debug log
               
               // Check if this is the final response
               if (stepData.step === 'final_response' && stepData.status === 'completed') {
-                console.log('Final response received:', stepData.data); // Debug log
                 onComplete(stepData.data);
                 return;
               } else {

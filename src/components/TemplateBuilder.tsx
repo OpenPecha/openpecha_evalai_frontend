@@ -125,6 +125,12 @@ const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ isOpen, onClose, onCr
       // Remove emojis before sending to backend
       const cleanContent = removeEmojisFromContent(templateContent.trim());
       onCreate(templateName.trim(), cleanContent);
+
+      // Reset form state
+      setTemplateName('');
+      setTemplateContent('');
+      setIsPreviewMode(false);
+      setSelectedTextRange({ start: 0, end: 0 });
     }
   };
 

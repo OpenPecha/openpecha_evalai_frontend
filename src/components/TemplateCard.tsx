@@ -156,9 +156,9 @@ const TemplateCard = ({
                         </div>
                     </div>
                         <textarea
-                            className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-3 font-mono w-full outline-none foucs:ring-0"
+                            className="resize-none text-sm text-neutral-700 dark:text-neutral-300 line-clamp-3 font-mono w-full outline-none foucs:ring-0"
                             readOnly={true}
-                            value={template.template || 'No template content'}
+                            value={template.template.slice(0, 100) + '...' || 'No template content'}
                             rows={5}
                         />
                     </div>
