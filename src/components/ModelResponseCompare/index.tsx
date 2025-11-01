@@ -1,7 +1,3 @@
-/**
- * ModelResponseCompare - Main Component
- * Compares two model translations side by side with voting functionality
- */
 
 import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -135,7 +131,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
   // Calculate progress for both translations
   const progress1 = getStepProgress(state.translation1Progress);
   const progress2 = getStepProgress(state.translation2Progress);
-
+  const isVotingEnabled = state.data && state.isComplete && !state.error && (state.data?.translation_1?.translation || state.data?.translation_2?.translation);
   return (
     <div className="space-y-6">
       {/* Model panels side by side */}
@@ -200,7 +196,7 @@ const ModelResponseCompare: React.FC<ModelResponseCompareProps> = ({
       )}
 
       {/* Centralized Voting Buttons */}
-      {state.data && state.isComplete && !state.error && (
+      {isVotingEnabled && (
         <div className="bg-neutral-100 dark:bg-white/5 backdrop-blur-xl border border-neutral-200 dark:border-white/10 rounded-xl p-6 shadow-xl">
           <div className="text-center space-y-4">
             <div className="text-lg font-medium text-neutral-800 dark:text-white">

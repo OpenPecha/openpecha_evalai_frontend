@@ -36,7 +36,7 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
   t,
 }) => {
   const isSelected = selectedOption === side || selectedOption === 'both';
-  const hasContent = translation || (translationReady && individualTranslation);
+  const hasContent = translation && translationReady && individualTranslation;
 
   return (
     <div className={`bg-neutral-100 dark:bg-neutral-800 backdrop-blur-xl rounded-xl border-2 transition-all duration-200 ${borderClass}`}>
@@ -108,28 +108,18 @@ const ModelPanel: React.FC<ModelPanelProps> = ({
             className="max-h-96 min-h-10 overflow-y-auto text-neutral-700 dark:text-neutral-200 leading-relaxed whitespace-pre-wrap scroll-smooth" 
             style={{ fontSize: `${fontSize}px` }}
           >
-            {translation ? (
-              <div className="break-words">
-                <Markdown>{String(translation)}</Markdown>
-              </div>
-            ) : translationReady && individualTranslation ? (
-              <div className="break-words">
-                <Markdown>
-                  {String(getIndividualTranslationText(individualTranslation))}
-                </Markdown>
-              </div>
-            ) : (
-              <div className="text-neutral-500 dark:text-neutral-400 italic">
-                {isLoading ? (
+            {isLoading ? (
                   <LoadingIndicator
                     currentStepMessage={currentStepMessage}
                     stepProgress={stepProgress}
                     translationStatus={translationStatus}
                   />
-                ) : (
-                  'Ready to translate'
-                )}
+                ) :translation ? (
+              <div className="break-words">
+                <Markdown>{String(translation)}</Markdown>
               </div>
+            ) : (
+              <div>no translation</div>
             )}
           </div>
         )}

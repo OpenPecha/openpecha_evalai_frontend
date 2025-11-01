@@ -206,6 +206,12 @@ export function useTranslateV2Stream(): UseTranslateV2StreamReturn {
     } catch (error) {
       // Check if request was aborted
       if (error instanceof Error && error.name === 'AbortError') {
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: 'Request aborted',
+          isComplete: true,
+        }));
         return;
       }
 

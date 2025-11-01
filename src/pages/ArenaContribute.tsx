@@ -191,7 +191,7 @@ const ArenaContribute: React.FC = () => {
               <div>
              
                 <p className="mt-1 text-neutral-600 dark:text-neutral-400">
-                  {challenge.challenge_name} • {challenge.from_language} → {challenge.to_language}
+                  {challenge.challenge_name}
                 </p>
               </div>
             </div>
