@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Languages, RotateCcw, History, ArrowLeft } from "lucide-react";
+import { Languages, RotateCcw, ArrowLeft, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ChatComposer from "../components/ChatComposer";
 import ModelResponseCompare from "../components/ModelResponseCompare/index";
@@ -168,10 +168,34 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
                       <Languages className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium mb-2">
-                        {t('arena.inputText')}
-                      </h3>
-                      <p className=" leading-relaxed">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-2 relative">
+                        <h3 className="font-medium">
+                          {t('arena.inputText')}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={handleNewChat}
+                          aria-label={t('arena.discardSession') || "Discard"}
+                          className={`
+                            absolute -top-6 -right-6 z-10
+                            inline-flex items-center justify-center
+                            p-2
+                            rounded-bl-lg
+                            border-l-1 border-b-1
+                            transition-colors
+                            bg-white/80 dark:bg-neutral-800/70
+                            hover:bg-rose-50 hover:dark:bg-rose-900/40
+                            border-neutral-300 dark:border-neutral-700
+                            text-neutral-500 dark:text-neutral-200
+                            hover:text-rose-700 hover:dark:text-rose-400
+                            shadow-md
+                            focus:outline-none focus:ring-2 focus:ring-rose-500
+                          `}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <p className="leading-relaxed">
                         {currentSession.input_text}
                       </p>
                     </div>

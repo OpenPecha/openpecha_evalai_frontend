@@ -10,7 +10,6 @@ import FontSizeControl from '../FontSizeControl';
 import TemplateNameLink from './TemplateNameLink';
 import LoadingIndicator from './LoadingIndicator';
 import type { ModelPanelProps } from './types';
-import { getIndividualTranslationText } from './utils';
 
 const ModelPanel: React.FC<ModelPanelProps> = ({
   side,

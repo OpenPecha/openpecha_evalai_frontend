@@ -115,7 +115,7 @@ export const getPanelBorderClass = (
                    (side === 'right' && selectedOption === 'right') ||
                    selectedOption === 'both';
   const isHovered = hoveredOption === side || hoveredOption === 'both';
-  const isRed = hoveredOption === 'none';
+  const isNeither = hoveredOption === 'none' || selectedOption === 'none';
   
   if (isSelected) {
     return "border-green-500 bg-green-500/10 shadow-lg shadow-green-500/20";
@@ -123,7 +123,7 @@ export const getPanelBorderClass = (
   if (isHovered && !selectedOption) {
     return "border-blue-400 shadow-xl shadow-blue-400/30 bg-blue-500/10";
   }
-  if (isRed && !selectedOption) {
+  if (isNeither) {
     return "border-red-400 shadow-xl shadow-red-400/30 bg-red-500/10";
   }
   if (hasError) {
