@@ -33,7 +33,7 @@ const Callback = lazy(() => import("./pages/Callback"));
 const App = () => {
   const { isAuthenticated, isLoading, getToken } = useAuth();
   const { i18n } = useTranslation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Initialize theme system at root level

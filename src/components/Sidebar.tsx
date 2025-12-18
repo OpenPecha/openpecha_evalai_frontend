@@ -50,7 +50,7 @@ interface UserMenuItem {
   tooltip: string;
 }
 
-const Sidebar = ({ isOpen = true, onToggle, isMobileMenuOpen = false, onCloseMobileMenu }: SidebarProps) => {
+const Sidebar = ({ isOpen = false, onToggle, isMobileMenuOpen = false, onCloseMobileMenu }: SidebarProps) => {
   const { t } = useTranslation();
   const location = useLocation();
   const {
