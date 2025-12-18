@@ -114,8 +114,8 @@ const Toast: React.FC<ToastProps> = ({
             <button
               className={`
                 inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2
-                ${getTextColor()} hover:bg-gray-100 dark:hover:bg-gray-700
-                focus:ring-gray-500
+                ${getTextColor()} hover:bg-neutral-100 dark:hover:bg-neutral-700
+                focus:ring-neutral-500
               `}
               onClick={handleClose}
             >

@@ -224,18 +224,13 @@ const Sidebar = ({ isOpen = false, onToggle, isMobileMenuOpen = false, onCloseMo
         ) : (
           /* Collapsed state - just logo and toggle */
           <div className="flex flex-col items-center space-y-2">
-            <Link
-              to="/"
-            >
-                            <img src="/favicon.ico" alt="Buddhist AI Arena" className="w-8 h-8" />
-            </Link>
             {onToggle && (
               <button
                 onClick={onToggle}
                 className="p-1 text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 rounded-md transition-colors duration-200"
                 title={t('sidebar.expandSidebar')}
               >
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-5 h-5" />
               </button>
             )}
           </div>

@@ -11,8 +11,12 @@ import {
 } from "lucide-react";
 import { useChallenge, useSubmitToChallenge } from "../hooks/useChallenges";
 import { useAuth } from "../auth/use-auth-hook";
+import { useTranslation } from "react-i18next";
 
 const Submission = () => {
+  const documentation_link=`${import.meta.env.VITE_SERVER_URL || "https://eval-api.pecha.tools"}/documentation`
+  const { t } = useTranslation();
+
   const { challengeId } = useParams<{ challengeId: string }>();
   const { isAuthenticated, login } = useAuth();
   const { success } = useToast();
@@ -218,7 +222,7 @@ const Submission = () => {
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-6">
           <Link
-            to="/"
+            to="/benchmark_eval"
             className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -391,54 +395,23 @@ const Submission = () => {
 
             {/* File Format Information */}
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <div className="flex items-start">
-                <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-2" />
-                <div>
-                  <h3 className="text-sm font-medium text-blue-900 dark:text-blue-400">
-                    Required JSON Format
-                  </h3>
-                  <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-                    Upload and validate a JSON file containing ML inference
-                    results.
+              <div className="flex items-start space-x-3">
+                <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-2">
+                    Need help with submission format?
                   </p>
-                  <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
-                    <p>
-                      <strong>Required fields:</strong>
-                    </p>
-                    <ul className="list-disc list-inside mt-1 space-y-1">
-                      <li>
-                        <code>filename</code> - Name of the input file
-                      </li>
-                      <li>
-                        <code>prediction</code> - Your model's prediction result
-                      </li>
-                    </ul>
-                    <div className="mt-2 p-2 bg-blue-100 dark:bg-blue-800 rounded text-xs">
-                      <p>
-                        <strong>Example:</strong>
-                      </p>
-                      <p>
-                        <code>file: inference_results.json</code>
-                      </p>
-                      <p>
-                        <code>
-                          user_id: (automatically extracted from authentication
-                          token)
-                        </code>
-                      </p>
-                      <p>
-                        <code>model_name: my-awesome-model</code>
-                      </p>
-                      <p>
-                        <code>challenge_id: {challengeId}</code>
-                      </p>
-                      <p>
-                        <code>
-                          description: This is a description of the submission
-                        </code>
-                      </p>
-                    </div>
-                  </div>
+                  <a 
+                    href={documentation_link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center text-sm font-medium text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline decoration-2 underline-offset-2 transition-colors"
+                  >
+                    {t('navigation.documentation')}
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
@@ -467,7 +440,7 @@ const Submission = () => {
             <div className="flex justify-end space-x-4">
               <Link
                 to={`/leaderboard/${challengeId}`}
-                className="px-6 py-2 text-neutral-700 dark:text-neutral-300 bg-neutral-200 rounded-lg hover:bg-neutral-300 transition-colors duration-200"
+                className="px-6 py-2 text-neutral-700 dark:text-neutral-300 bg-neutral-200 dark:bg-neutral-700 rounded-lg hover:bg-neutral-300 transition-colors duration-200"
               >
                 View Leaderboard
               </Link>
