@@ -82,7 +82,7 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
            }} />
       {/* Fixed Arena List Button - Top Right */}
           {judgeOrBattle === 'judge' && onBackToArena && (
-        <div className="absolute top-3 right-6 z-20">
+        <div className="absolute top-3 left-6 z-20">
           <button
             onClick={onBackToArena}
             className="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-lg transition-colors shadow-lg"
@@ -94,19 +94,8 @@ const Chat: React.FC<ChatProps> = ({ selectedTemplate, onBackToTemplates, onBack
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col h-full">
-         <div className="bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-              <div>
-                <div className="flex items-center space-x-3">
-                  <h1 className="text-xl font-semibold text-neutral-700 dark:text-neutral-100">
-                    {challenge?.challenge_name || t('arena.title')}
-                  </h1>
-                  <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
-                    ✨ {t('arena.live')}
-                  </span>
-                </div>
-              </div>
-            </div>
+         <div className=" px-6 py-4 flex items-center justify-between">
+         
           
             <div className="flex flex-col gap-2 md:flex-row items-center space-x-2">
         
