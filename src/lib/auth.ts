@@ -25,10 +25,10 @@ export const getAuthHeaders = async (
   if (contentType === "json") {
     headers["Content-Type"] = "application/json";
   }
-
-  if (includeAuth && getAccessTokenSilently) {
+  //get access token from local storage
+  const token = localStorage.getItem("access_token");
+  if (includeAuth && token) {
     try {
-      const token = await getAccessTokenSilently();
       headers.Authorization = `Bearer ${token}`;
     } catch (error) {
       console.error("Error getting access token:", error);
